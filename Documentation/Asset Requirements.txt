@@ -1,0 +1,22 @@
+=== ASSET REQUIREMENTS FOR BASIC ALPHA ===
+
+3D Models:
+- 4 x Pirate Bull characters, rigged & animated (idle, movement, attack combo steps, bull rush, take damage, die, celebrate win)
+- 2 x Arenas (islands) - can potentially be created using Unity terrain as opposed to models
+- Shark npc, rigged & animated (movement, attack)
+- Treasure chest
+- Various treasures (gold pieces, jemstones, crowns, cups... minimum six different pieces)
+- Power up objects for health restore, attack power boost, movement speed boost
+- Solid obstructions (trees, rocks & other bits of scenery)
+
+2D Artwork:
+- Logo
+- Portraits for each character, multiple emotions (normal, victorious, hurt, dead)
+
+Sound Effects:
+- Weapon swishes
+- Attack/damage grunts/shouts
+- Chest hit/break
+- Treasure scatter/collect
+
+Music:

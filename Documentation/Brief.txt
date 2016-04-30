@@ -1,0 +1,176 @@
+=== "BULL-ION" - BRIEF ===
+
+Title: "Bullion - the Curse of the Cut-throat Cattle"
+
+
+TARGET PLATFORMS
+================
+Consoles, PC
+
+
+CONCEPT
+=======
+"Party game" - local multiplayer with all avatars on a single screen(1). Avatars are anthropomophic bulls dressed as pirates: for the most part, they move on two legs with their arms/forelegs used to wield their weapons(2). Avatars may either be player or AI controlled, with up to four player avatars on screen at once(3). Each player's objective is to gather more treasure than the others/AI players within a given time limit.
+
+1 - network play may be added for future versions
+2 - unless performing a "bull rush" special move, during which movement is on all fours legs (see "Mechanics")
+3 - more player avatars may be added dependent on controller options. Initial version will have four avatars in total (players + AI), more may be added in v2 onward.
+
+
+LOOK & FEEL
+===========
+Cartoon slapstick, not cute. When upright, bull characters should be "Johnny Bravo" shaped physique - exaggerated chest and arm muscles. Palette should be strong, bold colours. Sound, music and visual effects should emphasise visual feel - bold, bright, somewhat over-the-top.
+
+
+STORYLINE
+=========
+Captain Long John Silverside and his crew of scurvy brigands are the scourge of the seven seas. Bored of how easy taking other ships has become, they set sail in search of the legendary Ile de Ser-Loynn, where lies the vast treasures of those who followed the ancient heathen gods. After many weeks at sea fighting through heavy storms, they sight a chain of small, strange islands. Accompanied by a handful of his crew, Captain Silverside goes ashore, but as the bulls start to split up and explore, an echoing voice booms out:
+
+"Woe unto you, non-believers who come to my lands with averice in your hearts, for while riches may lie here, all that awaits you is death! But for one of you alone, there may be hope: gather my trinkets, and to he who finds the most I will grant one thing that he may desire. All others will perish in my wrath! You have until the sun turns fully - now go!"
+
+As last echoes of the voice die away, shark fins rise appear above the sea surrounding the island, and a huge wave washes away the pirate's landing boat. A moment later, a treasure chest pops up from the sand... then another, and another. Each of the pirates look around, the words of the heathen god still echoing in their minds... whoever gathers the most treasure would get what they desire, while all the others were doomed... with all pretences of loyalty cast aside, each bull races for the closest chest...
+
+ENVIRONMENT
+===========
+3D island (1), surrounded by shark-infested sea. Avatars start near the shoreline at given points. Treasure chests appear from the ground in groups/lines at regular intervals. Island time and environment systems: day and night will pass(2), and other events will occur, affecting the gameplay(3).
+
+1 - player(s) choose which island they play on.
+2 - day/night cycle will be at an accelerated rate, determining the duration of a game.
+3 - dependent on the theme of the island - see "Mechanics"
+
+
+MECHANICS
+=========
+Avatars have characteristics and a weapon which determine their capabilities(1). Each avatar starts at a given point, and can move around on the island, although movement may be obstructed by obstacles and traps. Treasure chests appear from the ground regularly - these can be broken open, either by repeated attacks(2) or in a single blow by a special "bull rush" move. When a chest is broken open, treasure will be scattered around from it, which can then be collected by any avatar. After a given time has elapsed, the winning avatar is determined by the amount of treasure each has collected.
+
+Avatars may attack each other - a successful attack will drain the target's health, depend on the attacker's weapon power. Similarly, traps and certain environmental effects(3) will also inflict damage. When an avatar's health runs out, they switch to "dead" mode, becoming a ghost. As a ghost, an avatar cannot attack or collect treasure, but is not affected by attacks, traps or other sources of damage. A ghost must move back to its start point(4) in order to return to life.
+
+If a living avatar attempts to leave the playing field, all health is lost almost immediately(5). Ghost avatars cannot move more than a given distance beyond the center of the playing field(6).
+
+-- The "Bull Rush" Special Move --
+Triggering a bull rush move causes the avatar to drop to all fours and charge straight forward at high speed in the direction they are going. Any treasure chests in the rushing avatar's path are immediately smashed, any other avatars are knocked aside and sustain damage. The distance travelled during a bull rush is determined by the avatars characteristics. A bull rush cannot be stopped unless the avatar impacts either a solid obstacle or another rushing avatar, or the avatar's health reaches zero.
+
+The rushing avatar does not automatically collect treasure from any chests smashed during a bull rush(7) - it is fair game for any avatar to collect.
+
+Once an avatar has covered their full rush distance, movement reverts to normal. They must then wait until they have recovered before they can use the bull rush again(8).
+
+Directly impacting an obstacle during a bull rush will stop the avatar immediately and they will be "stunned" and unable to take any action until such time as they would have ended their bull rush. After this, they can act normally but must wait before being able to bull rush again as above. A collision between two rushing avatars will stun both.
+
+-- Enemies --
+On most playing fields, enemy avatars will appear at given times - these will either be a swarm of smaller enemy characters, or one or more "boss" enemies - who will attack the pirate player/AI avatars. During these events, no further treasure chests will appear, and if an avatar is killed by an enemy, an amount of the treasure they have collected so far is stolen. Players may work cooperatively to attack and remove these enemies - AI-controlled avatars will act according to each individual AI's characteristics(9).
+
+If all player/AI avatars are reduced to zero health during an enemy attack, the game ends with no winner.
+
+-- Timing --
+The duration of the game depends on player selection, with the passage of time represented by day and night - when one full day and one full night has passed, the game will end and the winner determined.
+
+-- Power Ups and Items --
+Some chests may contain power-ups or items. Power-ups are automatically collected by the avatar breaking open the chest and either have an immediate effect, or last for a limited duration.
+
+Items grant extra abilities that may be used on demand. Like treasure, items are scattered when a chest is broken open and must be collected. An avatar may only carry one item at a time.
+
+-- Restricted Vision --
+Some areas of the playing field may be hidden - if a player/AI avatar enters a hidden area, the objects hiding the avatar will become translucent.
+
+-- Game Balancing --
+To prevent respawn camping, when a ghost avatar reaches its restart point and returns to life, a blast-radius effect will occur, stunning and inflicting damage on all other avatars within range.
+
+
+A chest broken open by a bull rush will never contain a power-up.
+
+1 - see avatar variants
+2 - number of attacks depend on the avatar's weapon power.
+3 - environmental effects causing damage could be lightning strikes (during a storm), lava (on a volcanic island) etc.
+4 - dead avatars do not automatically respawn
+5 - living avatars moving too far out to sea will be eaten by the nearest shark
+6 - ghost avatars can travel over the sea without being eaten. A visual effect (fading) will indicate an avatar is at the movement limit.
+7 - unless they have an appropriate power-up
+8 - recovery time determined by avatar characteristics
+9 - each avatar has its own set of AI characteristics which are used if the avatar is in play but not controlled by a player
+
+
+AVATAR VARIANTS
+===============
+Weapons:
+	* Power - how much damage it does
+	* Recovery time - the time between attacks
+	* Range - swords = short range, guns = long range
+	
+Characters:
+	* Max health - total amount of damage the avatar can take before switching to "dead" mode(1)
+	* Speed - how fast the avatar moves while "alive"
+	* Ghost speed - how fast the avatar moves when "dead"
+	* Rush distance - how far the avatar travels when using the "bull rush" special move
+	* Rush recovery - how long an avatar must wait between rushes
+	
+AI(2):
+	* Stats TBC
+	
+1 - "dead" avatars must return to their start points (see "Mechanics")
+2 - AI values determine the avatars actions when in play but not controlled by a player
+
+
+DELIVERABLES
+============
+Initial objective - playable alpha to exhibit at GEEK expo, February 2017
+
+Basic Alpha:
+	* Title page
+	* Player avatar select page
+	* Game configuration page - select island, select enemies (none, swarm, boss)
+	* Two playable islands (themed, but no weather/environmental effects, no hidden sections)
+	* Four player characters (no AI)
+	* No enemies
+	* Simple power-ups only (health restore, increased attack power/movement speed only)
+	* No items
+	* No day/night cycle - timing handled by UI clock or counter
+	* Results page
+	* Sound & music
+
+Stretch 1 Alpha:
+	* AI avatars
+	* One "swarm" enemy type
+	* One "boss" enemy type
+	* Items
+	
+Stretch 2 Alpha:
+	* Hidden areas on playing fields
+	* All power-ups
+	* Day/night cycle timing
+	* Additional islands
+	
+
+CONTENT
+=======
+Avatars:
+	* Captain Long John Silverside
+
+Playing Field (Island) Themes:
+	* Simple - single land mass, one or two obstructions. Sandy island, wood stockade walls, palm trees
+	* Swamp - as "simple" plus traps to slow down or slow-kill. Bigger than "simple", more overgrown, swamps
+	* Ruins - periodic traps
+	* Caves - hidden passages
+	* Island group - land masses are divided, attempting to move between land masses without using a bridge is fatal
+	* Volcanic - periodic traps, hidden passages
+
+Swarm Enemies:
+	* Skeletons/undead
+	* Canibals
+	* Fire/mud elementals
+	* Fish-men
+
+Boss Enemies:
+	* Giant elemental/fish man
+	* Cannibal shaman
+	* Hydra
+	* The kraken - works on island group field. Moves through channels between islands, attacks with tentacles
+
+Power-ups:
+	* Parrot (immediate) - follows avatar and collects loose treasure
+	* Hook-hand (immediate) - increases weapon damage
+	* Jar of spices (immediate) - increases movement speed
+	* Bottle of rum (immediate) - recover lost health
+	* Bomb (on-demand) - throw in direction faced, damages all avatars/enemies in blast radius
+	* Waters of youth (on-demand) - respawn from death anywhere within the playing field. Auto-fires if all other avatars die during enemy event
+	* Voodoo curse (on-demand) - half of any damage received from another avatar or an enemy is inflicted back on the attacker
+	* Grappling hook (on-demand) - stop dead during a bull rush with no stun penalty

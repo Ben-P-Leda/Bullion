@@ -1,0 +1,66 @@
+== EPICS ==
+
+1) Simple Environment & Exploration: 
+	- Project creation 
+	- Test gameplay scene (island, sea)
+	- Multiple placeholder avatars in scene
+	- Avatar movement by controller
+	- Camera zoom (all avatars always in shot)
+	
+2) Simple Combat & Stats:
+	- Avatar attack on button-tap
+	- Combo attacks
+	- Variable stats for move/attack speed, combo step count & per-step damage
+	- Avatars take damage from attack (fixed hit points)
+	- Health display placeholders
+	- Variable stats for hit points
+
+3) Death & Respawn:
+	- Switch avatar to ghost mode when hit points reach zero
+	- Placeholder respawn point display for dead avatar
+	- Respawn ghost avatar upon reaching respawn point
+	- Variable stats for ghost movement speed
+	
+4) Bull Rush:
+	- Start/end bull rush
+	- Variable stats for duration & recharge speed
+	- Charge display placeholders
+	- Impact effect on other avatars (damage & knockback)
+	- Fixed obstruction on field
+	- Obstruction impact effect (stun)
+	- Head-on rush-to-rush impact effect (damage, knockback, stun)
+	
+5) Treasure:
+	- Fixed position chest on field
+	- Chests take damage from avatar attacks
+	- Chests destroyed immediately by bull rush
+	- Chests scatter treasure on destruction
+	- Treasure can be collected
+	- Record treasure collected by each avatar
+	- Treasure collected placeholder display
+	- Multiple treasure types
+	- Factory to spawn groups of chests
+	- Intelligent chest group spawning (proximity to avatars etc.)
+	
+6) In-game control:
+	- Round timer (record, placeholder display)
+	- Anti-camper blast effect on respawn
+	- Slow avatar movement when in deep water
+	- Shark attacks against avatars in deep water (spawn, home in, bull escape, bull caught)
+
+7) Power-ups:
+	- Fixed health restore power up on field 
+	- Health restore power up collected
+	- Fixed limited duration power ups on field (attack/speed boosters)
+	- Limited duration power up collected (start effect)
+	- Limited duration power up timing (duration, end effect)
+	- Power up duration placeholder display
+	- Chest factory able to put power ups in chests
+	
+8) Game state flow:
+	- Results display
+	- Title scene
+	- Navigation flow (title - gameplay - results)
+	- Create second test gameplay scene
+	- Game setup scene (select island)
+	
