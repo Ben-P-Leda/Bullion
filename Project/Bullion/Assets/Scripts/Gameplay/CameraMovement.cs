@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Gameplay
 {
     public class CameraMovement : MonoBehaviour
     {
@@ -26,7 +26,7 @@ namespace Assets.Scripts
             float containmentRadius = GetContainmentRadius(center);
             Distance = containmentRadius / Mathf.Abs(Mathf.Sin(_camera.fieldOfView * Mathf.Deg2Rad) / 2.0f);
 
-            _transform.position = center + (_unitVector * Distance);
+            _transform.position = center + (_unitVector * (Mathf.Max(Distance, Minimum_Distance) + Distance_Margin));
             _transform.LookAt(center + new Vector3(0.0f, Vertical_Focus_Offset, 0.0f));
         }
 
@@ -54,5 +54,7 @@ namespace Assets.Scripts
 
         private const float Camera_Angle = 25.0f;
         private const float Vertical_Focus_Offset = 0.5f;
+        private const float Minimum_Distance = 10.0f;
+        private const float Distance_Margin = 2.0f;
     }
 }
