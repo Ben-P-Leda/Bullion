@@ -45,9 +45,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Configuration\CharacterConfiguration.cs" />
+     <Compile Include="Assets\Scripts\Configuration\ConfigurationManager.cs" />
      <Compile Include="Assets\Scripts\Event Handling\EventDispatcher.cs" />
      <Compile Include="Assets\Scripts\Gameplay\CameraMovement.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Definitions.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\IConfigurable.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerInput.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerMovement.cs" />
