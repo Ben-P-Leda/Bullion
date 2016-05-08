@@ -81,6 +81,6 @@ namespace Assets.Scripts.Gameplay.Player
             }
         }
 
-        private const string Avatar_Names = "Red,Green";
+        private const string Avatar_Names = "Red,Green,Purple,Blue";
     }
 }

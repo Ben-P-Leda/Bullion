@@ -32,6 +32,16 @@ namespace Assets.Scripts.Configuration
             {
                 MovementSpeed = 5.5f
             });
+
+            _characters.Add("Blue", new CharacterConfiguration()
+            {
+                MovementSpeed = 5.25f
+            });
+
+            _characters.Add("Purple", new CharacterConfiguration()
+            {
+                MovementSpeed = 4.5f
+            });
         }
     }
 }
