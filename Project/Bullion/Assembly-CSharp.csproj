@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\Event Handling\EventDispatcher.cs" />
      <Compile Include="Assets\Scripts\Gameplay\CameraMovement.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Definitions.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\IAnimated.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\IConfigurable.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerInput.cs" />

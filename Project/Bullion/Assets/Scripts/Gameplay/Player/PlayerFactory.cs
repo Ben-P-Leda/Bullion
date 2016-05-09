@@ -54,14 +54,43 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void ConnectPlayerToModel(GameObject player, string avatarName)
         {
+            GameObject model = GetModel(avatarName);
+
+            if (model != null)
+            {
+                model.transform.SetParent(player.transform);
+                Animator animator = model.GetComponent<Animator>();
+                WireUpAnimationControllers(player, animator);
+            }
+            else
+            {
+                throw new System.Exception("Avatar " + avatarName + " does not exist!");
+            }
+        }
+
+        private GameObject GetModel(string avatarName)
+        {
+            GameObject model = null;
+
             for (int i = 0; i < _avatarPrefabs.Length; i++)
             {
                 if (_avatarPrefabs[i].name == avatarName)
                 {
-                    GameObject model = (GameObject)Instantiate(_avatarPrefabs[i]);
-                    model.transform.SetParent(player.transform);
+                    model = (GameObject)Instantiate(_avatarPrefabs[i]);
                     break;
                 }
+            }
+
+            return model;
+        }
+
+        private void WireUpAnimationControllers(GameObject player, Animator animator)
+        {
+            IAnimated[] animationControllers = player.GetComponents<IAnimated>();
+
+            for (int i = 0; i < animationControllers.Length; i++)
+            {
+                animationControllers[i].Animator = animator;
             }
         }
 
