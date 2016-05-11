@@ -16,14 +16,16 @@ namespace Assets.Scripts.Gameplay.Player
             set
             {
                 _animator = value;
-                _animator.transform.GetComponent<AvatarAttackAnimationEventHandler>().EnableAttackCallback = SetAttackEnabled;
+                _animator.transform.GetComponent<AvatarAttackAnimationEventHandler>().StrikeCallback = SetStrikingState;
             }
         }
 
-        private void SetAttackEnabled(bool isEnabled)
+        private void SetStrikingState(bool strikeInProgress)
         {
-            _animator.SetBool("IsAttacking", false);
-            CanAttack = isEnabled;
+            if (strikeInProgress)
+            {
+                _animator.SetBool("IsAttacking", false);
+            }
         }
 
         private void Start()
@@ -38,7 +40,6 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 _movement.CanMove = false;
                 _animator.SetBool("IsAttacking", true);
-                CanAttack = false;
             }
         }
     }

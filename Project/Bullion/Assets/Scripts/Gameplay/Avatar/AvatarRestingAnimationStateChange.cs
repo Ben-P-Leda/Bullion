@@ -9,11 +9,8 @@ namespace Assets.Scripts.Gameplay.Avatar
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            Debug.Log("State change");
-
             if (EnableMovementCallback != null)
             {
-                Debug.Log("EnableMove fired");
                 EnableMovementCallback();
             }
         }

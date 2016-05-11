@@ -4,22 +4,22 @@ namespace Assets.Scripts.Gameplay.Avatar
 {
     public class AvatarAttackAnimationEventHandler : MonoBehaviour
     {
-        public delegate void EnableAttackHandler(bool attackEnabled);
-        public EnableAttackHandler EnableAttackCallback;
+        public delegate void StrikeHandler(bool attackEnabled);
+        public StrikeHandler StrikeCallback;
 
         public void StartAttackEffect()
         {
-            if (EnableAttackCallback != null)
+            if (StrikeCallback != null)
             {
-                EnableAttackCallback(true);
+                StrikeCallback(true);
             }
         }
 
         public void EndAttackEffect()
         {
-            if (EnableAttackCallback != null)
+            if (StrikeCallback != null)
             {
-                EnableAttackCallback(false);
+                StrikeCallback(false);
             }
         }
     }
