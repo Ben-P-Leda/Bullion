@@ -1,15 +1,30 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using Assets.Scripts.Gameplay.Avatar;
 
 namespace Assets.Scripts.Gameplay.Player
 {
     public class PlayerAttack : MonoBehaviour, IAnimated
     {
+        private Animator _animator;
         private PlayerInput _input;
         private PlayerMovement _movement;
 
-        public Animator Animator { private get; set; }
         public bool CanAttack { private get; set; }
+
+        public Animator Animator
+        {
+            set
+            {
+                _animator = value;
+                _animator.transform.GetComponent<AvatarAttackAnimationEventHandler>().EnableAttackCallback = SetAttackEnabled;
+            }
+        }
+
+        private void SetAttackEnabled(bool isEnabled)
+        {
+            _animator.SetBool("IsAttacking", false);
+            CanAttack = isEnabled;
+        }
 
         private void Start()
         {
@@ -22,7 +37,8 @@ namespace Assets.Scripts.Gameplay.Player
             if ((CanAttack) && (_input.Attack))
             {
                 _movement.CanMove = false;
-                Animator.SetBool("IsAttacking", true);
+                _animator.SetBool("IsAttacking", true);
+                CanAttack = false;
             }
         }
     }

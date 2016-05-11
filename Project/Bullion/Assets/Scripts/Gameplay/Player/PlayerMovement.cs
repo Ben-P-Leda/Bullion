@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
+using Assets.Scripts.Gameplay.Avatar;
 
 namespace Assets.Scripts.Gameplay.Player
 {
@@ -7,6 +8,7 @@ namespace Assets.Scripts.Gameplay.Player
     {
         private Transform _transform;
         private Rigidbody _rigidBody;
+        private Animator _animator;
         private PlayerInput _input;
         private PlayerAttack _attack;
         private Terrain _terrain;
@@ -16,8 +18,22 @@ namespace Assets.Scripts.Gameplay.Player
         private float _wadeHeightRange;
 
         public CharacterConfiguration Configuration { private get; set; }
-        public Animator Animator { private get; set; }
         public bool CanMove { private get; set; }
+
+        public Animator Animator
+        {
+            set
+            {
+                _animator = value;
+                _animator.GetBehaviour<AvatarRestingAnimationStateChange>().EnableMovementCallback = EnableMovement;
+            }
+        }
+
+        private void EnableMovement()
+        {
+            CanMove = true;
+            _animator.SetBool("IsAttacking", false);
+        }
 
         private void Start()
         {
@@ -31,7 +47,7 @@ namespace Assets.Scripts.Gameplay.Player
             _seaEntryHeight = GetComponent<CapsuleCollider>().height * Sea_Entry_Height_Modifier;
             _wadeHeightRange = _seaEntryHeight - _swimHeight;
 
-            CanMove = true;
+            EnableMovement();
         }
 
         private void Update()
@@ -47,7 +63,7 @@ namespace Assets.Scripts.Gameplay.Player
                     _rigidBody.velocity = new Vector3(inputVelocity.x, _rigidBody.velocity.y, inputVelocity.z);
                     _transform.LookAt(_transform.position + inputVelocity);
                 }
-                Animator.SetBool("IsMoving", isMoving);
+                _animator.SetBool("IsMoving", isMoving);
             }
 
             float groundHeight = _terrain.SampleHeight(_transform.position);
@@ -56,7 +72,7 @@ namespace Assets.Scripts.Gameplay.Player
 
             _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
             _attack.CanAttack = !isSwimming;
-            Animator.SetBool("IsSwimming", isSwimming);
+            _animator.SetBool("IsSwimming", isSwimming);
         }
 
         private float GetMovementSpeed()
