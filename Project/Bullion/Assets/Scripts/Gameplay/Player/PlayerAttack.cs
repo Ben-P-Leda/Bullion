@@ -7,6 +7,7 @@ namespace Assets.Scripts.Gameplay.Player
     public class PlayerAttack : MonoBehaviour, IConfigurable, IAnimated
     {
         private Animator _animator;
+        private GameObject _damageCollider;
         private PlayerInput _input;
         private PlayerMovement _movement;
 
@@ -27,6 +28,8 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void SetStrikingState(bool strikeInProgress)
         {
+            _damageCollider.SetActive(strikeInProgress);
+
             if (strikeInProgress)
             {
                 _animator.SetBool("IsAttacking", false);
@@ -44,6 +47,8 @@ namespace Assets.Scripts.Gameplay.Player
         {
             _input = GetComponent<PlayerInput>();
             _movement = GetComponent<PlayerMovement>();
+
+            _damageCollider = transform.FindChild("Damage Collider").gameObject;
 
             _comboStepCount = 0;
         }
