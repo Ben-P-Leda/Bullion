@@ -25,14 +25,13 @@ namespace Assets.Scripts.Gameplay.Player
             set
             {
                 _animator = value;
-                _animator.GetBehaviour<AvatarRestingAnimationStateChange>().EnableMovementCallback = EnableMovement;
+                _animator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnableMovement);
             }
         }
 
         private void EnableMovement()
         {
             CanMove = true;
-            _animator.SetBool("IsAttacking", false);
         }
 
         private void Start()

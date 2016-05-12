@@ -25,22 +25,26 @@ namespace Assets.Scripts.Configuration
 
             _characters.Add("Red", new CharacterConfiguration()
             {
-                MovementSpeed = 5.0f
+                MovementSpeed = 5.0f,
+                ComboStepCount = 3
             });
 
             _characters.Add("Green", new CharacterConfiguration()
             {
-                MovementSpeed = 5.5f
+                MovementSpeed = 5.5f,
+                ComboStepCount = 2
             });
 
             _characters.Add("Blue", new CharacterConfiguration()
             {
-                MovementSpeed = 5.25f
+                MovementSpeed = 5.25f,
+                ComboStepCount = 3
             });
 
             _characters.Add("Purple", new CharacterConfiguration()
             {
-                MovementSpeed = 4.5f
+                MovementSpeed = 4.5f,
+                ComboStepCount = 2
             });
         }
     }
