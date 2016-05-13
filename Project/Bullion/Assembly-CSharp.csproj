@@ -51,13 +51,16 @@
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarAttackAnimationEventHandler.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarRestingAnimationStateChange.cs" />
      <Compile Include="Assets\Scripts\Gameplay\CameraMovement.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Definitions.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\IAnimated.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\IConfigurable.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerAttack.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerInput.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerStatus.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerTakeDamage.cs" />
+     <Compile Include="Assets\Scripts\Generic\Definitions.cs" />
+     <Compile Include="Assets\Scripts\Generic\Utilities.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity532/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
