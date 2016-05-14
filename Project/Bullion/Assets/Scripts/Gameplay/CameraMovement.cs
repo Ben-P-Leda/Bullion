@@ -7,11 +7,11 @@ namespace Assets.Scripts.Gameplay
     {
         public List<GameObject> Avatars;
 
-        public float Distance;
-
         private Camera _camera;
         private Transform _transform;
         private Vector3 _unitVector;
+        private Vector3 _currentcenter;
+        private float _currentDistance;
 
         private void Start()
         {
@@ -22,12 +22,14 @@ namespace Assets.Scripts.Gameplay
 
         private void FixedUpdate()
         {
-            Vector3 center = GetCenter();
-            float containmentRadius = GetContainmentRadius(center);
-            Distance = containmentRadius / Mathf.Abs(Mathf.Sin(_camera.fieldOfView * Mathf.Deg2Rad) / 2.0f);
+            Vector3 targetCenter = GetCenter();
+            _currentcenter = (_currentcenter * 0.8f) + (targetCenter * 0.2f);
+            float containmentRadius = GetContainmentRadius(_currentcenter);
+            float targetDistance = containmentRadius / Mathf.Abs(Mathf.Sin(_camera.fieldOfView * Mathf.Deg2Rad) / 2.0f);
+            _currentDistance = (_currentDistance * 0.8f) + (targetDistance * 0.2f);
 
-            _transform.position = center + (_unitVector * (Mathf.Max(Distance, Minimum_Distance) + Distance_Margin));
-            _transform.LookAt(center + new Vector3(0.0f, Vertical_Focus_Offset, 0.0f));
+            _transform.position = _currentcenter + (_unitVector * (Mathf.Max(_currentDistance, Minimum_Distance) + Distance_Margin));
+            _transform.LookAt(_currentcenter + new Vector3(0.0f, Vertical_Focus_Offset, 0.0f));
         }
 
         private Vector3 GetCenter()

@@ -5,13 +5,17 @@ namespace Assets.Scripts.Gameplay.Player
 {
     public class PlayerFactory : MonoBehaviour
     {
-        public GameObject _playerPrefab;
-        public GameObject[] _avatarPrefabs;
+        public GameObject PlayerPrefab;
+        public GameObject[] AvatarPrefabs;
+        public Vector3[] PlayerStartPoints;
 
         private GameObject[] _playerGameObjects;
+        private Terrain _terrain;
 
         private void Start()
         {
+            _terrain = Terrain.activeTerrain;
+
             string[] playerAvatars = GetPlayerAvatars();
 
             _playerGameObjects = new GameObject[playerAvatars.Length];
@@ -37,14 +41,14 @@ namespace Assets.Scripts.Gameplay.Player
             ConnectPlayerToCamera(newPlayer);
             SetPlayerConfiguration(newPlayer, avatarName);
 
-            newPlayer.transform.position = new Vector3((playerIndex + 1) * 10.0f, 3.0f, 15.0f);
+            newPlayer.transform.position = GetStartPosition(playerIndex);
 
             return newPlayer;
         }
 
         private GameObject CreateNewPlayer(int playerIndex)
         {
-            GameObject newPlayer = (GameObject)Instantiate(_playerPrefab);
+            GameObject newPlayer = (GameObject)Instantiate(PlayerPrefab);
             newPlayer.transform.parent = transform.parent;
 
             ((PlayerInput)newPlayer.GetComponent<PlayerInput>()).AxisPrefix = "P" + (playerIndex + 1);
@@ -73,11 +77,11 @@ namespace Assets.Scripts.Gameplay.Player
         {
             GameObject model = null;
 
-            for (int i = 0; i < _avatarPrefabs.Length; i++)
+            for (int i = 0; i < AvatarPrefabs.Length; i++)
             {
-                if (_avatarPrefabs[i].name == avatarName)
+                if (AvatarPrefabs[i].name == avatarName)
                 {
-                    model = (GameObject)Instantiate(_avatarPrefabs[i]);
+                    model = (GameObject)Instantiate(AvatarPrefabs[i]);
                     break;
                 }
             }
@@ -111,7 +115,22 @@ namespace Assets.Scripts.Gameplay.Player
             }
         }
 
+        private Vector3 GetStartPosition(int playerIndex)
+        {
+            if (playerIndex >= PlayerStartPoints.Length)
+            {
+                throw new System.Exception("Start point for player " + playerIndex + " not set!");
+            }
+            else
+            {
+                return new Vector3(
+                    PlayerStartPoints[playerIndex].x,
+                    _terrain.SampleHeight(PlayerStartPoints[playerIndex]),
+                    PlayerStartPoints[playerIndex].z);
+            }
+        }
+
         private const string Avatar_Names = "Red,Green,Purple,Blue";
-        private const float Player_Count = 4;
+        private const float Player_Count = 2;
     }
 }

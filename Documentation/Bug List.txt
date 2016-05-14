@@ -1,0 +1,2 @@
+== BUGS ==
+Camera bounce - can we smooth by lerping from current to target position?
