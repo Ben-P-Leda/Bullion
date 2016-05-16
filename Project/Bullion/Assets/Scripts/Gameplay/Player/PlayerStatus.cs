@@ -4,7 +4,7 @@ using Assets.Scripts.Event_Handling;
 
 namespace Assets.Scripts.Gameplay.Player
 {
-    public class PlayerStatus : MonoBehaviour, IConfigurable
+    public class PlayerStatus : MonoBehaviour, IConfigurable, IAnimated
     {
         private Transform _transform;
 
@@ -14,6 +14,9 @@ namespace Assets.Scripts.Gameplay.Player
 
         public CharacterConfiguration Configuration { private get; set; }
         public int PlayerIndex { set { SetGuiArea(value % 2, value / 2); } }
+
+        public Animator AliveModelAnimator { private get; set; }
+        public Animator DeadModelAnimator { private get; set; }
 
         private void SetGuiArea(int unitX, int unitY)
         {
@@ -41,7 +44,20 @@ namespace Assets.Scripts.Gameplay.Player
         {
             if ((target == _transform) && (message == PlayerAttack.Event_Inflict_Damage))
             {
-                _remainingHealth -= value;
+                HandleDamageTaken(value);
+            }
+        }
+
+        private void HandleDamageTaken(float damageInflicted)
+        {
+            _remainingHealth -= damageInflicted;
+            if (_remainingHealth > 0.0f)
+            {
+                AliveModelAnimator.SetBool("DamageTaken", true);
+            }
+            else
+            {
+                AliveModelAnimator.SetBool("IsDead", true);
             }
         }
 
@@ -57,7 +73,7 @@ namespace Assets.Scripts.Gameplay.Player
             GUI.Label(_nameDisplayContainer, Configuration.Name);
 
             float healthPercentage = Mathf.Round((_remainingHealth / Configuration.MaximumHealth) * 100.0f);
-            GUI.Label(_healthDisplayContainer, "Health:" + healthPercentage + "%");
+            GUI.Label(_healthDisplayContainer, "Health:" + Mathf.Max(0.0f, healthPercentage) + "%");
         }
 
         private const float UI_Margin = 20.0f;

@@ -60,13 +60,15 @@ namespace Assets.Scripts.Gameplay.Player
         private void ConnectPlayerToModels(GameObject player, string avatarName)
         {
             GameObject aliveModel = GetModel(avatarName + "-alive");
-            //GameObject deadModel = GetModel(avatarName + "-dead");
+            GameObject deadModel = GetModel(avatarName + "-dead");
 
-            if (aliveModel != null) //&& (deadModel != null))
+            if ((aliveModel != null) && (deadModel != null))
             {
                 aliveModel.transform.SetParent(player.transform);
-                //deadModel.transform.SetParent(player.transform);
-                WireUpAnimationControllers(player, aliveModel.GetComponent<Animator>(), null); //, deadModel.GetComponent<Animator>());
+                deadModel.transform.SetParent(player.transform);
+                WireUpAnimationControllers(player, aliveModel.GetComponent<Animator>(), deadModel.GetComponent<Animator>());
+
+                deadModel.SetActive(false);
             }
             else
             {
