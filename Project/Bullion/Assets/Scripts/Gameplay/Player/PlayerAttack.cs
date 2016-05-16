@@ -18,7 +18,7 @@ namespace Assets.Scripts.Gameplay.Player
         public CharacterConfiguration Configuration { private get; set; }
         public bool CanAttack { private get; set; }
 
-        public Animator Animator
+        public Animator AliveModelAnimator
         {
             set
             {
@@ -27,6 +27,8 @@ namespace Assets.Scripts.Gameplay.Player
                 _animator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EndComboSequence);
             }
         }
+
+        public Animator DeadModelAnimator { private get; set; }
 
         private void SetStrikingState(bool strikeInProgress)
         {

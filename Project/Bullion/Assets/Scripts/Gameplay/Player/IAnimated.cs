@@ -4,6 +4,7 @@ namespace Assets.Scripts.Gameplay.Player
 {
     public interface IAnimated
     {
-        Animator Animator { set; }
+        Animator AliveModelAnimator { set; }
+        Animator DeadModelAnimator { set; }
     }
 }

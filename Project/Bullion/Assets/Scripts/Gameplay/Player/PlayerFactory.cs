@@ -37,7 +37,7 @@ namespace Assets.Scripts.Gameplay.Player
         private GameObject InitializePlayer(int playerIndex, string avatarName)
         {
             GameObject newPlayer = CreateNewPlayer(playerIndex);
-            ConnectPlayerToModel(newPlayer, avatarName);
+            ConnectPlayerToModels(newPlayer, avatarName);
             ConnectPlayerToCamera(newPlayer);
             SetPlayerConfiguration(newPlayer, avatarName);
 
@@ -57,19 +57,20 @@ namespace Assets.Scripts.Gameplay.Player
             return newPlayer;
         }
 
-        private void ConnectPlayerToModel(GameObject player, string avatarName)
+        private void ConnectPlayerToModels(GameObject player, string avatarName)
         {
-            GameObject model = GetModel(avatarName);
+            GameObject aliveModel = GetModel(avatarName + "-alive");
+            //GameObject deadModel = GetModel(avatarName + "-dead");
 
-            if (model != null)
+            if (aliveModel != null) //&& (deadModel != null))
             {
-                model.transform.SetParent(player.transform);
-                Animator animator = model.GetComponent<Animator>();
-                WireUpAnimationControllers(player, animator);
+                aliveModel.transform.SetParent(player.transform);
+                //deadModel.transform.SetParent(player.transform);
+                WireUpAnimationControllers(player, aliveModel.GetComponent<Animator>(), null); //, deadModel.GetComponent<Animator>());
             }
             else
             {
-                throw new System.Exception("Avatar " + avatarName + " does not exist!");
+                throw new System.Exception("Avatar " + avatarName + " model missing - check prefabs set for both alive & dead models");
             }
         }
 
@@ -89,13 +90,14 @@ namespace Assets.Scripts.Gameplay.Player
             return model;
         }
 
-        private void WireUpAnimationControllers(GameObject player, Animator animator)
+        private void WireUpAnimationControllers(GameObject player, Animator aliveModelAnimator, Animator deadModelAnimator)
         {
             IAnimated[] animationControllers = player.GetComponents<IAnimated>();
 
             for (int i = 0; i < animationControllers.Length; i++)
             {
-                animationControllers[i].Animator = animator;
+                animationControllers[i].AliveModelAnimator = aliveModelAnimator;
+                animationControllers[i].DeadModelAnimator = deadModelAnimator;
             }
         }
 

@@ -8,7 +8,8 @@ namespace Assets.Scripts.Gameplay.Player
     {
         private Transform _transform;
         private Rigidbody _rigidBody;
-        private Animator _animator;
+        private Animator _aliveModelAnimator;
+        private Animator _deadModelAnimator;
         private PlayerInput _input;
         private PlayerAttack _attack;
         private Terrain _terrain;
@@ -20,13 +21,18 @@ namespace Assets.Scripts.Gameplay.Player
         public CharacterConfiguration Configuration { private get; set; }
         public bool CanMove { private get; set; }
 
-        public Animator Animator
+        public Animator AliveModelAnimator
         {
             set
             {
-                _animator = value;
-                _animator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnableMovement);
+                _aliveModelAnimator = value;
+                _aliveModelAnimator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnableMovement);
             }
+        }
+
+        public Animator DeadModelAnimator
+        {
+            set { _deadModelAnimator = value; }
         }
 
         private void EnableMovement()
@@ -62,7 +68,7 @@ namespace Assets.Scripts.Gameplay.Player
                     _rigidBody.velocity = new Vector3(inputVelocity.x, _rigidBody.velocity.y, inputVelocity.z);
                     _transform.LookAt(_transform.position + inputVelocity);
                 }
-                _animator.SetBool("IsMoving", isMoving);
+                _aliveModelAnimator.SetBool("IsMoving", isMoving);
             }
 
             float groundHeight = _terrain.SampleHeight(_transform.position);
@@ -71,7 +77,7 @@ namespace Assets.Scripts.Gameplay.Player
 
             _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
             _attack.CanAttack = !isSwimming;
-            _animator.SetBool("IsSwimming", isSwimming);
+            _aliveModelAnimator.SetBool("IsSwimming", isSwimming);
         }
 
         private float GetMovementSpeed()
