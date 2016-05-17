@@ -14,6 +14,7 @@ namespace Assets.Scripts.Gameplay.Player
         private PlayerMovement _movement;
 
         private int _comboStepCount;
+        private int _lastStrikingComboIndex;
 
         public CharacterConfiguration Configuration { private get; set; }
         public bool CanAttack { private get; set; }
@@ -27,6 +28,7 @@ namespace Assets.Scripts.Gameplay.Player
             _movement = GetComponent<PlayerMovement>();
 
             _comboStepCount = 0;
+            _lastStrikingComboIndex = 0;
         }
 
         public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
@@ -55,7 +57,7 @@ namespace Assets.Scripts.Gameplay.Player
         {
             if ((target == _damageCollider.transform) && (message == PlayerTakeDamage.Event_Register_Damage))
             {
-                EventDispatcher.FireEvent(_transform, originator, Event_Inflict_Damage, Configuration.ComboStepDamage[_comboStepCount-1]);
+                EventDispatcher.FireEvent(_transform, originator, Event_Inflict_Damage, Configuration.ComboStepDamage[_lastStrikingComboIndex]);
             }
 
             if (target == _transform)
@@ -72,6 +74,7 @@ namespace Assets.Scripts.Gameplay.Player
             if (strikeInProgress)
             {
                 _animator.SetBool("IsAttacking", false);
+                _lastStrikingComboIndex = _comboStepCount;
                 _comboStepCount += 1;
             }
         }
