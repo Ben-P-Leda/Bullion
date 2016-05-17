@@ -7,8 +7,10 @@ namespace Assets.Scripts.Gameplay.Player
     public class PlayerStatus : MonoBehaviour, IConfigurable, IAnimated
     {
         private Transform _transform;
-        private Rigidbody _rigidBody;
+        private GameObject _aliveModel;
+        private GameObject _deadModel;
         private Animator _aliveModelAnimator;
+
         private PlayerMovement _movement;
         private PlayerAttack _attack;
 
@@ -34,11 +36,16 @@ namespace Assets.Scripts.Gameplay.Player
         private void Start()
         {
             _transform = transform;
-            _rigidBody = GetComponent<Rigidbody>();
             _movement = GetComponent<PlayerMovement>();
             _attack = GetComponent<PlayerAttack>();
 
             _remainingHealth = Configuration.MaximumHealth;
+        }
+
+        public void WireUpModels(GameObject aliveModel, GameObject deadModel)
+        {
+            _aliveModel = aliveModel;
+            _deadModel = deadModel;
         }
 
         public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
@@ -48,12 +55,23 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void OnEnable()
         {
+            EventDispatcher.MessageEventHandler += MessageEventHandler;
             EventDispatcher.FloatEventHandler += FloatEventHandler;
         }
 
         private void OnDisable()
         {
+            EventDispatcher.MessageEventHandler -= MessageEventHandler;
             EventDispatcher.FloatEventHandler -= FloatEventHandler;
+        }
+
+        private void MessageEventHandler(Transform originator, Transform target, string message)
+        {
+            if ((target == _transform) && (message == EventMessage.Enter_Dead_Mode))
+            {
+                _deadModel.SetActive(true);
+                _aliveModel.SetActive(false);
+            }
         }
 
         private void FloatEventHandler(Transform originator, Transform target, string message, float value)
@@ -73,16 +91,7 @@ namespace Assets.Scripts.Gameplay.Player
             }
             else
             {
-                SetAlive(false);
                 _aliveModelAnimator.CrossFade("dead", 0.5f);
-            }
-        }
-
-        private void SetAlive(bool isAlive)
-        {
-            if (!isAlive)
-            {
-                _rigidBody.constraints = RigidbodyConstraints.FreezeAll;
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Has_Died);
             }
         }

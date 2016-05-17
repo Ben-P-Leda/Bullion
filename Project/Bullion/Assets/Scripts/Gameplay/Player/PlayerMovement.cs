@@ -11,6 +11,7 @@ namespace Assets.Scripts.Gameplay.Player
         private Rigidbody _rigidBody;
         private Animator _aliveModelAnimator;
         private Animator _deadModelAnimator;
+        private Animator _activeAnimator;
         private PlayerInput _input;
         private PlayerAttack _attack;
         private Terrain _terrain;
@@ -22,6 +23,7 @@ namespace Assets.Scripts.Gameplay.Player
 
         private bool _lifecycleEventInProgress;
         private bool _attackInProgress;
+        private bool _isInDeadMode;
 
         public CharacterConfiguration Configuration { private get; set; }
 
@@ -38,6 +40,8 @@ namespace Assets.Scripts.Gameplay.Player
             _seaEntryHeight = GetComponent<CapsuleCollider>().height * Sea_Entry_Height_Modifier;
             _wadeHeightRange = _seaEntryHeight - _swimHeight;
 
+            _isInDeadMode = false;
+
             EnableMovement();
         }
 
@@ -47,6 +51,8 @@ namespace Assets.Scripts.Gameplay.Player
             _aliveModelAnimator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnableMovement);
 
             _deadModelAnimator = deadModelAnimator;
+
+            _activeAnimator = _aliveModelAnimator;
         }
 
         private void EnableMovement()
@@ -72,9 +78,24 @@ namespace Assets.Scripts.Gameplay.Player
                 switch (message)
                 {
                     case EventMessage.Block_Movement_Attack: _attackInProgress = true; break;
-                    case EventMessage.Has_Died: _lifecycleEventInProgress = true; break;
+                    case EventMessage.Has_Died: SetLifeEventRunning(true); break;
+                    case EventMessage.Enter_Dead_Mode: EnterDeadMode(); break;
                 }
             }
+        }
+
+        private void SetLifeEventRunning(bool isRunning)
+        {
+            _lifecycleEventInProgress = isRunning;
+            _rigidBody.constraints = isRunning ? RigidbodyConstraints.FreezeAll : RigidbodyConstraints.FreezeRotation;
+        }
+
+        private void EnterDeadMode()
+        {
+            SetLifeEventRunning(false);
+
+            _activeAnimator = _deadModelAnimator;
+            _isInDeadMode = true;
         }
 
         private void Update()
@@ -90,20 +111,31 @@ namespace Assets.Scripts.Gameplay.Player
                     _rigidBody.velocity = new Vector3(inputVelocity.x, _rigidBody.velocity.y, inputVelocity.z);
                     _transform.LookAt(_transform.position + inputVelocity);
                 }
-                _aliveModelAnimator.SetBool("IsMoving", isMoving);
+                _activeAnimator.SetBool("IsMoving", isMoving);
             }
 
             float groundHeight = _terrain.SampleHeight(_transform.position);
-            float floor = Mathf.Max(groundHeight, _swimHeight);
-            bool isSwimming = _transform.position.y <= _swimHeight;
+            float lowestVerticalPosition = _isInDeadMode ? _seaEntryHeight : _swimHeight;
+            float floor = Mathf.Max(groundHeight, lowestVerticalPosition);
+
+            if (!_isInDeadMode)
+            {
+                UpdateSwimmingState();
+            }
 
             _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
+        }
+
+        private void UpdateSwimmingState()
+        {
+            bool isSwimming = _transform.position.y <= _swimHeight;
             _aliveModelAnimator.SetBool("IsSwimming", isSwimming);
             if (isSwimming != _wasSwimming)
             {
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Block_Attack_Swimming, isSwimming);
                 _wasSwimming = isSwimming;
             }
+
         }
 
         private bool CanMove()

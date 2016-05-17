@@ -7,6 +7,7 @@
         public const string Register_Damage = "RegisterDamage";
         public const string Inflict_Damage = "InflictDamage";
         public const string Has_Died = "BeginDeathSequence";
+        public const string Enter_Dead_Mode = "EndDeathSequence";
         public const string Block_Attack_Swimming = "IsSwimming";
     }
 }

@@ -66,6 +66,7 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 aliveModel.transform.SetParent(player.transform);
                 deadModel.transform.SetParent(player.transform);
+                player.GetComponent<PlayerStatus>().WireUpModels(aliveModel, deadModel);
                 WireUpAnimationControllers(player, aliveModel.GetComponent<Animator>(), deadModel.GetComponent<Animator>());
 
                 deadModel.SetActive(false);
