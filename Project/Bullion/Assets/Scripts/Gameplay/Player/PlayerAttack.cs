@@ -16,19 +16,23 @@ namespace Assets.Scripts.Gameplay.Player
         private int _comboStepCount;
         private int _lastStrikingComboIndex;
 
+        private bool _lifeEventInProgress;
+        private bool _isSwimming;
+
         public CharacterConfiguration Configuration { private get; set; }
-        public bool CanAttack { private get; set; }
 
         private void Start()
         {
             _transform = transform;
             _damageCollider = _transform.FindChild("Damage Collider").gameObject;
-
             _input = GetComponent<PlayerInput>();
             _movement = GetComponent<PlayerMovement>();
 
             _comboStepCount = 0;
             _lastStrikingComboIndex = 0;
+
+            _lifeEventInProgress = false;
+            _isSwimming = false;
         }
 
         public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
@@ -61,15 +65,24 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, Configuration.ComboStepDamage[_lastStrikingComboIndex]);
             }
+
+            if (target == _transform)
+            {
+                switch (message)
+                {
+                    case EventMessage.Has_Died: _lifeEventInProgress = true; break;
+                }
+            }
         }
 
         private void BoolEventHandler(Transform originator, Transform target, string message, bool value)
         {
             if (target == _transform)
             {
-                if (message == EventMessage.Change_Strike_State)
+                switch (message)
                 {
-                    SetStrikingState(value);
+                    case EventMessage.Change_Strike_State: SetStrikingState(value); break;
+                    case EventMessage.Block_Attack_Swimming: _isSwimming = value; break;
                 }
             }
         }
@@ -88,11 +101,17 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void Update()
         {
-            if ((CanAttack) && (_comboStepCount < Configuration.ComboStepCount) && (_input.Attack))
+            if ((CanAttack()) && (_comboStepCount < Configuration.ComboStepCount) && (_input.Attack))
             {
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Block_Movement_Attack);
                 _animator.SetBool("IsAttacking", true);
             }
+        }
+
+        private bool CanAttack()
+        {
+            return (!_lifeEventInProgress)
+                && (!_isSwimming);
         }
     }
 }

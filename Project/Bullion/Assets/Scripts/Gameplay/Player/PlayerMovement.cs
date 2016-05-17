@@ -33,6 +33,7 @@ namespace Assets.Scripts.Gameplay.Player
             _attack = GetComponent<PlayerAttack>();
             _terrain = Terrain.activeTerrain;
 
+            _wasSwimming = false;
             _swimHeight = GetComponent<CapsuleCollider>().height * Swim_Height_Modifier;
             _seaEntryHeight = GetComponent<CapsuleCollider>().height * Sea_Entry_Height_Modifier;
             _wadeHeightRange = _seaEntryHeight - _swimHeight;
@@ -51,6 +52,7 @@ namespace Assets.Scripts.Gameplay.Player
         private void EnableMovement()
         {
             _attackInProgress = false;
+            _lifecycleEventInProgress = false;
         }
 
         private void OnEnable()
@@ -96,8 +98,12 @@ namespace Assets.Scripts.Gameplay.Player
             bool isSwimming = _transform.position.y <= _swimHeight;
 
             _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
-            _attack.CanAttack = !isSwimming;
             _aliveModelAnimator.SetBool("IsSwimming", isSwimming);
+            if (isSwimming != _wasSwimming)
+            {
+                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Block_Attack_Swimming, isSwimming);
+                _wasSwimming = isSwimming;
+            }
         }
 
         private bool CanMove()
