@@ -84,15 +84,18 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void HandleDamageTaken(float damageInflicted)
         {
-            _remainingHealth -= damageInflicted;
             if (_remainingHealth > 0.0f)
             {
-                _aliveModelAnimator.SetBool("DamageTaken", true);
-            }
-            else
-            {
-                _aliveModelAnimator.CrossFade("dead", 0.5f);
-                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Has_Died);
+                _remainingHealth -= damageInflicted;
+                if (_remainingHealth > 0.0f)
+                {
+                    _aliveModelAnimator.SetBool("DamageTaken", true);
+                }
+                else
+                {
+                    _aliveModelAnimator.CrossFade("dead", 0.5f);
+                    EventDispatcher.FireEvent(_transform, _transform, EventMessage.Has_Died);
+                }
             }
         }
 
