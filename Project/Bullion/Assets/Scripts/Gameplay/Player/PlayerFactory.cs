@@ -98,8 +98,7 @@ namespace Assets.Scripts.Gameplay.Player
 
             for (int i = 0; i < animationControllers.Length; i++)
             {
-                animationControllers[i].AliveModelAnimator = aliveModelAnimator;
-                animationControllers[i].DeadModelAnimator = deadModelAnimator;
+                animationControllers[i].WireUpAnimators(aliveModelAnimator, deadModelAnimator);
             }
         }
 

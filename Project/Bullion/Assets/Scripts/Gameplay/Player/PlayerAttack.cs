@@ -18,23 +18,6 @@ namespace Assets.Scripts.Gameplay.Player
         public CharacterConfiguration Configuration { private get; set; }
         public bool CanAttack { private get; set; }
 
-        public Animator AliveModelAnimator
-        {
-            set
-            {
-                _animator = value;
-                _animator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EndComboSequence);
-            }
-        }
-
-        public Animator DeadModelAnimator { private get; set; }
-
-        private void EndComboSequence()
-        {
-            _animator.SetBool("IsAttacking", false);
-            _comboStepCount = 0;
-        }
-
         private void Start()
         {
             _transform = transform;
@@ -43,6 +26,18 @@ namespace Assets.Scripts.Gameplay.Player
             _input = GetComponent<PlayerInput>();
             _movement = GetComponent<PlayerMovement>();
 
+            _comboStepCount = 0;
+        }
+
+        public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
+        {
+            _animator = aliveModelAnimator;
+            _animator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EndComboSequence);
+        }
+
+        private void EndComboSequence()
+        {
+            _animator.SetBool("IsAttacking", false);
             _comboStepCount = 0;
         }
 

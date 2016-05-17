@@ -21,20 +21,6 @@ namespace Assets.Scripts.Gameplay.Player
         public CharacterConfiguration Configuration { private get; set; }
         public bool CanMove { private get; set; }
 
-        public Animator AliveModelAnimator
-        {
-            set
-            {
-                _aliveModelAnimator = value;
-                _aliveModelAnimator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnableMovement);
-            }
-        }
-
-        public Animator DeadModelAnimator
-        {
-            set { _deadModelAnimator = value; }
-        }
-
         private void EnableMovement()
         {
             CanMove = true;
@@ -53,6 +39,14 @@ namespace Assets.Scripts.Gameplay.Player
             _wadeHeightRange = _seaEntryHeight - _swimHeight;
 
             EnableMovement();
+        }
+
+        public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
+        {
+            _aliveModelAnimator = aliveModelAnimator;
+            _aliveModelAnimator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnableMovement);
+
+            _deadModelAnimator = deadModelAnimator;
         }
 
         private void Update()

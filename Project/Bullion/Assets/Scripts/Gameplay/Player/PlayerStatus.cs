@@ -8,6 +8,7 @@ namespace Assets.Scripts.Gameplay.Player
     {
         private Transform _transform;
         private Rigidbody _rigidBody;
+        private Animator _aliveModelAnimator;
         private PlayerMovement _movement;
         private PlayerAttack _attack;
 
@@ -17,9 +18,6 @@ namespace Assets.Scripts.Gameplay.Player
 
         public CharacterConfiguration Configuration { private get; set; }
         public int PlayerIndex { set { SetGuiArea(value % 2, value / 2); } }
-
-        public Animator AliveModelAnimator { private get; set; }
-        public Animator DeadModelAnimator { private get; set; }
 
         private void SetGuiArea(int unitX, int unitY)
         {
@@ -41,6 +39,11 @@ namespace Assets.Scripts.Gameplay.Player
             _attack = GetComponent<PlayerAttack>();
 
             _remainingHealth = Configuration.MaximumHealth;
+        }
+
+        public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
+        {
+            _aliveModelAnimator = aliveModelAnimator;
         }
 
         private void OnEnable()
@@ -66,12 +69,12 @@ namespace Assets.Scripts.Gameplay.Player
             _remainingHealth -= damageInflicted;
             if (_remainingHealth > 0.0f)
             {
-                AliveModelAnimator.SetBool("DamageTaken", true);
+                _aliveModelAnimator.SetBool("DamageTaken", true);
             }
             else
             {
                 SetAlive(false);
-                AliveModelAnimator.CrossFade("dead", 0.5f);
+                _aliveModelAnimator.CrossFade("dead", 0.5f);
             }
         }
 
