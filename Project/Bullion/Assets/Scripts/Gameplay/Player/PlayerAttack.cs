@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
-using Assets.Scripts.Event_Handling;
+using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Avatar;
 
 namespace Assets.Scripts.Gameplay.Player
@@ -45,25 +45,32 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void OnEnable()
         {
-            EventDispatcher.EventHandler += EventHandler;
+            EventDispatcher.MessageEventHandler += MessageEventHandler;
+            EventDispatcher.BoolEventHandler += BoolEventHandler;
         }
 
         private void OnDisable()
         {
-            EventDispatcher.EventHandler -= EventHandler;
+            EventDispatcher.MessageEventHandler -= MessageEventHandler;
+            EventDispatcher.BoolEventHandler -= BoolEventHandler;
         }
 
-        private void EventHandler(Transform originator, Transform target, string message, float value)
+        private void MessageEventHandler(Transform originator, Transform target, string message)
         {
-            if ((target == _damageCollider.transform) && (message == PlayerTakeDamage.Event_Register_Damage))
+            if ((target == _damageCollider.transform) && (message == EventMessage.Register_Damage))
             {
-                EventDispatcher.FireEvent(_transform, originator, Event_Inflict_Damage, Configuration.ComboStepDamage[_lastStrikingComboIndex]);
+                EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, Configuration.ComboStepDamage[_lastStrikingComboIndex]);
             }
+        }
 
+        private void BoolEventHandler(Transform originator, Transform target, string message, bool value)
+        {
             if (target == _transform)
             {
-                if (message == AvatarAnimationEventHandler.Event_Start_Strike) { SetStrikingState(true); }
-                else if (message == AvatarAnimationEventHandler.Event_End_Strike) { SetStrikingState(false); }
+                if (message == EventMessage.Change_Strike_State)
+                {
+                    SetStrikingState(value);
+                }
             }
         }
 
@@ -87,7 +94,5 @@ namespace Assets.Scripts.Gameplay.Player
                 _animator.SetBool("IsAttacking", true);
             }
         }
-
-        public const string Event_Inflict_Damage = "InflictDamage";
     }
 }

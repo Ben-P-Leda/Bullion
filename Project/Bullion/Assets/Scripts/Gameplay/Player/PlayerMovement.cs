@@ -14,6 +14,7 @@ namespace Assets.Scripts.Gameplay.Player
         private PlayerAttack _attack;
         private Terrain _terrain;
 
+        private bool _wasSwimming;
         private float _swimHeight;
         private float _seaEntryHeight;
         private float _wadeHeightRange;

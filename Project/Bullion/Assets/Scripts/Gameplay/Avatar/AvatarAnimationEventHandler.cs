@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Event_Handling;
+using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Avatar
 {
@@ -16,22 +16,17 @@ namespace Assets.Scripts.Gameplay.Avatar
 
         public void StartAttackEffect()
         {
-            EventDispatcher.FireEvent(_transform, _parentTransform, Event_Start_Strike, 0.0f);
+            EventDispatcher.FireEvent(_transform, _parentTransform, EventMessage.Change_Strike_State, true);
         }
-
         
         public void EndAttackEffect()
         {
-            EventDispatcher.FireEvent(_transform, _parentTransform, Event_End_Strike, 0.0f);
+            EventDispatcher.FireEvent(_transform, _parentTransform, EventMessage.Change_Strike_State, false);
         }
 
         public void SwitchToDeadMode()
         {
-            EventDispatcher.FireEvent(_transform, _parentTransform, Event_End_Death_Sequence, 0.0f);
+            EventDispatcher.FireEvent(_transform, _parentTransform, EventMessage.End_Death_Sequence);
         }
-
-        public const string Event_Start_Strike = "AttackStrikeStart";
-        public const string Event_End_Strike = "AttackStrikeEnd";
-        public const string Event_End_Death_Sequence = "EndDeathSequence";
     }
 }

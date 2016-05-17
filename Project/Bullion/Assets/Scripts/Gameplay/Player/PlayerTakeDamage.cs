@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Event_Handling;
+using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Player
 {
@@ -14,9 +14,7 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void OnTriggerEnter(Collider collider)
         {
-            EventDispatcher.FireEvent(_transform, collider.transform, Event_Register_Damage, 0);
+            EventDispatcher.FireEvent(_transform, collider.transform, EventMessage.Register_Damage);
         }
-
-        public const string Event_Register_Damage = "RegisterDamage";
     }
 }

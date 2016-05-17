@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
-using Assets.Scripts.Event_Handling;
+using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Player
 {
@@ -48,17 +48,17 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void OnEnable()
         {
-            EventDispatcher.EventHandler += EventHandler;
+            EventDispatcher.FloatEventHandler += FloatEventHandler;
         }
 
         private void OnDisable()
         {
-            EventDispatcher.EventHandler -= EventHandler;
+            EventDispatcher.FloatEventHandler -= FloatEventHandler;
         }
 
-        private void EventHandler(Transform originator, Transform target, string message, float value)
+        private void FloatEventHandler(Transform originator, Transform target, string message, float value)
         {
-            if ((target == _transform) && (message == PlayerAttack.Event_Inflict_Damage))
+            if ((target == _transform) && (message == EventMessage.Inflict_Damage))
             {
                 HandleDamageTaken(value);
             }
