@@ -11,14 +11,12 @@ namespace Assets.Scripts.Gameplay.Player
         private GameObject _deadModel;
         private Animator _aliveModelAnimator;
 
-        private PlayerMovement _movement;
-        private PlayerAttack _attack;
-
         private float _remainingHealth;
         private Rect _nameDisplayContainer;
         private Rect _healthDisplayContainer;
 
         public CharacterConfiguration Configuration { private get; set; }
+        public GameObject RespawnPoint { private get; set; }
         public int PlayerIndex { set { SetGuiArea(value % 2, value / 2); } }
 
         private void SetGuiArea(int unitX, int unitY)
@@ -36,8 +34,6 @@ namespace Assets.Scripts.Gameplay.Player
         private void Start()
         {
             _transform = transform;
-            _movement = GetComponent<PlayerMovement>();
-            _attack = GetComponent<PlayerAttack>();
 
             _remainingHealth = Configuration.MaximumHealth;
         }

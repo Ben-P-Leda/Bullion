@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Configuration
 {
@@ -26,37 +27,45 @@ namespace Assets.Scripts.Configuration
             _characters.Add("Red", new CharacterConfiguration()
             {
                 Name = "Red Player",
-                MovementSpeed = 5.0f,
+                AliveMovementSpeed = 5.0f,
+                DeadMovementSpeed = 5.0f,
                 ComboStepCount = 3,
-                ComboStepDamage = new float[] {10, 10, 10},
-                MaximumHealth = 100.0f
+                ComboStepDamage = new float[] { 10, 10, 10 },
+                MaximumHealth = 100.0f,
+                RespawnPointColour = new Color(1.0f, 0.0f, 0.0f, 1.0f)
             });
 
             _characters.Add("Green", new CharacterConfiguration()
             {
                 Name = "Green Player",
-                MovementSpeed = 5.5f,
+                AliveMovementSpeed = 5.5f,
+                DeadMovementSpeed = 4.0f,
                 ComboStepCount = 2,
                 ComboStepDamage = new float[] { 20, 20 },
-                MaximumHealth = 85.0f
+                MaximumHealth = 85.0f,
+                RespawnPointColour = new Color(0.0f, 0.596f, 0.145f, 1.0f)
             });
 
             _characters.Add("Blue", new CharacterConfiguration()
             {
                 Name = "Blue Player",
-                MovementSpeed = 5.25f,
+                AliveMovementSpeed = 5.25f,
+                DeadMovementSpeed = 4.75f,
                 ComboStepCount = 3,
                 ComboStepDamage = new float[] { 10, 15, 20 },
-                MaximumHealth = 75.0f
+                MaximumHealth = 75.0f,
+                RespawnPointColour = new Color(0.0f, 0.255f, 1.0f, 1.0f)
             });
 
             _characters.Add("Purple", new CharacterConfiguration()
             {
                 Name = "Purple Player",
-                MovementSpeed = 4.5f,
+                AliveMovementSpeed = 4.5f,
+                DeadMovementSpeed = 6.0f,
                 ComboStepCount = 2,
                 ComboStepDamage = new float[] { 12.5f, 12.5f },
-                MaximumHealth = 115.0f
+                MaximumHealth = 115.0f,
+                RespawnPointColour = new Color(0.663f, 0.059f, 0.875f, 1.0f)
             });
         }
     }

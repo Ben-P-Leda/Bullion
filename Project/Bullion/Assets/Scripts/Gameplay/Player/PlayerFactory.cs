@@ -6,6 +6,7 @@ namespace Assets.Scripts.Gameplay.Player
     public class PlayerFactory : MonoBehaviour
     {
         public GameObject PlayerPrefab;
+        public GameObject RespawnPointPrefab;
         public GameObject[] AvatarPrefabs;
         public Vector3[] PlayerStartPoints;
 
@@ -24,7 +25,11 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 if (_playerGameObjects[i] == null)
                 {
-                    _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i]);
+                    CharacterConfiguration characterConfiguration = ConfigurationManager.GetCharacterConfiguration(playerAvatars[i]);
+                    Vector3 startPosition = GetStartPosition(i);
+
+                    _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i], characterConfiguration, startPosition);
+                    InitializeRespawnPoint(_playerGameObjects[i], characterConfiguration, startPosition);
                 }
             }
         }
@@ -34,14 +39,29 @@ namespace Assets.Scripts.Gameplay.Player
             return Avatar_Names.Split(',');
         }
 
-        private GameObject InitializePlayer(int playerIndex, string avatarName)
+        private Vector3 GetStartPosition(int playerIndex)
+        {
+            if (playerIndex >= PlayerStartPoints.Length)
+            {
+                throw new System.Exception("Start point for player " + playerIndex + " not set!");
+            }
+            else
+            {
+                return new Vector3(
+                    PlayerStartPoints[playerIndex].x,
+                    _terrain.SampleHeight(PlayerStartPoints[playerIndex]),
+                    PlayerStartPoints[playerIndex].z);
+            }
+        }
+
+        private GameObject InitializePlayer(int playerIndex, string modelHandle, CharacterConfiguration characterConfiguration, Vector3 startPosition)
         {
             GameObject newPlayer = CreateNewPlayer(playerIndex);
-            ConnectPlayerToModels(newPlayer, avatarName);
+            ConnectPlayerToModels(newPlayer, modelHandle);
             ConnectPlayerToCamera(newPlayer);
-            SetPlayerConfiguration(newPlayer, avatarName);
+            SetPlayerConfiguration(newPlayer, characterConfiguration);
 
-            newPlayer.transform.position = GetStartPosition(playerIndex);
+            newPlayer.transform.position = startPosition;
 
             return newPlayer;
         }
@@ -108,33 +128,27 @@ namespace Assets.Scripts.Gameplay.Player
             ((CameraMovement)Camera.main.GetComponent<CameraMovement>()).Avatars.Add(player);
         }
 
-        private void SetPlayerConfiguration(GameObject player, string avatarName)
+        private void SetPlayerConfiguration(GameObject player, CharacterConfiguration characterConfiguration)
         {
-            CharacterConfiguration config = ConfigurationManager.GetCharacterConfiguration(avatarName);
             IConfigurable[] configurables = player.GetComponents<IConfigurable>();
 
-            for (int i=0; i<configurables.Length; i++)
+            for (int i=0; i < configurables.Length; i++)
             {
-                configurables[i].Configuration = config;
+                configurables[i].Configuration = characterConfiguration;
             }
         }
 
-        private Vector3 GetStartPosition(int playerIndex)
+        private void InitializeRespawnPoint(GameObject player, CharacterConfiguration characterConfiguration, Vector3 position)
         {
-            if (playerIndex >= PlayerStartPoints.Length)
-            {
-                throw new System.Exception("Start point for player " + playerIndex + " not set!");
-            }
-            else
-            {
-                return new Vector3(
-                    PlayerStartPoints[playerIndex].x,
-                    _terrain.SampleHeight(PlayerStartPoints[playerIndex]),
-                    PlayerStartPoints[playerIndex].z);
-            }
+            GameObject newRespawnPoint = (GameObject)Instantiate(RespawnPointPrefab);
+            newRespawnPoint.transform.parent = transform.parent;
+            newRespawnPoint.transform.position = position;
+            newRespawnPoint.GetComponent<ParticleSystem>().startColor = characterConfiguration.RespawnPointColour;
+
+            newRespawnPoint.GetComponent<RespawnPoint>().Player = player.transform;
         }
 
         private const string Avatar_Names = "Red,Green,Purple,Blue";
-        private const float Player_Count = 2;
+        private const float Player_Count = 4;
     }
 }

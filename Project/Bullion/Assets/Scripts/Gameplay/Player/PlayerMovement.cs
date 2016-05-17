@@ -13,7 +13,6 @@ namespace Assets.Scripts.Gameplay.Player
         private Animator _deadModelAnimator;
         private Animator _activeAnimator;
         private PlayerInput _input;
-        private PlayerAttack _attack;
         private Terrain _terrain;
 
         private bool _wasSwimming;
@@ -32,7 +31,6 @@ namespace Assets.Scripts.Gameplay.Player
             _transform = transform;
             _rigidBody = GetComponent<Rigidbody>();
             _input = GetComponent<PlayerInput>();
-            _attack = GetComponent<PlayerAttack>();
             _terrain = Terrain.activeTerrain;
 
             _wasSwimming = false;
@@ -146,7 +144,7 @@ namespace Assets.Scripts.Gameplay.Player
 
         private float GetMovementSpeed()
         {
-            float speed = Configuration.MovementSpeed;
+            float speed = Configuration.AliveMovementSpeed;
 
             if (_transform.position.y < _seaEntryHeight)
             {

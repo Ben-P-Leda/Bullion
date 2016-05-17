@@ -11,7 +11,6 @@ namespace Assets.Scripts.Gameplay.Player
         private Animator _animator;
         private GameObject _damageCollider;
         private PlayerInput _input;
-        private PlayerMovement _movement;
 
         private int _comboStepCount;
         private int _lastStrikingComboIndex;
@@ -26,7 +25,6 @@ namespace Assets.Scripts.Gameplay.Player
             _transform = transform;
             _damageCollider = _transform.FindChild("Damage Collider").gameObject;
             _input = GetComponent<PlayerInput>();
-            _movement = GetComponent<PlayerMovement>();
 
             _comboStepCount = 0;
             _lastStrikingComboIndex = 0;
