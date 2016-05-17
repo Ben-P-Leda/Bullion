@@ -77,7 +77,8 @@ namespace Assets.Scripts.Gameplay.Player
                 {
                     case EventMessage.Block_Movement_Attack: _attackInProgress = true; break;
                     case EventMessage.Has_Died: SetLifeEventRunning(true); break;
-                    case EventMessage.Enter_Dead_Mode: EnterDeadMode(); break;
+                    case EventMessage.Enter_Dead_Mode: SetDeadModeState(true); break;
+                    case EventMessage.Respawn: SetDeadModeState(false); break;
                 }
             }
         }
@@ -88,12 +89,12 @@ namespace Assets.Scripts.Gameplay.Player
             _rigidBody.constraints = isRunning ? RigidbodyConstraints.FreezeAll : RigidbodyConstraints.FreezeRotation;
         }
 
-        private void EnterDeadMode()
+        private void SetDeadModeState(bool enterDeadMode)
         {
-            SetLifeEventRunning(false);
+            SetLifeEventRunning(!enterDeadMode);
 
-            _activeAnimator = _deadModelAnimator;
-            _isInDeadMode = true;
+            _isInDeadMode = enterDeadMode;
+            _activeAnimator = enterDeadMode ? _deadModelAnimator : _aliveModelAnimator;
         }
 
         private void Update()
@@ -106,9 +107,10 @@ namespace Assets.Scripts.Gameplay.Player
 
                 if (isMoving)
                 {
-                    _rigidBody.velocity = new Vector3(inputVelocity.x, _rigidBody.velocity.y, inputVelocity.z);
                     _transform.LookAt(_transform.position + inputVelocity);
                 }
+
+                _rigidBody.velocity = new Vector3(inputVelocity.x, _rigidBody.velocity.y, inputVelocity.z);
                 _activeAnimator.SetBool("IsMoving", isMoving);
             }
 
@@ -144,9 +146,9 @@ namespace Assets.Scripts.Gameplay.Player
 
         private float GetMovementSpeed()
         {
-            float speed = Configuration.AliveMovementSpeed;
+            float speed = _isInDeadMode ? Configuration.DeadMovementSpeed : Configuration.AliveMovementSpeed;
 
-            if (_transform.position.y < _seaEntryHeight)
+            if ((!_isInDeadMode) && (_transform.position.y < _seaEntryHeight))
             {
                 float depthOffset = Mathf.Clamp((_seaEntryHeight - _transform.position.y) / _wadeHeightRange, 0.0f, 1.0f);
                 speed *=  (1.0f - (Swim_Speed_Modifier * depthOffset));

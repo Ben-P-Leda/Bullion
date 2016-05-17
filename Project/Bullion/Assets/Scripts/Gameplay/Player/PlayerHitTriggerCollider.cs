@@ -3,7 +3,7 @@ using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Player
 {
-    public class PlayerTakeDamage : MonoBehaviour
+    public class PlayerHitTriggerCollider : MonoBehaviour
     {
         private Transform _transform;
 
@@ -14,7 +14,7 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void OnTriggerEnter(Collider collider)
         {
-            EventDispatcher.FireEvent(_transform, collider.transform, EventMessage.Register_Damage);
+            EventDispatcher.FireEvent(_transform, collider.transform, EventMessage.Hit_Trigger_Collider);
         }
     }
 }

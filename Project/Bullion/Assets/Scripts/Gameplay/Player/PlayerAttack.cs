@@ -59,7 +59,7 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void MessageEventHandler(Transform originator, Transform target, string message)
         {
-            if ((target == _damageCollider.transform) && (message == EventMessage.Register_Damage))
+            if ((target == _damageCollider.transform) && (message == EventMessage.Hit_Trigger_Collider))
             {
                 EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, Configuration.ComboStepDamage[_lastStrikingComboIndex]);
             }

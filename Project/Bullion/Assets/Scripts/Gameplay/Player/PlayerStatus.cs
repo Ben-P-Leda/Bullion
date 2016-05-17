@@ -7,8 +7,6 @@ namespace Assets.Scripts.Gameplay.Player
     public class PlayerStatus : MonoBehaviour, IConfigurable, IAnimated
     {
         private Transform _transform;
-        private GameObject _aliveModel;
-        private GameObject _deadModel;
         private Animator _aliveModelAnimator;
 
         private float _remainingHealth;
@@ -38,12 +36,6 @@ namespace Assets.Scripts.Gameplay.Player
             _remainingHealth = Configuration.MaximumHealth;
         }
 
-        public void WireUpModels(GameObject aliveModel, GameObject deadModel)
-        {
-            _aliveModel = aliveModel;
-            _deadModel = deadModel;
-        }
-
         public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
         {
             _aliveModelAnimator = aliveModelAnimator;
@@ -51,23 +43,12 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void OnEnable()
         {
-            EventDispatcher.MessageEventHandler += MessageEventHandler;
             EventDispatcher.FloatEventHandler += FloatEventHandler;
         }
 
         private void OnDisable()
         {
-            EventDispatcher.MessageEventHandler -= MessageEventHandler;
             EventDispatcher.FloatEventHandler -= FloatEventHandler;
-        }
-
-        private void MessageEventHandler(Transform originator, Transform target, string message)
-        {
-            if ((target == _transform) && (message == EventMessage.Enter_Dead_Mode))
-            {
-                _deadModel.SetActive(true);
-                _aliveModel.SetActive(false);
-            }
         }
 
         private void FloatEventHandler(Transform originator, Transform target, string message, float value)
@@ -83,13 +64,8 @@ namespace Assets.Scripts.Gameplay.Player
             if (_remainingHealth > 0.0f)
             {
                 _remainingHealth -= damageInflicted;
-                if (_remainingHealth > 0.0f)
+                if (_remainingHealth <= 0.0f)
                 {
-                    _aliveModelAnimator.SetBool("DamageTaken", true);
-                }
-                else
-                {
-                    _aliveModelAnimator.CrossFade("dead", 0.5f);
                     EventDispatcher.FireEvent(_transform, _transform, EventMessage.Has_Died);
                 }
             }
