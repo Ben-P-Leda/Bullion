@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
+using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Avatar;
 
 namespace Assets.Scripts.Gameplay.Player
@@ -19,13 +20,10 @@ namespace Assets.Scripts.Gameplay.Player
         private float _seaEntryHeight;
         private float _wadeHeightRange;
 
-        public CharacterConfiguration Configuration { private get; set; }
-        public bool CanMove { private get; set; }
+        private bool _lifecycleEventInProgress;
+        private bool _attackInProgress;
 
-        private void EnableMovement()
-        {
-            CanMove = true;
-        }
+        public CharacterConfiguration Configuration { private get; set; }
 
         private void Start()
         {
@@ -50,9 +48,36 @@ namespace Assets.Scripts.Gameplay.Player
             _deadModelAnimator = deadModelAnimator;
         }
 
+        private void EnableMovement()
+        {
+            _attackInProgress = false;
+        }
+
+        private void OnEnable()
+        {
+            EventDispatcher.MessageEventHandler += MessageEventHandler;
+        }
+
+        private void OnDisable()
+        {
+            EventDispatcher.MessageEventHandler -= MessageEventHandler;
+        }
+
+        private void MessageEventHandler(Transform originator, Transform target, string message)
+        {
+            if (target == _transform)
+            {
+                switch (message)
+                {
+                    case EventMessage.Block_Movement_Attack: _attackInProgress = true; break;
+                    case EventMessage.Has_Died: _lifecycleEventInProgress = true; break;
+                }
+            }
+        }
+
         private void Update()
         {
-            if (CanMove)
+            if (CanMove())
             {
                 float speed = GetMovementSpeed();
                 Vector3 inputVelocity = new Vector3(_input.Horizontal, 0.0f, _input.Vertical).normalized * speed;
@@ -73,6 +98,12 @@ namespace Assets.Scripts.Gameplay.Player
             _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
             _attack.CanAttack = !isSwimming;
             _aliveModelAnimator.SetBool("IsSwimming", isSwimming);
+        }
+
+        private bool CanMove()
+        {
+            return (!_attackInProgress)
+                && (!_lifecycleEventInProgress);
         }
 
         private float GetMovementSpeed()

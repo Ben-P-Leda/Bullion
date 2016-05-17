@@ -26,7 +26,7 @@ namespace Assets.Scripts.Gameplay.Avatar
 
         public void SwitchToDeadMode()
         {
-            EventDispatcher.FireEvent(_transform, _parentTransform, EventMessage.End_Death_Sequence);
+            EventDispatcher.FireEvent(_transform, _parentTransform, EventMessage.Has_Died);
         }
     }
 }

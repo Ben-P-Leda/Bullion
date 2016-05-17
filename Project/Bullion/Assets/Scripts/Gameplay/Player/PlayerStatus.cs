@@ -82,9 +82,9 @@ namespace Assets.Scripts.Gameplay.Player
         {
             if (!isAlive)
             {
-                _movement.CanMove = false;
                 _attack.CanAttack = false;
                 _rigidBody.constraints = RigidbodyConstraints.FreezeAll;
+                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Has_Died);
             }
         }
 

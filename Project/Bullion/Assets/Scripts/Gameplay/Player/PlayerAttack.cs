@@ -90,7 +90,7 @@ namespace Assets.Scripts.Gameplay.Player
         {
             if ((CanAttack) && (_comboStepCount < Configuration.ComboStepCount) && (_input.Attack))
             {
-                _movement.CanMove = false;
+                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Block_Movement_Attack);
                 _animator.SetBool("IsAttacking", true);
             }
         }
