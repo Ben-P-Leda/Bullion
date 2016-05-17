@@ -48,7 +48,7 @@
      <Compile Include="Assets\Scripts\Configuration\CharacterConfiguration.cs" />
      <Compile Include="Assets\Scripts\Configuration\ConfigurationManager.cs" />
      <Compile Include="Assets\Scripts\Event Handling\EventDispatcher.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarAttackAnimationEventHandler.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarAnimationEventHandler.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarDamagedAnimationStateChange.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarRestingAnimationStateChange.cs" />
      <Compile Include="Assets\Scripts\Gameplay\CameraMovement.cs" />

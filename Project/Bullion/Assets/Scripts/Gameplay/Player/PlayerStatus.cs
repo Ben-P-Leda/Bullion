@@ -7,6 +7,9 @@ namespace Assets.Scripts.Gameplay.Player
     public class PlayerStatus : MonoBehaviour, IConfigurable, IAnimated
     {
         private Transform _transform;
+        private Rigidbody _rigidBody;
+        private PlayerMovement _movement;
+        private PlayerAttack _attack;
 
         private float _remainingHealth;
         private Rect _nameDisplayContainer;
@@ -28,6 +31,16 @@ namespace Assets.Scripts.Gameplay.Player
 
             _nameDisplayContainer = new Rect(topLeft.x, topLeft.y, UI_Dimensions.x, UI_Margin);
             _healthDisplayContainer = new Rect(_nameDisplayContainer.x, _nameDisplayContainer.y + _nameDisplayContainer.height, UI_Dimensions.x, UI_Margin);
+        }
+
+        private void Start()
+        {
+            _transform = transform;
+            _rigidBody = GetComponent<Rigidbody>();
+            _movement = GetComponent<PlayerMovement>();
+            _attack = GetComponent<PlayerAttack>();
+
+            _remainingHealth = Configuration.MaximumHealth;
         }
 
         private void OnEnable()
@@ -57,15 +70,19 @@ namespace Assets.Scripts.Gameplay.Player
             }
             else
             {
-                AliveModelAnimator.SetBool("IsDead", true);
+                SetAlive(false);
+                AliveModelAnimator.CrossFade("dead", 0.5f);
             }
         }
 
-        private void Start()
+        private void SetAlive(bool isAlive)
         {
-            _transform = transform;
-
-            _remainingHealth = Configuration.MaximumHealth;
+            if (!isAlive)
+            {
+                _movement.CanMove = false;
+                _attack.CanAttack = false;
+                _rigidBody.constraints = RigidbodyConstraints.FreezeAll;
+            }
         }
 
         private void OnGUI()

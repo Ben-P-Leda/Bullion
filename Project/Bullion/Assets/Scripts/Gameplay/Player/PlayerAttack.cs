@@ -23,23 +23,11 @@ namespace Assets.Scripts.Gameplay.Player
             set
             {
                 _animator = value;
-                _animator.transform.GetComponent<AvatarAttackAnimationEventHandler>().StrikeCallback = SetStrikingState;
                 _animator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EndComboSequence);
             }
         }
 
         public Animator DeadModelAnimator { private get; set; }
-
-        private void SetStrikingState(bool strikeInProgress)
-        {
-            _damageCollider.SetActive(strikeInProgress);
-
-            if (strikeInProgress)
-            {
-                _animator.SetBool("IsAttacking", false);
-                _comboStepCount += 1;
-            }
-        }
 
         private void EndComboSequence()
         {
@@ -73,6 +61,23 @@ namespace Assets.Scripts.Gameplay.Player
             if ((target == _damageCollider.transform) && (message == PlayerTakeDamage.Event_Register_Damage))
             {
                 EventDispatcher.FireEvent(_transform, originator, Event_Inflict_Damage, Configuration.ComboStepDamage[_comboStepCount-1]);
+            }
+
+            if (target == _transform)
+            {
+                if (message == AvatarAnimationEventHandler.Event_Start_Strike) { SetStrikingState(true); }
+                else if (message == AvatarAnimationEventHandler.Event_End_Strike) { SetStrikingState(false); }
+            }
+        }
+
+        private void SetStrikingState(bool strikeInProgress)
+        {
+            _damageCollider.SetActive(strikeInProgress);
+
+            if (strikeInProgress)
+            {
+                _animator.SetBool("IsAttacking", false);
+                _comboStepCount += 1;
             }
         }
 
