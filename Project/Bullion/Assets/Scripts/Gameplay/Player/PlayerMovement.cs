@@ -23,6 +23,7 @@ namespace Assets.Scripts.Gameplay.Player
         private bool _lifecycleEventInProgress;
         private bool _attackInProgress;
         private bool _isInDeadMode;
+        private bool _hasBeenLaunched;
 
         public CharacterConfiguration Configuration { private get; set; }
 
@@ -39,6 +40,7 @@ namespace Assets.Scripts.Gameplay.Player
             _wadeHeightRange = _seaEntryHeight - _swimHeight;
 
             _isInDeadMode = false;
+            _hasBeenLaunched = false;
 
             EnterRestState();
         }
@@ -81,6 +83,11 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Respawn: SetDeadModeState(false); break;
                 }
             }
+
+            else if ((message == EventMessage.Respawn) && (target != transform))
+            {
+                CheckForOpponentRespawnBlast(originator.position);
+            }
         }
 
         private void SetLifeEventRunning(bool isRunning)
@@ -95,6 +102,23 @@ namespace Assets.Scripts.Gameplay.Player
 
             _isInDeadMode = enterDeadMode;
             _activeAnimator = enterDeadMode ? _deadModelAnimator : _aliveModelAnimator;
+        }
+
+        private void CheckForOpponentRespawnBlast(Vector3 respawnPointPosition)
+        {
+            if (CanMove())
+            {
+                float distance = Vector3.Distance(respawnPointPosition, _transform.position);
+                if (distance < PlayerRespawnBlast.Blast_Radius)
+                {
+                    Vector3 unitDirection = Vector3.Normalize(_transform.position - respawnPointPosition);
+                    Vector3 launchVelocityBase = new Vector3(unitDirection.x, Respawn_Blast_Launch_Vertical_Speed, unitDirection.z);
+
+                    _rigidBody.velocity = launchVelocityBase * Respawn_Blast_Launch_Speed_Multiplier;
+                    _transform.LookAt(new Vector3(respawnPointPosition.x, _transform.position.y, respawnPointPosition.z));
+                    _hasBeenLaunched = true;
+                }
+            }
         }
 
         private void Update()
@@ -124,24 +148,18 @@ namespace Assets.Scripts.Gameplay.Player
             }
 
             _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
-        }
-
-        private void UpdateSwimmingState()
-        {
-            bool isSwimming = _transform.position.y <= _swimHeight;
-            _aliveModelAnimator.SetBool("IsSwimming", isSwimming);
-            if (isSwimming != _wasSwimming)
+           
+            if (_hasBeenLaunched)
             {
-                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Block_Attack_Swimming, isSwimming);
-                _wasSwimming = isSwimming;
+                CheckForLaunchReset(floor);
             }
-
         }
 
         private bool CanMove()
         {
             return (!_attackInProgress)
-                && (!_lifecycleEventInProgress);
+                && (!_lifecycleEventInProgress)
+                && (!_hasBeenLaunched);
         }
 
         private float GetMovementSpeed()
@@ -157,8 +175,33 @@ namespace Assets.Scripts.Gameplay.Player
             return speed;
         }
 
+
+        private void UpdateSwimmingState()
+        {
+            bool isSwimming = _transform.position.y <= _swimHeight;
+            _aliveModelAnimator.SetBool("IsSwimming", isSwimming);
+            if (isSwimming != _wasSwimming)
+            {
+                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Block_Attack_Swimming, isSwimming);
+                _wasSwimming = isSwimming;
+            }
+        }
+
+        private void CheckForLaunchReset(float floor)
+        {
+            if ((_rigidBody.velocity.y < Launch_Reset_Speed_Threshold) && (_transform.position.y - Launch_Reset_Floor_Tolerance <= floor))
+            {
+                _hasBeenLaunched = false;
+            }
+        }
+
         private const float Sea_Entry_Height_Modifier = 0.5f;
         private const float Swim_Height_Modifier = 0.05f;
         private const float Swim_Speed_Modifier = 0.4f;
+
+        private const float Respawn_Blast_Launch_Vertical_Speed = 3.0f;
+        private const float Respawn_Blast_Launch_Speed_Multiplier = 3.0f;
+        private const float Launch_Reset_Speed_Threshold = 1.0f;
+        private const float Launch_Reset_Floor_Tolerance = 0.5f;
     }
 }

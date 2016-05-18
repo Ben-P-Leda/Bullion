@@ -11,5 +11,6 @@
         public const string Hit_Trigger_Collider = "HitTriggerCollider";
         public const string Respawn = "Respawn";
         public const string Update_Health = "UpdateHealth";
+        public const string Respawn_Blast = "RespawnBlast";
     }
 }

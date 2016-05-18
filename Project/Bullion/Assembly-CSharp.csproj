@@ -61,6 +61,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerInput.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRespawnBlast.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerStatus.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\RespawnPoint.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />
