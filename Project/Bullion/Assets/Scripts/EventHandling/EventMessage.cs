@@ -10,5 +10,6 @@
         public const string Block_Attack_Swimming = "IsSwimming";
         public const string Hit_Trigger_Collider = "HitTriggerCollider";
         public const string Respawn = "Respawn";
+        public const string Update_Health = "UpdateHealth";
     }
 }

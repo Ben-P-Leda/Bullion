@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
+using Assets.Scripts.Gameplay.UI;
 
 namespace Assets.Scripts.Gameplay.Player
 {
@@ -7,6 +8,7 @@ namespace Assets.Scripts.Gameplay.Player
     {
         public GameObject PlayerPrefab;
         public GameObject RespawnPointPrefab;
+        public GameObject StatusDisplayPrefab;
         public GameObject[] AvatarPrefabs;
         public Vector3[] PlayerStartPoints;
 
@@ -30,6 +32,7 @@ namespace Assets.Scripts.Gameplay.Player
 
                     _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i], characterConfiguration, startPosition);
                     InitializeRespawnPoint(_playerGameObjects[i], characterConfiguration, startPosition);
+                    InitializeStatusDisplay(_playerGameObjects[i], characterConfiguration, i);
                 }
             }
         }
@@ -72,7 +75,6 @@ namespace Assets.Scripts.Gameplay.Player
             newPlayer.transform.parent = transform.parent;
 
             ((PlayerInput)newPlayer.GetComponent<PlayerInput>()).AxisPrefix = "P" + (playerIndex + 1);
-            ((PlayerStatus)newPlayer.GetComponent<PlayerStatus>()).PlayerIndex = playerIndex;
 
             return newPlayer;
         }
@@ -144,6 +146,13 @@ namespace Assets.Scripts.Gameplay.Player
             newRespawnPoint.GetComponent<ParticleSystem>().startColor = characterConfiguration.RespawnPointColour;
 
             newRespawnPoint.GetComponent<RespawnPoint>().Player = player.transform;
+        }
+
+        private void InitializeStatusDisplay(GameObject player, CharacterConfiguration characterConfiguration, int playerIndex)
+        {
+            GameObject newRespawnPoint = (GameObject)Instantiate(StatusDisplayPrefab);
+            newRespawnPoint.transform.parent = transform.parent;
+            newRespawnPoint.GetComponent<PlayerStatusDisplay>().Initialize(player.transform, characterConfiguration, playerIndex);
         }
 
         private const string Avatar_Names = "Red,Green,Purple,Blue";
