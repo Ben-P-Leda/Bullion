@@ -7,7 +7,7 @@ namespace Assets.Scripts.Gameplay.Avatar
     {
         public delegate void StateEntryHandler();
 
-        private List<StateEntryHandler> _stateEntryCallbacks;
+        public List<StateEntryHandler> _stateEntryCallbacks;
 
         public AvatarRestingAnimationStateChange() 
             : base()

@@ -20,6 +20,8 @@ namespace Assets.Scripts.Gameplay.Player
         {
             _aliveModel = aliveModel;
             _deadModel = deadModel;
+
+            ActivateModel(_aliveModel);
         }
 
         public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
@@ -45,24 +47,26 @@ namespace Assets.Scripts.Gameplay.Player
                 {
                     case EventMessage.Inflict_Damage: _aliveModelAnimator.SetBool("DamageTaken", true); break;
                     case EventMessage.Has_Died: _aliveModelAnimator.CrossFade("dead", 0.5f); break;
-                    case EventMessage.Enter_Dead_Mode: SwitchToDeadMode(); break;
-                    case EventMessage.Respawn: SwitchToAliveMode(); break;
+                    case EventMessage.Enter_Dead_Mode: ActivateModel(_deadModel); break;
+                    case EventMessage.Respawn: ActivateModel(_aliveModel); _aliveModelAnimator.Play("salute"); break;
                 }
             }
         }
 
-        private void SwitchToDeadMode()
+        private void ActivateModel(GameObject modelToActivate)
         {
-            _deadModel.SetActive(true);
-            _aliveModel.SetActive(false);
+            if (modelToActivate == _deadModel)
+            {
+                _deadModel.transform.localPosition = Vector3.zero;
+                _aliveModel.transform.localPosition = Out_Of_Shot;
+            }
+            else
+            {
+                _deadModel.transform.localPosition = Out_Of_Shot;
+                _aliveModel.transform.localPosition = Vector3.zero;
+            }
         }
 
-        private void SwitchToAliveMode()
-        {
-            _deadModel.SetActive(false);
-            _aliveModel.SetActive(true);
-
-            // TODO: Trigger respawn animation
-        }
+        private readonly Vector3 Out_Of_Shot = new Vector3(0.0f, 0.0f, -30000.0f);
     }
 }

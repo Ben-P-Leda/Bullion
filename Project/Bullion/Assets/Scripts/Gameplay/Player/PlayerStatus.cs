@@ -4,10 +4,9 @@ using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Player
 {
-    public class PlayerStatus : MonoBehaviour, IConfigurable, IAnimated
+    public class PlayerStatus : MonoBehaviour, IConfigurable
     {
         private Transform _transform;
-        private Animator _aliveModelAnimator;
 
         private float _remainingHealth;
         private Rect _nameDisplayContainer;
@@ -36,19 +35,24 @@ namespace Assets.Scripts.Gameplay.Player
             _remainingHealth = Configuration.MaximumHealth;
         }
 
-        public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
-        {
-            _aliveModelAnimator = aliveModelAnimator;
-        }
-
         private void OnEnable()
         {
+            EventDispatcher.MessageEventHandler += MessageEventHandler;
             EventDispatcher.FloatEventHandler += FloatEventHandler;
         }
 
         private void OnDisable()
         {
+            EventDispatcher.MessageEventHandler -= MessageEventHandler;
             EventDispatcher.FloatEventHandler -= FloatEventHandler;
+        }
+
+        private void MessageEventHandler(Transform originator, Transform target, string message)
+        {
+            if ((target == _transform) && (message == EventMessage.Respawn))
+            {
+                _remainingHealth = Configuration.MaximumHealth;
+            }
         }
 
         private void FloatEventHandler(Transform originator, Transform target, string message, float value)

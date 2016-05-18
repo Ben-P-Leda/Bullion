@@ -36,13 +36,14 @@ namespace Assets.Scripts.Gameplay.Player
         public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
         {
             _animator = aliveModelAnimator;
-            _animator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EndComboSequence);
+            _animator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnterRestState);
         }
 
-        private void EndComboSequence()
+        private void EnterRestState()
         {
             _animator.SetBool("IsAttacking", false);
             _comboStepCount = 0;
+            _lifeEventInProgress = false;
         }
 
         private void OnEnable()

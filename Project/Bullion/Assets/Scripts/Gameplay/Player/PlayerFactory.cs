@@ -88,8 +88,6 @@ namespace Assets.Scripts.Gameplay.Player
                 deadModel.transform.SetParent(player.transform);
                 player.GetComponent<PlayerLifeCycle>().WireUpModels(aliveModel, deadModel);
                 WireUpAnimationControllers(player, aliveModel.GetComponent<Animator>(), deadModel.GetComponent<Animator>());
-
-                deadModel.SetActive(false);
             }
             else
             {

@@ -40,23 +40,23 @@ namespace Assets.Scripts.Gameplay.Player
 
             _isInDeadMode = false;
 
-            EnableMovement();
+            EnterRestState();
         }
 
         public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
         {
             _aliveModelAnimator = aliveModelAnimator;
-            _aliveModelAnimator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnableMovement);
+            _aliveModelAnimator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnterRestState);
 
             _deadModelAnimator = deadModelAnimator;
 
             _activeAnimator = _aliveModelAnimator;
         }
 
-        private void EnableMovement()
+        private void EnterRestState()
         {
             _attackInProgress = false;
-            _lifecycleEventInProgress = false;
+            SetLifeEventRunning(false);
         }
 
         private void OnEnable()
