@@ -47,18 +47,24 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Configuration\CharacterConfiguration.cs" />
      <Compile Include="Assets\Scripts\Configuration\ConfigurationManager.cs" />
-     <Compile Include="Assets\Scripts\Event Handling\EventDispatcher.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarAttackAnimationEventHandler.cs" />
+     <Compile Include="Assets\Scripts\EventHandling\EventDispatcher.cs" />
+     <Compile Include="Assets\Scripts\EventHandling\EventMessage.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarAnimationEventHandler.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarDamagedAnimationStateChange.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarRestingAnimationStateChange.cs" />
      <Compile Include="Assets\Scripts\Gameplay\CameraMovement.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\IAnimated.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\IConfigurable.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerAttack.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerFactory.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerHitTriggerCollider.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerInput.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRespawnBlast.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerStatus.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerTakeDamage.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\RespawnPoint.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />
      <Compile Include="Assets\Scripts\Generic\Definitions.cs" />
      <Compile Include="Assets\Scripts\Generic\Utilities.cs" />
  <Reference Include="UnityEngine.UI">

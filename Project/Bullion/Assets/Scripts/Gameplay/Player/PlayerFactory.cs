@@ -1,17 +1,24 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
+using Assets.Scripts.Gameplay.UI;
 
 namespace Assets.Scripts.Gameplay.Player
 {
     public class PlayerFactory : MonoBehaviour
     {
-        public GameObject _playerPrefab;
-        public GameObject[] _avatarPrefabs;
+        public GameObject PlayerPrefab;
+        public GameObject RespawnPointPrefab;
+        public GameObject StatusDisplayPrefab;
+        public GameObject[] AvatarPrefabs;
+        public Vector3[] PlayerStartPoints;
 
         private GameObject[] _playerGameObjects;
+        private Terrain _terrain;
 
         private void Start()
         {
+            _terrain = Terrain.activeTerrain;
+
             string[] playerAvatars = GetPlayerAvatars();
 
             _playerGameObjects = new GameObject[playerAvatars.Length];
@@ -20,7 +27,12 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 if (_playerGameObjects[i] == null)
                 {
-                    _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i]);
+                    CharacterConfiguration characterConfiguration = ConfigurationManager.GetCharacterConfiguration(playerAvatars[i]);
+                    Vector3 startPosition = GetStartPosition(i);
+
+                    _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i], characterConfiguration, startPosition);
+                    InitializeRespawnPoint(_playerGameObjects[i], characterConfiguration, startPosition);
+                    InitializeStatusDisplay(_playerGameObjects[i], characterConfiguration, i);
                 }
             }
         }
@@ -30,42 +42,58 @@ namespace Assets.Scripts.Gameplay.Player
             return Avatar_Names.Split(',');
         }
 
-        private GameObject InitializePlayer(int playerIndex, string avatarName)
+        private Vector3 GetStartPosition(int playerIndex)
+        {
+            if (playerIndex >= PlayerStartPoints.Length)
+            {
+                throw new System.Exception("Start point for player " + playerIndex + " not set!");
+            }
+            else
+            {
+                return new Vector3(
+                    PlayerStartPoints[playerIndex].x,
+                    _terrain.SampleHeight(PlayerStartPoints[playerIndex]),
+                    PlayerStartPoints[playerIndex].z);
+            }
+        }
+
+        private GameObject InitializePlayer(int playerIndex, string modelHandle, CharacterConfiguration characterConfiguration, Vector3 startPosition)
         {
             GameObject newPlayer = CreateNewPlayer(playerIndex);
-            ConnectPlayerToModel(newPlayer, avatarName);
+            ConnectPlayerToModels(newPlayer, modelHandle);
             ConnectPlayerToCamera(newPlayer);
-            SetPlayerConfiguration(newPlayer, avatarName);
+            SetPlayerConfiguration(newPlayer, characterConfiguration);
 
-            newPlayer.transform.position = new Vector3((playerIndex + 1) * 10.0f, 3.0f, 15.0f);
+            newPlayer.transform.position = startPosition;
 
             return newPlayer;
         }
 
         private GameObject CreateNewPlayer(int playerIndex)
         {
-            GameObject newPlayer = (GameObject)Instantiate(_playerPrefab);
+            GameObject newPlayer = (GameObject)Instantiate(PlayerPrefab);
             newPlayer.transform.parent = transform.parent;
 
             ((PlayerInput)newPlayer.GetComponent<PlayerInput>()).AxisPrefix = "P" + (playerIndex + 1);
-            ((PlayerStatus)newPlayer.GetComponent<PlayerStatus>()).PlayerIndex = playerIndex;
 
             return newPlayer;
         }
 
-        private void ConnectPlayerToModel(GameObject player, string avatarName)
+        private void ConnectPlayerToModels(GameObject player, string avatarName)
         {
-            GameObject model = GetModel(avatarName);
+            GameObject aliveModel = GetModel(avatarName + "-alive");
+            GameObject deadModel = GetModel(avatarName + "-dead");
 
-            if (model != null)
+            if ((aliveModel != null) && (deadModel != null))
             {
-                model.transform.SetParent(player.transform);
-                Animator animator = model.GetComponent<Animator>();
-                WireUpAnimationControllers(player, animator);
+                aliveModel.transform.SetParent(player.transform);
+                deadModel.transform.SetParent(player.transform);
+                player.GetComponent<PlayerLifeCycle>().WireUpModels(aliveModel, deadModel);
+                WireUpAnimationControllers(player, aliveModel.GetComponent<Animator>(), deadModel.GetComponent<Animator>());
             }
             else
             {
-                throw new System.Exception("Avatar " + avatarName + " does not exist!");
+                throw new System.Exception("Avatar " + avatarName + " model missing - check prefabs set for both alive & dead models");
             }
         }
 
@@ -73,11 +101,11 @@ namespace Assets.Scripts.Gameplay.Player
         {
             GameObject model = null;
 
-            for (int i = 0; i < _avatarPrefabs.Length; i++)
+            for (int i = 0; i < AvatarPrefabs.Length; i++)
             {
-                if (_avatarPrefabs[i].name == avatarName)
+                if (AvatarPrefabs[i].name == avatarName)
                 {
-                    model = (GameObject)Instantiate(_avatarPrefabs[i]);
+                    model = (GameObject)Instantiate(AvatarPrefabs[i]);
                     break;
                 }
             }
@@ -85,13 +113,13 @@ namespace Assets.Scripts.Gameplay.Player
             return model;
         }
 
-        private void WireUpAnimationControllers(GameObject player, Animator animator)
+        private void WireUpAnimationControllers(GameObject player, Animator aliveModelAnimator, Animator deadModelAnimator)
         {
             IAnimated[] animationControllers = player.GetComponents<IAnimated>();
 
             for (int i = 0; i < animationControllers.Length; i++)
             {
-                animationControllers[i].Animator = animator;
+                animationControllers[i].WireUpAnimators(aliveModelAnimator, deadModelAnimator);
             }
         }
 
@@ -100,18 +128,34 @@ namespace Assets.Scripts.Gameplay.Player
             ((CameraMovement)Camera.main.GetComponent<CameraMovement>()).Avatars.Add(player);
         }
 
-        private void SetPlayerConfiguration(GameObject player, string avatarName)
+        private void SetPlayerConfiguration(GameObject player, CharacterConfiguration characterConfiguration)
         {
-            CharacterConfiguration config = ConfigurationManager.GetCharacterConfiguration(avatarName);
             IConfigurable[] configurables = player.GetComponents<IConfigurable>();
 
-            for (int i=0; i<configurables.Length; i++)
+            for (int i=0; i < configurables.Length; i++)
             {
-                configurables[i].Configuration = config;
+                configurables[i].Configuration = characterConfiguration;
             }
         }
 
+        private void InitializeRespawnPoint(GameObject player, CharacterConfiguration characterConfiguration, Vector3 position)
+        {
+            GameObject newRespawnPoint = (GameObject)Instantiate(RespawnPointPrefab);
+            newRespawnPoint.transform.parent = transform.parent;
+            newRespawnPoint.transform.position = position;
+            newRespawnPoint.GetComponent<ParticleSystem>().startColor = characterConfiguration.RespawnPointColour;
+
+            newRespawnPoint.GetComponent<RespawnPoint>().Player = player.transform;
+        }
+
+        private void InitializeStatusDisplay(GameObject player, CharacterConfiguration characterConfiguration, int playerIndex)
+        {
+            GameObject newRespawnPoint = (GameObject)Instantiate(StatusDisplayPrefab);
+            newRespawnPoint.transform.parent = transform.parent;
+            newRespawnPoint.GetComponent<PlayerStatusDisplay>().Initialize(player.transform, characterConfiguration, playerIndex);
+        }
+
         private const string Avatar_Names = "Red,Green,Purple,Blue";
-        private const float Player_Count = 4;
+        private const float Player_Count = 2;
     }
 }
