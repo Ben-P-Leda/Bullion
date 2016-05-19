@@ -16,7 +16,7 @@ namespace Assets.Scripts.Gameplay.Player
 
             _playerGameObjects = new GameObject[playerAvatars.Length];
 
-            for (int i=0; i<Definitions.Player_Count; i++)
+            for (int i=0; i<Player_Count; i++)
             {
                 if (_playerGameObjects[i] == null)
                 {
@@ -48,6 +48,7 @@ namespace Assets.Scripts.Gameplay.Player
             newPlayer.transform.parent = transform.parent;
 
             ((PlayerInput)newPlayer.GetComponent<PlayerInput>()).AxisPrefix = "P" + (playerIndex + 1);
+            ((PlayerStatus)newPlayer.GetComponent<PlayerStatus>()).PlayerIndex = playerIndex;
 
             return newPlayer;
         }
@@ -111,5 +112,6 @@ namespace Assets.Scripts.Gameplay.Player
         }
 
         private const string Avatar_Names = "Red,Green,Purple,Blue";
+        private const float Player_Count = 4;
     }
 }

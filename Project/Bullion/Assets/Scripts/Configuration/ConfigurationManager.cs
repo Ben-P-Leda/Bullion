@@ -25,22 +25,38 @@ namespace Assets.Scripts.Configuration
 
             _characters.Add("Red", new CharacterConfiguration()
             {
-                MovementSpeed = 5.0f
+                Name = "Red Player",
+                MovementSpeed = 5.0f,
+                ComboStepCount = 3,
+                ComboStepDamage = new float[] {10, 10, 10},
+                MaximumHealth = 100.0f
             });
 
             _characters.Add("Green", new CharacterConfiguration()
             {
-                MovementSpeed = 5.5f
+                Name = "Green Player",
+                MovementSpeed = 5.5f,
+                ComboStepCount = 2,
+                ComboStepDamage = new float[] { 20, 20 },
+                MaximumHealth = 85.0f
             });
 
             _characters.Add("Blue", new CharacterConfiguration()
             {
-                MovementSpeed = 5.25f
+                Name = "Blue Player",
+                MovementSpeed = 5.25f,
+                ComboStepCount = 3,
+                ComboStepDamage = new float[] { 10, 15, 20 },
+                MaximumHealth = 75.0f
             });
 
             _characters.Add("Purple", new CharacterConfiguration()
             {
-                MovementSpeed = 4.5f
+                Name = "Purple Player",
+                MovementSpeed = 4.5f,
+                ComboStepCount = 2,
+                ComboStepDamage = new float[] { 12.5f, 12.5f },
+                MaximumHealth = 115.0f
             });
         }
     }
