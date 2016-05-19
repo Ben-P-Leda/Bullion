@@ -4,7 +4,7 @@ using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Player
 {
-    public class PlayerStatus : MonoBehaviour, IConfigurable
+    public class PlayerHealth : MonoBehaviour, IConfigurable
     {
         private Transform _transform;
         private float _remainingHealth;

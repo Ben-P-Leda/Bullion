@@ -32,6 +32,7 @@ namespace Assets.Scripts.Configuration
                 ComboStepCount = 3,
                 ComboStepDamage = new float[] { 10, 10, 10 },
                 MaximumHealth = 100.0f,
+                RushRechargeSpeed = 0.25f,
                 RespawnPointColour = new Color(1.0f, 0.0f, 0.0f, 1.0f)
             });
 
@@ -43,6 +44,7 @@ namespace Assets.Scripts.Configuration
                 ComboStepCount = 2,
                 ComboStepDamage = new float[] { 20, 20 },
                 MaximumHealth = 85.0f,
+                RushRechargeSpeed = 0.25f,
                 RespawnPointColour = new Color(0.0f, 0.596f, 0.145f, 1.0f)
             });
 
@@ -54,6 +56,7 @@ namespace Assets.Scripts.Configuration
                 ComboStepCount = 3,
                 ComboStepDamage = new float[] { 10, 15, 20 },
                 MaximumHealth = 75.0f,
+                RushRechargeSpeed = 0.25f,
                 RespawnPointColour = new Color(0.0f, 0.255f, 1.0f, 1.0f)
             });
 
@@ -65,6 +68,7 @@ namespace Assets.Scripts.Configuration
                 ComboStepCount = 2,
                 ComboStepDamage = new float[] { 12.5f, 12.5f },
                 MaximumHealth = 115.0f,
+                RushRechargeSpeed = 0.25f,
                 RespawnPointColour = new Color(0.663f, 0.059f, 0.875f, 1.0f)
             });
         }

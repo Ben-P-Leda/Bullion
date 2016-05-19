@@ -57,12 +57,13 @@
      <Compile Include="Assets\Scripts\Gameplay\Player\IConfigurable.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerAttack.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerFactory.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerHealth.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerHitTriggerCollider.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerInput.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerMovement.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRespawnBlast.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerStatus.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRushCharge.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\RespawnPoint.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />
      <Compile Include="Assets\Scripts\Generic\Definitions.cs" />

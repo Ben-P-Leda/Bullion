@@ -10,6 +10,7 @@ namespace Assets.Scripts.Configuration
         public int ComboStepCount { get; set; }
         public float[] ComboStepDamage { get; set; }
         public float MaximumHealth { get; set; }
+        public float RushRechargeSpeed { get; set; }
         public Color RespawnPointColour { get; set; }
     }
 }
