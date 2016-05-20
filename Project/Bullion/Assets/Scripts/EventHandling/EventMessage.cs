@@ -12,6 +12,8 @@
         public const string Respawn = "Respawn";
         public const string Update_Health = "UpdateHealth";
         public const string Respawn_Blast = "RespawnBlast";
+        public const string End_Launch_Effect = "EndLaunchEffect";
         public const string Update_Rush_Charge = "UpdateRushCharge";
+        public const string Begin_Rush_Sequence = "BeginRushSequence";
     }
 }

@@ -7,6 +7,8 @@ namespace Assets.Scripts.Configuration
         public string Name { get; set; }
         public float AliveMovementSpeed { get; set; }
         public float DeadMovementSpeed { get; set; }
+        public float RushMovementSpeed { get; set; }
+        public float RushDuration { get; set; }
         public int ComboStepCount { get; set; }
         public float[] ComboStepDamage { get; set; }
         public float MaximumHealth { get; set; }

@@ -5,18 +5,15 @@ using Assets.Scripts.Gameplay.Avatar;
 
 namespace Assets.Scripts.Gameplay.Player
 {
-    public class PlayerAttack : MonoBehaviour, IConfigurable, IAnimated
+    public class PlayerBullRush : MonoBehaviour, IConfigurable, IAnimated
     {
         private Transform _transform;
         private Animator _animator;
-        private GameObject _damageCollider;
         private PlayerInput _input;
 
-        private int _comboStepCount;
-        private int _lastStrikingComboIndex;
-
-        private bool _lifeEventInProgress;
+        private float _rushChargeLevel;
         private bool _isSwimming;
+        private bool _isDead;
         private bool _hasBeenLaunched;
         private bool _rushInProgress;
 
@@ -25,15 +22,11 @@ namespace Assets.Scripts.Gameplay.Player
         private void Start()
         {
             _transform = transform;
-            _damageCollider = _transform.FindChild("Damage Collider").gameObject;
             _input = GetComponent<PlayerInput>();
 
-            _comboStepCount = 0;
-            _lastStrikingComboIndex = 0;
-
-            _lifeEventInProgress = false;
+            _rushChargeLevel = 0.0f;
             _isSwimming = false;
-            _hasBeenLaunched = false;
+            _isDead = false;
             _rushInProgress = false;
         }
 
@@ -45,9 +38,6 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void EnterRestState()
         {
-            _animator.SetBool("IsAttacking", false);
-            _comboStepCount = 0;
-            _lifeEventInProgress = false;
             _rushInProgress = false;
         }
 
@@ -65,19 +55,14 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void MessageEventHandler(Transform originator, Transform target, string message)
         {
-            if ((target == _damageCollider.transform) && (message == EventMessage.Hit_Trigger_Collider))
-            {
-                EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, Configuration.ComboStepDamage[_lastStrikingComboIndex]);
-            }
-
             if (target == _transform)
             {
                 switch (message)
                 {
-                    case EventMessage.Has_Died: _lifeEventInProgress = true; break;
+                    case EventMessage.Has_Died: _isDead = true; _rushChargeLevel = 0.0f; break;
+                    case EventMessage.Respawn: _isDead = false; break;
                     case EventMessage.Respawn_Blast: _hasBeenLaunched = true; break;
                     case EventMessage.End_Launch_Effect: _hasBeenLaunched = false; break;
-                    case EventMessage.Begin_Rush_Sequence: _rushInProgress = true; break;
                 }
             }
         }
@@ -88,39 +73,43 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 switch (message)
                 {
-                    case EventMessage.Change_Strike_State: SetStrikingState(value); break;
                     case EventMessage.Block_Attack_Swimming: _isSwimming = value; break;
                 }
             }
         }
 
-        private void SetStrikingState(bool strikeInProgress)
+        private void FixedUpdate()
         {
-            _damageCollider.SetActive(strikeInProgress);
-
-            if (strikeInProgress)
+            if ((CanRecharge()) && (_rushChargeLevel < Maximum_Rush_Charge))
             {
-                _animator.SetBool("IsAttacking", false);
-                _lastStrikingComboIndex = _comboStepCount;
-                _comboStepCount += 1;
+                _rushChargeLevel = Mathf.Min(_rushChargeLevel + Configuration.RushRechargeSpeed, Maximum_Rush_Charge);
+                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Update_Rush_Charge, _rushChargeLevel);
             }
+        }
+
+        private bool CanRecharge()
+        {
+            return (!_isDead)
+                && (!_rushInProgress);
         }
 
         private void Update()
         {
-            if ((CanAttack()) && (_comboStepCount < Configuration.ComboStepCount) && (_input.Attack))
+            if ((CanRush()) && (_input.Rush))
             {
-                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Block_Movement_Attack);
-                _animator.SetBool("IsAttacking", true);
+                _animator.SetBool("IsRushing", true);
+                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Begin_Rush_Sequence);
             }
         }
 
-        private bool CanAttack()
+        private bool CanRush()
         {
-            return (!_lifeEventInProgress)
+            return (_rushChargeLevel >= Maximum_Rush_Charge)
                 && (!_isSwimming)
-                && (!_hasBeenLaunched)
-                && (!_rushInProgress);
+                && (!_isDead)
+                && (!_hasBeenLaunched);
         }
+
+        private const float Maximum_Rush_Charge = 100.0f;
     }
 }

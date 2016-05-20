@@ -24,6 +24,9 @@ namespace Assets.Scripts.Gameplay.Player
         private bool _attackInProgress;
         private bool _isInDeadMode;
         private bool _hasBeenLaunched;
+        private bool _rushInProgress;
+
+        private Vector3 _rushVelocity;
 
         public CharacterConfiguration Configuration { private get; set; }
 
@@ -42,6 +45,8 @@ namespace Assets.Scripts.Gameplay.Player
             _isInDeadMode = false;
             _hasBeenLaunched = false;
 
+            _rushVelocity = Vector3.zero;
+
             EnterRestState();
         }
 
@@ -49,6 +54,7 @@ namespace Assets.Scripts.Gameplay.Player
         {
             _aliveModelAnimator = aliveModelAnimator;
             _aliveModelAnimator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnterRestState);
+            _aliveModelAnimator.GetBehaviour<AvatarRushingAnimationStateChange>().StateEntryCallback = EnterRushState;
 
             _deadModelAnimator = deadModelAnimator;
 
@@ -58,7 +64,13 @@ namespace Assets.Scripts.Gameplay.Player
         private void EnterRestState()
         {
             _attackInProgress = false;
+            _rushInProgress = false;
             SetLifeEventRunning(false);
+        }
+
+        private void EnterRushState()
+        {
+            _rushVelocity = Vector3.Normalize(new Vector3(_transform.forward.x, 0.0f, _transform.forward.z)) * Configuration.RushMovementSpeed;
         }
 
         private void OnEnable()
@@ -81,12 +93,9 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Has_Died: SetLifeEventRunning(true); break;
                     case EventMessage.Enter_Dead_Mode: SetDeadModeState(true); break;
                     case EventMessage.Respawn: SetDeadModeState(false); break;
+                    case EventMessage.Respawn_Blast: AttemptLaunch(originator.position); break;
+                    case EventMessage.Begin_Rush_Sequence: _rushInProgress = true; break;
                 }
-            }
-
-            else if ((message == EventMessage.Respawn) && (target != transform))
-            {
-                CheckForOpponentRespawnBlast(originator.position);
             }
         }
 
@@ -104,20 +113,16 @@ namespace Assets.Scripts.Gameplay.Player
             _activeAnimator = enterDeadMode ? _deadModelAnimator : _aliveModelAnimator;
         }
 
-        private void CheckForOpponentRespawnBlast(Vector3 respawnPointPosition)
+        private void AttemptLaunch(Vector3 respawnPointPosition)
         {
             if (CanMove())
             {
-                float distance = Vector3.Distance(respawnPointPosition, _transform.position);
-                if (distance < PlayerRespawnBlast.Blast_Radius)
-                {
-                    Vector3 unitDirection = Vector3.Normalize(_transform.position - respawnPointPosition);
-                    Vector3 launchVelocityBase = new Vector3(unitDirection.x, Respawn_Blast_Launch_Vertical_Speed, unitDirection.z);
+                Vector3 unitDirection = Vector3.Normalize(_transform.position - respawnPointPosition);
+                Vector3 launchVelocityBase = new Vector3(unitDirection.x, Respawn_Blast_Launch_Vertical_Speed, unitDirection.z);
 
-                    _rigidBody.velocity = launchVelocityBase * Respawn_Blast_Launch_Speed_Multiplier;
-                    _transform.LookAt(new Vector3(respawnPointPosition.x, _transform.position.y, respawnPointPosition.z));
-                    _hasBeenLaunched = true;
-                }
+                _rigidBody.velocity = launchVelocityBase * Respawn_Blast_Launch_Speed_Multiplier;
+                _transform.LookAt(new Vector3(respawnPointPosition.x, _transform.position.y, respawnPointPosition.z));
+                _hasBeenLaunched = true;
             }
         }
 
@@ -136,6 +141,10 @@ namespace Assets.Scripts.Gameplay.Player
 
                 _rigidBody.velocity = new Vector3(inputVelocity.x, _rigidBody.velocity.y, inputVelocity.z);
                 _activeAnimator.SetBool("IsMoving", isMoving);
+            }
+            else if (_rushInProgress)
+            {
+                _rigidBody.velocity = _rushVelocity;
             }
 
             float groundHeight = _terrain.SampleHeight(_transform.position);
@@ -159,7 +168,8 @@ namespace Assets.Scripts.Gameplay.Player
         {
             return (!_attackInProgress)
                 && (!_lifecycleEventInProgress)
-                && (!_hasBeenLaunched);
+                && (!_hasBeenLaunched)
+                && (!_rushInProgress);
         }
 
         private float GetMovementSpeed()
@@ -192,6 +202,7 @@ namespace Assets.Scripts.Gameplay.Player
             if ((_rigidBody.velocity.y < Launch_Reset_Speed_Threshold) && (_transform.position.y - Launch_Reset_Floor_Tolerance <= floor))
             {
                 _hasBeenLaunched = false;
+                EventDispatcher.FireEvent(_transform, _transform, EventMessage.End_Launch_Effect);
             }
         }
 
