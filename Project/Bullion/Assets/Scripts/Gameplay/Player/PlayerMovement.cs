@@ -27,6 +27,7 @@ namespace Assets.Scripts.Gameplay.Player
         private bool _rushInProgress;
 
         private Vector3 _rushVelocity;
+        private float _rushDurationRemaining;
 
         public CharacterConfiguration Configuration { private get; set; }
 
@@ -46,6 +47,7 @@ namespace Assets.Scripts.Gameplay.Player
             _hasBeenLaunched = false;
 
             _rushVelocity = Vector3.zero;
+            _rushDurationRemaining = 0.0f;
 
             EnterRestState();
         }
@@ -71,6 +73,7 @@ namespace Assets.Scripts.Gameplay.Player
         private void EnterRushState()
         {
             _rushVelocity = Vector3.Normalize(new Vector3(_transform.forward.x, 0.0f, _transform.forward.z)) * Configuration.RushMovementSpeed;
+            _rushDurationRemaining = Configuration.RushDuration;
         }
 
         private void OnEnable()
@@ -202,6 +205,21 @@ namespace Assets.Scripts.Gameplay.Player
             _transform.LookAt(_transform.position + lookAtOffset);
 
             _rigidBody.velocity = new Vector3(_rushVelocity.x, _rigidBody.velocity.y, _rushVelocity.z);
+
+            if (_rushVelocity != Vector3.zero)
+            {
+                _rushDurationRemaining -= Time.deltaTime;
+                if (_rushDurationRemaining <= 0.0f)
+                {
+                    EndRush();
+                }
+            }
+        }
+
+        private void EndRush()
+        {
+            _rushVelocity = Vector3.zero;
+            _aliveModelAnimator.SetBool("IsRushing", false);
         }
 
         private void UpdateSwimmingState()
@@ -212,6 +230,11 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Block_Attack_Swimming, isSwimming);
                 _wasSwimming = isSwimming;
+
+                if (_rushInProgress)
+                {
+                    EndRush();
+                }
             }
         }
 

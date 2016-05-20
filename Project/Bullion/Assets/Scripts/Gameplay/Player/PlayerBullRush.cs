@@ -97,8 +97,11 @@ namespace Assets.Scripts.Gameplay.Player
         {
             if ((CanRush()) && (_input.Rush))
             {
+                _rushInProgress = true;
+                _rushChargeLevel = 0.0f;
                 _animator.SetBool("IsRushing", true);
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Begin_Rush_Sequence);
+                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Update_Rush_Charge, _rushChargeLevel);
             }
         }
 
@@ -107,7 +110,8 @@ namespace Assets.Scripts.Gameplay.Player
             return (_rushChargeLevel >= Maximum_Rush_Charge)
                 && (!_isSwimming)
                 && (!_isDead)
-                && (!_hasBeenLaunched);
+                && (!_hasBeenLaunched)
+                && (!_rushInProgress);
         }
 
         private const float Maximum_Rush_Charge = 100.0f;
