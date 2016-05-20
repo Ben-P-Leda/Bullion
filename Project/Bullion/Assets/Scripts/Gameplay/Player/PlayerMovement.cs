@@ -27,7 +27,6 @@ namespace Assets.Scripts.Gameplay.Player
         private bool _rushInProgress;
 
         private Vector3 _rushVelocity;
-        private float _rushDurationRemaining;
 
         public CharacterConfiguration Configuration { private get; set; }
 
@@ -47,7 +46,6 @@ namespace Assets.Scripts.Gameplay.Player
             _hasBeenLaunched = false;
 
             _rushVelocity = Vector3.zero;
-            _rushDurationRemaining = 0.0f;
 
             EnterRestState();
         }
@@ -56,7 +54,6 @@ namespace Assets.Scripts.Gameplay.Player
         {
             _aliveModelAnimator = aliveModelAnimator;
             _aliveModelAnimator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnterRestState);
-            _aliveModelAnimator.GetBehaviour<AvatarRushingAnimationStateChange>().StateEntryCallback = EnterRushState;
 
             _deadModelAnimator = deadModelAnimator;
 
@@ -68,12 +65,6 @@ namespace Assets.Scripts.Gameplay.Player
             _attackInProgress = false;
             _rushInProgress = false;
             SetLifeEventRunning(false);
-        }
-
-        private void EnterRushState()
-        {
-            _rushVelocity = Vector3.Normalize(new Vector3(_transform.forward.x, 0.0f, _transform.forward.z)) * Configuration.RushMovementSpeed;
-            _rushDurationRemaining = Configuration.RushDuration;
         }
 
         private void OnEnable()
@@ -98,6 +89,8 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Respawn: SetDeadModeState(false); break;
                     case EventMessage.Respawn_Blast: AttemptLaunch(originator.position); break;
                     case EventMessage.Begin_Rush_Sequence: _rushInProgress = true; break;
+                    case EventMessage.Begin_Rush_Movement: SetRushing(true); break;
+                    case EventMessage.End_Rush_Movement: SetRushing(false); break;
                 }
             }
         }
@@ -127,6 +120,13 @@ namespace Assets.Scripts.Gameplay.Player
                 _transform.LookAt(new Vector3(respawnPointPosition.x, _transform.position.y, respawnPointPosition.z));
                 _hasBeenLaunched = true;
             }
+        }
+
+        private void SetRushing(bool isRushing)
+        {
+            _rushVelocity = isRushing
+                ? Vector3.Normalize(new Vector3(_transform.forward.x, 0.0f, _transform.forward.z)) * Configuration.RushMovementSpeed
+                : Vector3.zero;
         }
 
         private void Update()
@@ -205,21 +205,6 @@ namespace Assets.Scripts.Gameplay.Player
             _transform.LookAt(_transform.position + lookAtOffset);
 
             _rigidBody.velocity = new Vector3(_rushVelocity.x, _rigidBody.velocity.y, _rushVelocity.z);
-
-            if (_rushVelocity != Vector3.zero)
-            {
-                _rushDurationRemaining -= Time.deltaTime;
-                if (_rushDurationRemaining <= 0.0f)
-                {
-                    EndRush();
-                }
-            }
-        }
-
-        private void EndRush()
-        {
-            _rushVelocity = Vector3.zero;
-            _aliveModelAnimator.SetBool("IsRushing", false);
         }
 
         private void UpdateSwimmingState()
@@ -233,7 +218,7 @@ namespace Assets.Scripts.Gameplay.Player
 
                 if (_rushInProgress)
                 {
-                    EndRush();
+                    EventDispatcher.FireEvent(_transform, _transform, EventMessage.End_Rush_Movement);
                 }
             }
         }

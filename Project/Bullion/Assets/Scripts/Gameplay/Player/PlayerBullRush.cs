@@ -9,9 +9,11 @@ namespace Assets.Scripts.Gameplay.Player
     {
         private Transform _transform;
         private Animator _animator;
+        private GameObject _rushCollider;
         private PlayerInput _input;
 
         private float _rushChargeLevel;
+        private float _rushDurationRemaining;
         private bool _isSwimming;
         private bool _isDead;
         private bool _hasBeenLaunched;
@@ -22,9 +24,11 @@ namespace Assets.Scripts.Gameplay.Player
         private void Start()
         {
             _transform = transform;
+            _rushCollider = _transform.FindChild("Rush Collider").gameObject;
             _input = GetComponent<PlayerInput>();
 
             _rushChargeLevel = 0.0f;
+            _rushDurationRemaining = 0.0f;
             _isSwimming = false;
             _isDead = false;
             _rushInProgress = false;
@@ -34,11 +38,18 @@ namespace Assets.Scripts.Gameplay.Player
         {
             _animator = aliveModelAnimator;
             _animator.GetBehaviour<AvatarRestingAnimationStateChange>().AddStateEntryHandler(EnterRestState);
+            _animator.GetBehaviour<AvatarRushingAnimationStateChange>().StateEntryCallback = EnterRushState;
         }
 
         private void EnterRestState()
         {
             _rushInProgress = false;
+        }
+
+        private void EnterRushState()
+        {
+            _rushDurationRemaining = Configuration.RushDuration;
+            EventDispatcher.FireEvent(_transform, _transform, EventMessage.Begin_Rush_Movement);
         }
 
         private void OnEnable()
@@ -63,6 +74,7 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Respawn: _isDead = false; break;
                     case EventMessage.Respawn_Blast: _hasBeenLaunched = true; break;
                     case EventMessage.End_Launch_Effect: _hasBeenLaunched = false; break;
+                    case EventMessage.End_Rush_Movement: _animator.SetBool("IsRushing", false); break;
                 }
             }
         }
@@ -100,8 +112,18 @@ namespace Assets.Scripts.Gameplay.Player
                 _rushInProgress = true;
                 _rushChargeLevel = 0.0f;
                 _animator.SetBool("IsRushing", true);
+                _rushCollider.SetActive(true);
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Begin_Rush_Sequence);
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Update_Rush_Charge, _rushChargeLevel);
+            }
+
+            if ((_rushInProgress) && (_rushDurationRemaining > 0.0f))
+            {
+                _rushDurationRemaining -= Time.deltaTime;
+                if (_rushDurationRemaining <= 0.0f)
+                {
+                    EventDispatcher.FireEvent(_transform, _transform, EventMessage.End_Rush_Movement);
+                }
             }
         }
 
