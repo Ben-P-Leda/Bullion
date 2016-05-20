@@ -27,6 +27,7 @@ namespace Assets.Scripts.Configuration
             _characters.Add("Red", new CharacterConfiguration()
             {
                 Name = "Red Player",
+                HipShoulderDistance = 1.0f,
                 AliveMovementSpeed = 5.0f,
                 DeadMovementSpeed = 5.0f,
                 RushMovementSpeed = 7.0f,
@@ -40,6 +41,7 @@ namespace Assets.Scripts.Configuration
             _characters.Add("Green", new CharacterConfiguration()
             {
                 Name = "Green Player",
+                HipShoulderDistance = 1.0f,
                 AliveMovementSpeed = 5.5f,
                 DeadMovementSpeed = 4.0f,
                 RushMovementSpeed = 7.0f,
@@ -53,6 +55,7 @@ namespace Assets.Scripts.Configuration
             _characters.Add("Blue", new CharacterConfiguration()
             {
                 Name = "Blue Player",
+                HipShoulderDistance = 1.0f,
                 AliveMovementSpeed = 5.25f,
                 DeadMovementSpeed = 4.75f,
                 RushMovementSpeed = 7.0f,
@@ -66,6 +69,7 @@ namespace Assets.Scripts.Configuration
             _characters.Add("Purple", new CharacterConfiguration()
             {
                 Name = "Purple Player",
+                HipShoulderDistance = 1.0f,
                 AliveMovementSpeed = 4.5f,
                 DeadMovementSpeed = 6.0f,
                 RushMovementSpeed = 7.0f,

@@ -128,40 +128,49 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void Update()
         {
+            float floor = GetFloorAtPosition(_transform.position);
+            _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
+
             if (CanMove())
             {
-                float speed = GetMovementSpeed();
-                Vector3 inputVelocity = new Vector3(_input.Horizontal, 0.0f, _input.Vertical).normalized * speed;
-                bool isMoving = inputVelocity != Vector3.zero;
-
-                if (isMoving)
-                {
-                    _transform.LookAt(_transform.position + inputVelocity);
-                }
-
-                _rigidBody.velocity = new Vector3(inputVelocity.x, _rigidBody.velocity.y, inputVelocity.z);
-                _activeAnimator.SetBool("IsMoving", isMoving);
+                UpdateControlledMotion();
             }
             else if (_rushInProgress)
             {
-                _rigidBody.velocity = _rushVelocity;
+                UpdateRushMotion(floor);
             }
-
-            float groundHeight = _terrain.SampleHeight(_transform.position);
-            float lowestVerticalPosition = _isInDeadMode ? _seaEntryHeight : _swimHeight;
-            float floor = Mathf.Max(groundHeight, lowestVerticalPosition);
 
             if (!_isInDeadMode)
             {
                 UpdateSwimmingState();
             }
-
-            _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
            
             if (_hasBeenLaunched)
             {
                 CheckForLaunchReset(floor);
             }
+        }
+
+        public float GetFloorAtPosition(Vector3 position)
+        {
+            float groundHeight = _terrain.SampleHeight(position);
+            float lowestVerticalPosition = _isInDeadMode ? _seaEntryHeight : _swimHeight;
+            return Mathf.Max(groundHeight, lowestVerticalPosition);
+        }
+
+        private void UpdateControlledMotion()
+        {
+            float speed = GetMovementSpeed();
+            Vector3 inputVelocity = new Vector3(_input.Horizontal, 0.0f, _input.Vertical).normalized * speed;
+            bool isMoving = inputVelocity != Vector3.zero;
+
+            if (isMoving)
+            {
+                _transform.LookAt(_transform.position + inputVelocity);
+            }
+
+            _rigidBody.velocity = new Vector3(inputVelocity.x, _rigidBody.velocity.y, inputVelocity.z);
+            _activeAnimator.SetBool("IsMoving", isMoving);
         }
 
         private bool CanMove()
@@ -185,6 +194,15 @@ namespace Assets.Scripts.Gameplay.Player
             return speed;
         }
 
+        private void UpdateRushMotion(float hipFloor)
+        {
+            Vector3 headPosition = _transform.position + (Vector3.Normalize(_rushVelocity) * Configuration.HipShoulderDistance);
+            float heightDifference = GetFloorAtPosition(headPosition) - hipFloor;
+            Vector3 lookAtOffset = new Vector3(_rushVelocity.x, heightDifference, _rushVelocity.z);
+            _transform.LookAt(_transform.position + lookAtOffset);
+
+            _rigidBody.velocity = new Vector3(_rushVelocity.x, _rigidBody.velocity.y, _rushVelocity.z);
+        }
 
         private void UpdateSwimmingState()
         {
