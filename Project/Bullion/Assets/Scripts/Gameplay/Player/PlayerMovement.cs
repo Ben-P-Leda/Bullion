@@ -91,6 +91,7 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Begin_Rush_Sequence: _rushInProgress = true; break;
                     case EventMessage.Begin_Rush_Movement: SetRushing(true); break;
                     case EventMessage.End_Rush_Movement: SetRushing(false); break;
+                    case EventMessage.Rush_Stun_Impact: SetRushing(false); break;
                 }
             }
         }

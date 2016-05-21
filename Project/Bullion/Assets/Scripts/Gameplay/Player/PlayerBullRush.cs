@@ -74,7 +74,8 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Respawn: _isDead = false; break;
                     case EventMessage.Respawn_Blast: _hasBeenLaunched = true; break;
                     case EventMessage.End_Launch_Effect: _hasBeenLaunched = false; break;
-                    case EventMessage.End_Rush_Movement: _animator.SetBool("IsRushing", false); break;
+                    case EventMessage.End_Rush_Movement: EndRush(); break;
+                    case EventMessage.Rush_Stun_Impact: SetForStun(); break;
                 }
             }
         }
@@ -88,6 +89,20 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Block_Attack_Swimming: _isSwimming = value; break;
                 }
             }
+        }
+
+        private void EndRush()
+        {
+            _animator.SetBool("IsStunned", false);
+            _animator.SetBool("IsRushing", false);
+
+            _rushCollider.SetActive(false);
+        }
+
+        private void SetForStun()
+        {
+            _animator.SetBool("IsStunned", true);
+            _rushCollider.SetActive(false);
         }
 
         private void FixedUpdate()

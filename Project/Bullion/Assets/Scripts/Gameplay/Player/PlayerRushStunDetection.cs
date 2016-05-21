@@ -18,7 +18,7 @@ namespace Assets.Scripts.Gameplay.Player
         {
             if (collider.tag == Obstruction_Tag)
             {
-                EventDispatcher.FireEvent(_transform, _parentPlayerTransform, EventMessage.End_Rush_Movement);
+                EventDispatcher.FireEvent(_transform, _parentPlayerTransform, EventMessage.Rush_Stun_Impact);
             }
         }
 
