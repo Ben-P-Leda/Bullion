@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarRestingAnimationStateChange.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarRushingAnimationStateChange.cs" />
      <Compile Include="Assets\Scripts\Gameplay\CameraMovement.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Constants.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\IAnimated.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\IConfigurable.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerAttack.cs" />
@@ -67,6 +68,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRespawnBlast.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRushStunDetection.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\RespawnPoint.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Treasure\ChestCollisions.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />
      <Compile Include="Assets\Scripts\Generic\Definitions.cs" />
      <Compile Include="Assets\Scripts\Generic\Utilities.cs" />

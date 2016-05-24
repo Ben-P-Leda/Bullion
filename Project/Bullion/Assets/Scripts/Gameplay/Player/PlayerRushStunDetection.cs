@@ -16,18 +16,15 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void OnTriggerEnter(Collider collider)
         {
-            if (collider.tag == Obstruction_Tag)
+            if (collider.tag == Constants.Obstruction_Tag)
             {
                 EventDispatcher.FireEvent(_transform, _parentPlayerTransform, EventMessage.Rush_Stun_Impact);
             }
 
-            if (collider.tag == Rush_Collider_Tag)
+            if (collider.tag == Constants.Rush_Collider_Tag)
             {
                 EventDispatcher.FireEvent(collider.transform.parent, _parentPlayerTransform, EventMessage.Rush_Head_On_Collision);
             }
         }
-
-        private const string Obstruction_Tag = "Obstruction";
-        private const string Rush_Collider_Tag = "RushCollider";
     }
 }
