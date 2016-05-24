@@ -92,6 +92,7 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Begin_Rush_Movement: SetRushing(true); break;
                     case EventMessage.End_Rush_Movement: SetRushing(false); break;
                     case EventMessage.Rush_Stun_Impact: SetRushing(false); break;
+                    case EventMessage.Rush_Knockback: HandleRushImpact(originator); break;
                 }
             }
         }
@@ -110,17 +111,23 @@ namespace Assets.Scripts.Gameplay.Player
             _activeAnimator = enterDeadMode ? _deadModelAnimator : _aliveModelAnimator;
         }
 
-        private void AttemptLaunch(Vector3 respawnPointPosition)
+        private void AttemptLaunch(Vector3 launchEpicenter)
         {
-            if (CanMove())
+            if (CanBeLaunched())
             {
-                Vector3 unitDirection = Vector3.Normalize(_transform.position - respawnPointPosition);
+                Vector3 unitDirection = Vector3.Normalize(_transform.position - launchEpicenter);
                 Vector3 launchVelocityBase = new Vector3(unitDirection.x, Respawn_Blast_Launch_Vertical_Speed, unitDirection.z);
 
                 _rigidBody.velocity = launchVelocityBase * Respawn_Blast_Launch_Speed_Multiplier;
-                _transform.LookAt(new Vector3(respawnPointPosition.x, _transform.position.y, respawnPointPosition.z));
+                _transform.LookAt(new Vector3(launchEpicenter.x, _transform.position.y, launchEpicenter.z));
                 _hasBeenLaunched = true;
             }
+        }
+
+        private bool CanBeLaunched()
+        {
+            return (!_lifecycleEventInProgress)
+                && (!_hasBeenLaunched);
         }
 
         private void SetRushing(bool isRushing)
@@ -128,6 +135,13 @@ namespace Assets.Scripts.Gameplay.Player
             _rushVelocity = isRushing
                 ? Vector3.Normalize(new Vector3(_transform.forward.x, 0.0f, _transform.forward.z)) * Configuration.RushMovementSpeed
                 : Vector3.zero;
+        }
+
+        private void HandleRushImpact(Transform impactSource)
+        {
+            EventDispatcher.FireEvent(_transform, _transform, EventMessage.End_Rush_Movement);
+
+            AttemptLaunch(impactSource.position);
         }
 
         private void Update()
@@ -200,12 +214,15 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void UpdateRushMotion(float hipFloor)
         {
-            Vector3 headPosition = _transform.position + (Vector3.Normalize(_rushVelocity) * Configuration.HipShoulderDistance);
-            float heightDifference = GetFloorAtPosition(headPosition) - hipFloor;
-            Vector3 lookAtOffset = new Vector3(_rushVelocity.x, heightDifference, _rushVelocity.z);
-            _transform.LookAt(_transform.position + lookAtOffset);
+            if (!_hasBeenLaunched)
+            {
+                Vector3 headPosition = _transform.position + (Vector3.Normalize(_rushVelocity) * Configuration.HipShoulderDistance);
+                float heightDifference = GetFloorAtPosition(headPosition) - hipFloor;
+                Vector3 lookAtOffset = new Vector3(_rushVelocity.x, heightDifference, _rushVelocity.z);
+                _transform.LookAt(_transform.position + lookAtOffset);
 
-            _rigidBody.velocity = new Vector3(_rushVelocity.x, _rigidBody.velocity.y, _rushVelocity.z);
+                _rigidBody.velocity = new Vector3(_rushVelocity.x, _rigidBody.velocity.y, _rushVelocity.z);
+            }
         }
 
         private void UpdateSwimmingState()

@@ -20,8 +20,14 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 EventDispatcher.FireEvent(_transform, _parentPlayerTransform, EventMessage.Rush_Stun_Impact);
             }
+
+            if (collider.tag == Rush_Collider_Tag)
+            {
+                EventDispatcher.FireEvent(_transform, _parentPlayerTransform, EventMessage.Rush_Stun_Impact);
+            }
         }
 
         private const string Obstruction_Tag = "Obstruction";
+        private const string Rush_Collider_Tag = "RushCollider";
     }
 }

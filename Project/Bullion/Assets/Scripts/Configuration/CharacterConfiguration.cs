@@ -10,6 +10,7 @@ namespace Assets.Scripts.Configuration
         public float DeadMovementSpeed { get; set; }
         public float RushMovementSpeed { get; set; }
         public float RushDuration { get; set; }
+        public float RushDamage { get; set; }
         public int ComboStepCount { get; set; }
         public float[] ComboStepDamage { get; set; }
         public float MaximumHealth { get; set; }

@@ -66,6 +66,12 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void MessageEventHandler(Transform originator, Transform target, string message)
         {
+            if ((_rushCollider != null) && (target == _rushCollider.transform) && (message == EventMessage.Hit_Trigger_Collider))
+            {
+                EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, Configuration.RushDamage);
+                EventDispatcher.FireEvent(_transform, originator, EventMessage.Rush_Knockback);
+            }
+
             if (target == _transform)
             {
                 switch (message)
@@ -73,7 +79,7 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Has_Died: _isDead = true; _rushChargeLevel = 0.0f; break;
                     case EventMessage.Respawn: _isDead = false; break;
                     case EventMessage.Respawn_Blast: _hasBeenLaunched = true; break;
-                    case EventMessage.End_Launch_Effect: _hasBeenLaunched = false; break;
+                    case EventMessage.End_Launch_Effect: _hasBeenLaunched = false; EndRush(); break;
                     case EventMessage.End_Rush_Movement: EndRush(); break;
                     case EventMessage.Rush_Stun_Impact: SetForStun(); break;
                 }
@@ -103,6 +109,11 @@ namespace Assets.Scripts.Gameplay.Player
         {
             _animator.SetBool("IsStunned", true);
             _rushCollider.SetActive(false);
+
+            if (_rushDurationRemaining <= 0.0f)
+            {
+                _rushDurationRemaining = Configuration.RushDuration;
+            }
         }
 
         private void FixedUpdate()
