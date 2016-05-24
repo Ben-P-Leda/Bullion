@@ -25,6 +25,7 @@ namespace Assets.Scripts.Gameplay.Player
         private bool _isInDeadMode;
         private bool _hasBeenLaunched;
         private bool _rushInProgress;
+        private bool _headOnImpact;
 
         private Vector3 _rushVelocity;
 
@@ -64,6 +65,8 @@ namespace Assets.Scripts.Gameplay.Player
         {
             _attackInProgress = false;
             _rushInProgress = false;
+            _headOnImpact = false;
+
             SetLifeEventRunning(false);
         }
 
@@ -92,8 +95,13 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Begin_Rush_Movement: SetRushing(true); break;
                     case EventMessage.End_Rush_Movement: SetRushing(false); break;
                     case EventMessage.Rush_Stun_Impact: SetRushing(false); break;
+                    case EventMessage.Rush_Head_On_Collision: _headOnImpact = true; break;
                     case EventMessage.Rush_Knockback: HandleRushImpact(originator); break;
                 }
+            }
+            else if ((originator == _transform) && (message == EventMessage.Rush_Head_On_Collision))
+            {
+                _headOnImpact = true;
             }
         }
 
@@ -139,9 +147,12 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void HandleRushImpact(Transform impactSource)
         {
-            EventDispatcher.FireEvent(_transform, _transform, EventMessage.End_Rush_Movement);
+            if (!_headOnImpact)
+            {
+                AttemptLaunch(impactSource.position);
+            }
 
-            AttemptLaunch(impactSource.position);
+            EventDispatcher.FireEvent(_transform, _transform, EventMessage.End_Rush_Movement);
         }
 
         private void Update()

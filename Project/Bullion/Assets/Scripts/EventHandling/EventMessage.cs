@@ -19,5 +19,6 @@
         public const string End_Rush_Movement = "EndRushMovement";
         public const string Rush_Stun_Impact = "RushStunImpact";
         public const string Rush_Knockback = "RushKnockback";
+        public const string Rush_Head_On_Collision = "RushHeadOnCollision";
     }
 }

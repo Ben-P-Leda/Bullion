@@ -23,7 +23,7 @@ namespace Assets.Scripts.Gameplay.Player
 
             if (collider.tag == Rush_Collider_Tag)
             {
-                EventDispatcher.FireEvent(_transform, _parentPlayerTransform, EventMessage.Rush_Stun_Impact);
+                EventDispatcher.FireEvent(collider.transform.parent, _parentPlayerTransform, EventMessage.Rush_Head_On_Collision);
             }
         }
 

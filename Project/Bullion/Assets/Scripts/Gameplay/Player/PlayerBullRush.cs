@@ -44,6 +44,8 @@ namespace Assets.Scripts.Gameplay.Player
         private void EnterRestState()
         {
             _rushInProgress = false;
+
+            EndRush();
         }
 
         private void EnterRushState()
@@ -82,6 +84,7 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.End_Launch_Effect: _hasBeenLaunched = false; EndRush(); break;
                     case EventMessage.End_Rush_Movement: EndRush(); break;
                     case EventMessage.Rush_Stun_Impact: SetForStun(); break;
+                    case EventMessage.Rush_Head_On_Collision: SetForStun(); break;
                 }
             }
         }

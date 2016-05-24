@@ -60,6 +60,7 @@ namespace Assets.Scripts.Gameplay.Player
         private GameObject InitializePlayer(int playerIndex, string modelHandle, CharacterConfiguration characterConfiguration, Vector3 startPosition)
         {
             GameObject newPlayer = CreateNewPlayer(playerIndex);
+            newPlayer.name = modelHandle;
             ConnectPlayerToModels(newPlayer, modelHandle);
             ConnectPlayerToCamera(newPlayer);
             SetPlayerConfiguration(newPlayer, characterConfiguration);
