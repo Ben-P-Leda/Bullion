@@ -8,8 +8,7 @@ namespace Assets.Scripts.Gameplay.Treasure
         private Transform _transform;
         private GameObject _gameObject;
 
-        // TODO: Should be a properties with private getter
-        public float HitPoints;
+        public float HitPoints { private get; set; }
 
         private void Start()
         {
