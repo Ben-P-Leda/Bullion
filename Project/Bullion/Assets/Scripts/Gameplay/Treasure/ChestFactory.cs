@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Gameplay;
+using Assets.Scripts.Gameplay.Player;
 
 namespace Assets.Scripts.Gameplay.Treasure
 {
@@ -8,14 +10,22 @@ namespace Assets.Scripts.Gameplay.Treasure
 
         public GameObject ChestPrefab;
         public float ChestHitPoints;
+        public int LowPointMargin;
+        public int ObstructionMargin;
+        public int StartPointMargin;
 
         private void Start()
         {
-            _placementGrid = new ChestPlacementGrid(Terrain.activeTerrain, 1.0f, 2);
+            _placementGrid = new ChestPlacementGrid(Terrain.activeTerrain, 1.0f, LowPointMargin);
 
-            Transform[] fixedObstructions = GetFixedObstructions();
-            _placementGrid.BlockOutFixedObstructions(fixedObstructions, 2);
-            
+            Vector3[] obstructionPositions = GetObstructionPositions();
+            _placementGrid.MakeCellBlocksUnavailable(obstructionPositions, ObstructionMargin);
+
+            Vector3[] playerStartPoints = GetPlayerStartPoints();
+            _placementGrid.MakeCellBlocksUnavailable(playerStartPoints, StartPointMargin);
+
+
+
 
             for (int x = 0; x<_placementGrid.Width; x++)
             {
@@ -30,18 +40,38 @@ namespace Assets.Scripts.Gameplay.Treasure
             }
         }
 
-        private Transform[] GetFixedObstructions()
+        private Vector3[] GetObstructionPositions()
         {
             GameObject obstructionContainer = GameObject.Find("Obstructions");
             int obstructionCount = obstructionContainer != null ? obstructionContainer.transform.childCount : 0;
-            Transform[] obstructions = new Transform[obstructionCount];
+            Vector3[] obstructions = new Vector3[obstructionCount];
 
             for (int i = 0; i < obstructionCount; i++)
             {
-                obstructions[i] = obstructionContainer.transform.GetChild(i);
+                obstructions[i] = obstructionContainer.transform.GetChild(i).position;
             }
 
             return obstructions;
+        }
+
+        private Vector3[] GetPlayerStartPoints()
+        {
+            Vector3[] playerStartPoints = new Vector3[Constants.Player_Count];
+            PlayerFactory playerFactory = GameObject.Find("Player Factory").GetComponent<PlayerFactory>();
+
+            for (int i = 0; i < Constants.Player_Count; i++)
+            {
+                if (playerFactory.PlayerStartPoints.Length > 0)
+                {
+                    playerStartPoints[i] = new Vector3(playerFactory.PlayerStartPoints[i].x, 0.0f, playerFactory.PlayerStartPoints[i].z);
+                }
+                else
+                {
+                    playerStartPoints[i] = Vector3.zero;
+                }
+            }
+
+            return playerStartPoints;
         }
 
         private const float Hidden_Chest_Vertical_Offset = -2.0f;

@@ -48,7 +48,7 @@ namespace Assets.Scripts.Gameplay.Treasure
                     }
                     else
                     {
-                        BlockOutCellAndNeighbours(x, z, neightboursToExclude);
+                        MakeCellBlockUnavailable(x, z, neightboursToExclude);
                     }
                 }
             }
@@ -62,11 +62,11 @@ namespace Assets.Scripts.Gameplay.Treasure
             }
         }
 
-        private void BlockOutCellAndNeighbours(int centerGridX, int centerGridZ, int neighboursToExclude)
+        private void MakeCellBlockUnavailable(int centerGridX, int centerGridZ, int neighbourCount)
         {
-            for (int neighbourX = -neighboursToExclude; neighbourX <= neighboursToExclude; neighbourX++)
+            for (int neighbourX = -neighbourCount; neighbourX <= neighbourCount; neighbourX++)
             {
-                for (int neighbourZ = -neighboursToExclude; neighbourZ <= neighboursToExclude; neighbourZ++)
+                for (int neighbourZ = -neighbourCount; neighbourZ <= neighbourCount; neighbourZ++)
                 {
                     int gridX = (int)Mathf.Clamp(centerGridX + neighbourX, 0, _placementGrid.Length - 1);
                     int gridZ = (int)Mathf.Clamp(centerGridZ + neighbourZ, 0, _placementGrid[gridX].Length - 1);
@@ -75,14 +75,14 @@ namespace Assets.Scripts.Gameplay.Treasure
             }
         }
 
-        public void BlockOutFixedObstructions(Transform[] obstructions, int margin)
+        public void MakeCellBlocksUnavailable(Vector3[] blockCenters, int neighbourCount)
         {
-            for (int i = 0; i < obstructions.Length; i++)
+            for (int i = 0; i < blockCenters.Length; i++)
             {
-                int gridX = (int)(obstructions[i].position.x / _cellSize);
-                int gridZ = (int)(obstructions[i].position.z / _cellSize);
+                int gridX = (int)(blockCenters[i].x / _cellSize);
+                int gridZ = (int)(blockCenters[i].z / _cellSize);
 
-                BlockOutCellAndNeighbours(gridX, gridZ, margin);
+                MakeCellBlockUnavailable(gridX, gridZ, neighbourCount);
             }
         }
 

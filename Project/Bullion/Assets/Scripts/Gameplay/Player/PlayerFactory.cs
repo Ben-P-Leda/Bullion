@@ -13,22 +13,20 @@ namespace Assets.Scripts.Gameplay.Player
         public Vector3[] PlayerStartPoints;
 
         private GameObject[] _playerGameObjects;
-        private Terrain _terrain;
 
         private void Start()
         {
-            _terrain = Terrain.activeTerrain;
-
+            Terrain terrain = Terrain.activeTerrain;
             string[] playerAvatars = GetPlayerAvatars();
 
             _playerGameObjects = new GameObject[playerAvatars.Length];
 
-            for (int i=0; i<Player_Count; i++)
+            for (int i = 0; i < Constants.Player_Count; i++)
             {
                 if (_playerGameObjects[i] == null)
                 {
                     CharacterConfiguration characterConfiguration = ConfigurationManager.GetCharacterConfiguration(playerAvatars[i]);
-                    Vector3 startPosition = GetStartPosition(i);
+                    Vector3 startPosition = GetStartPosition(terrain, i);
 
                     _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i], characterConfiguration, startPosition);
                     InitializeRespawnPoint(_playerGameObjects[i], characterConfiguration, startPosition);
@@ -42,7 +40,7 @@ namespace Assets.Scripts.Gameplay.Player
             return Avatar_Names.Split(',');
         }
 
-        private Vector3 GetStartPosition(int playerIndex)
+        private Vector3 GetStartPosition(Terrain terrain, int playerIndex)
         {
             if (playerIndex >= PlayerStartPoints.Length)
             {
@@ -52,7 +50,7 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 return new Vector3(
                     PlayerStartPoints[playerIndex].x,
-                    _terrain.SampleHeight(PlayerStartPoints[playerIndex]),
+                    terrain.SampleHeight(PlayerStartPoints[playerIndex]),
                     PlayerStartPoints[playerIndex].z);
             }
         }
@@ -157,6 +155,5 @@ namespace Assets.Scripts.Gameplay.Player
         }
 
         private const string Avatar_Names = "Red,Green,Purple,Blue";
-        private const float Player_Count = 2;
     }
 }
