@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Gameplay;
 using Assets.Scripts.Gameplay.Player;
 
 namespace Assets.Scripts.Gameplay.Treasure
@@ -7,6 +6,7 @@ namespace Assets.Scripts.Gameplay.Treasure
     public class ChestFactory : MonoBehaviour
     {
         private ChestPlacementGrid _placementGrid;
+        private GameObject[] _chestPool;
 
         public GameObject ChestPrefab;
         public float ChestHitPoints;
@@ -16,7 +16,15 @@ namespace Assets.Scripts.Gameplay.Treasure
 
         private void Start()
         {
-            _placementGrid = new ChestPlacementGrid(Terrain.activeTerrain, 1.0f, LowPointMargin);
+            InitialisePlacementGrid();
+            InitialiseChestPool();
+
+            AttemptClusterSpawn();
+        }
+
+        private void InitialisePlacementGrid()
+        {
+            _placementGrid = new ChestPlacementGrid(Terrain.activeTerrain, Grid_Cell_Size, LowPointMargin);
 
             Vector3[] obstructionPositions = GetObstructionPositions();
             _placementGrid.MakeCellBlocksUnavailable(obstructionPositions, ObstructionMargin);
@@ -24,20 +32,7 @@ namespace Assets.Scripts.Gameplay.Treasure
             Vector3[] playerStartPoints = GetPlayerStartPoints();
             _placementGrid.MakeCellBlocksUnavailable(playerStartPoints, StartPointMargin);
 
-
-
-
-            for (int x = 0; x<_placementGrid.Width; x++)
-            {
-                for (int z = 0; z<_placementGrid.Depth; z++)
-                {
-                    if (_placementGrid.GetCellState(x, z) == ChestPlacementGrid.CellState.Available)
-                    {
-                        GameObject box = (GameObject)Instantiate(ChestPrefab);
-                        box.transform.position = new Vector3(x + 0.5f, 3.0f, z + 0.5f);
-                    }
-                }
-            }
+            _placementGrid.BlockClusterEdgeCells();
         }
 
         private Vector3[] GetObstructionPositions()
@@ -61,19 +56,56 @@ namespace Assets.Scripts.Gameplay.Treasure
 
             for (int i = 0; i < Constants.Player_Count; i++)
             {
-                if (playerFactory.PlayerStartPoints.Length > 0)
-                {
-                    playerStartPoints[i] = new Vector3(playerFactory.PlayerStartPoints[i].x, 0.0f, playerFactory.PlayerStartPoints[i].z);
-                }
-                else
-                {
-                    playerStartPoints[i] = Vector3.zero;
-                }
+                playerStartPoints[i] = playerFactory.PlayerStartPoints.Length > i
+                    ? new Vector3(playerFactory.PlayerStartPoints[i].x, 0.0f, playerFactory.PlayerStartPoints[i].z)
+                    : playerStartPoints[i] = Vector3.zero;
             }
 
             return playerStartPoints;
         }
 
+        private void InitialiseChestPool()
+        {
+            _chestPool = new GameObject[Chest_Pool_Capacity];
+            for (int i = 0; i < Chest_Pool_Capacity; i++)
+            {
+                _chestPool[i] = (GameObject)Instantiate(ChestPrefab);
+                _chestPool[i].transform.parent = transform;
+            }
+        }
+
+
+        private void AttemptClusterSpawn()
+        {
+            if (SufficientChestsAvailableInPool())
+            {
+                Vector3 clusterCenterCell = _placementGrid.GetClusterCenter();
+                Vector3 offset = GetClusterDirection();
+            }
+        }
+
+        private bool SufficientChestsAvailableInPool()
+        {
+            int availableChests = 0;
+            for (int i = 0; (i < Chest_Pool_Capacity) && (availableChests < Chests_In_Cluster); i++)
+            {
+                if (!_chestPool[i].activeInHierarchy)
+                {
+                    availableChests++;
+                }
+            }
+
+            return availableChests >= Chests_In_Cluster;
+        }
+
+        private Vector3 GetClusterDirection()
+        {
+            return Vector3.up;
+        }
+
         private const float Hidden_Chest_Vertical_Offset = -2.0f;
+        private const float Grid_Cell_Size = 1.0f;
+        private const int Chest_Pool_Capacity = 21;
+        private const int Chests_In_Cluster = 3;
     }
 }

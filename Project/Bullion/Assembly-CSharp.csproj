@@ -72,6 +72,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Treasure\ChestEntry.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\ChestFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\ChestPlacementGrid.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Treasure\ChestPlacementGridCell.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />
      <Compile Include="Assets\Scripts\Generic\Definitions.cs" />
      <Compile Include="Assets\Scripts\Generic\Utilities.cs" />

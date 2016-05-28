@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Gameplay.Treasure
 {
     public class ChestPlacementGrid
     {
-        private CellState[][] _placementGrid;
+        private ChestPlacementGridCell[][] _placementGrid;
         private float _cellSize;
 
         public int Width { get; private set; }
@@ -17,48 +18,36 @@ namespace Assets.Scripts.Gameplay.Treasure
 
             _cellSize = cellSize;
 
-            CreateGridContainer(Width, Depth);
-            MarkCellsUnavailableByGroundHeight(Width, Depth, terrain, cellSize, neighboursToExclude);
+            CreateGridContainer();
+            MarkCellsUnavailableByGroundHeight(terrain, neighboursToExclude);
         }
 
-        private void CreateGridContainer(int width, int depth)
+        private void CreateGridContainer()
         {
-            _placementGrid = new CellState[width][];
-            for (int x = 0; x < width; x++)
+            _placementGrid = new ChestPlacementGridCell[Width][];
+            for (int x = 0; x < Width; x++)
             {
-                _placementGrid[x] = new CellState[depth];
-                for (int z = 0; z < depth; z++)
+                _placementGrid[x] = new ChestPlacementGridCell[Depth];
+                for (int z = 0; z < Depth; z++)
                 {
-                    _placementGrid[x][z] = CellState.Unassigned;
+                    _placementGrid[x][z] = new ChestPlacementGridCell();
                 }
             }
         }
 
-        private void MarkCellsUnavailableByGroundHeight(int width, int depth, Terrain terrain, float cellSize, int neightboursToExclude)
+        private void MarkCellsUnavailableByGroundHeight(Terrain terrain, int neightboursToExclude)
         {
-            for (int z = 0; z < depth; z++)
+            for (int z = 0; z < Depth; z++)
             {
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < Width; x++)
                 {
-                    Vector3 terrainPosition = new Vector3((x + (cellSize * 0.5f)) * cellSize, 0.0f, (z + (cellSize * 0.5f)) * cellSize);
+                    Vector3 terrainPosition = new Vector3((x + (_cellSize * 0.5f)) * _cellSize, 0.0f, (z + (_cellSize * 0.5f)) * _cellSize);
 
-                    if (Terrain.activeTerrain.SampleHeight(terrainPosition) >= Assignable_Cell_Minimum_Height)
-                    {
-                        SetGridCellStateIfNotPermanentlyUnavailable(x, z, CellState.Available);
-                    }
-                    else
+                    if (Terrain.activeTerrain.SampleHeight(terrainPosition) < Assignable_Cell_Minimum_Height)
                     {
                         MakeCellBlockUnavailable(x, z, neightboursToExclude);
                     }
                 }
-            }
-        }
-
-        private void SetGridCellStateIfNotPermanentlyUnavailable(int gridX, int gridZ, CellState gridCellState)
-        {
-            if (_placementGrid[gridX][gridZ] != CellState.PermanentlyUnavailable)
-            {
-                _placementGrid[gridX][gridZ] = gridCellState;
             }
         }
 
@@ -70,7 +59,7 @@ namespace Assets.Scripts.Gameplay.Treasure
                 {
                     int gridX = (int)Mathf.Clamp(centerGridX + neighbourX, 0, _placementGrid.Length - 1);
                     int gridZ = (int)Mathf.Clamp(centerGridZ + neighbourZ, 0, _placementGrid[gridX].Length - 1);
-                    _placementGrid[gridX][gridZ] = CellState.PermanentlyUnavailable;
+                    _placementGrid[gridX][gridZ].PermanentlyUnavailable = true;
                 }
             }
         }
@@ -86,20 +75,54 @@ namespace Assets.Scripts.Gameplay.Treasure
             }
         }
 
-        public CellState GetCellState(int x, int z)
+        public void BlockClusterEdgeCells()
         {
-            return _placementGrid[x][z];
+            for (int x = 0; x < Width; x++)
+            {
+                for (int z = 0; z < Depth; z++)
+                {
+                    if ((_placementGrid[x][z].Available) && (GetAvailableNeighbourCount(x, z) < Cluster_Center_Neighbour_Count))
+                    {
+                        _placementGrid[x][z].CannotBeClusterCenter = true;
+                    }
+                }
+            }
         }
 
-        public enum CellState
+        private int GetAvailableNeighbourCount(int gridX, int gridZ)
         {
-            Unassigned = 0,
-            TemporarilyUnavailable = 1,
-            PermanentlyUnavailable = 2,
-            Available = 3
+            int availableNeighbours = -1;
+            for (int x = gridX - 1; x <= gridX + 1; x++)
+            {
+                for (int z = gridZ - 1; z <= gridZ + 1; z++)
+                {
+                    if (_placementGrid[x][z].Available)
+                    {
+                        availableNeighbours++;
+                    }
+                }
+            }
+
+            return availableNeighbours;
+        }
+
+        public bool CellIsAvailable(int x, int z)
+        {
+            return _placementGrid[x][z].Available;
+        }
+
+        public bool CellCanBeCenter(int x, int z)
+        {
+            return (_placementGrid[x][z].Available) && (!_placementGrid[x][z].CannotBeClusterCenter);
+        }
+
+        public Vector3 GetClusterCenter()
+        {
+            return new Vector3(22, 0, 20);
         }
 
         private const float Assignable_Cell_Minimum_Height = 1.2f;
         private const int Neighbours_To_Exclude = 2;
+        private const int Cluster_Center_Neighbour_Count = 5;
     }
 }
