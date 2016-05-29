@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
+using Assets.Scripts.Gameplay.Treasure;
 using Assets.Scripts.Gameplay.UI;
 
 namespace Assets.Scripts.Gameplay.Player
@@ -17,6 +18,7 @@ namespace Assets.Scripts.Gameplay.Player
         private void Start()
         {
             Terrain terrain = Terrain.activeTerrain;
+            ChestFactory chestFactory = FindObjectOfType<ChestFactory>();
             string[] playerAvatars = GetPlayerAvatars();
 
             _playerGameObjects = new GameObject[playerAvatars.Length];
@@ -31,6 +33,8 @@ namespace Assets.Scripts.Gameplay.Player
                     _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i], characterConfiguration, startPosition);
                     InitializeRespawnPoint(_playerGameObjects[i], characterConfiguration, startPosition);
                     InitializeStatusDisplay(_playerGameObjects[i], characterConfiguration, i);
+
+                    chestFactory.Players.Add(_playerGameObjects[i].transform);
                 }
             }
         }

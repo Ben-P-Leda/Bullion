@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Gameplay.Player;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Gameplay.Treasure
 {
@@ -7,6 +7,7 @@ namespace Assets.Scripts.Gameplay.Treasure
     {
         private ChestPlacementGrid _placementGrid;
         private GameObject[] _chestPool;
+        private List<Transform> _playerTransforms = new List<Transform>();
 
         public GameObject ChestPrefab;
         public float ChestHitPoints;
@@ -14,89 +15,141 @@ namespace Assets.Scripts.Gameplay.Treasure
         public int ObstructionMargin;
         public int StartPointMargin;
 
+        public List<Transform> Players { get { return _playerTransforms; } }
+
         private void Start()
         {
             InitialisePlacementGrid();
-            InitialiseChestPool();
 
-            AttemptClusterSpawn();
+            Debug.Log(_playerTransforms.Count);
+
+            CreateTestingDisplay();
+
+
+            //InitialiseChestPool();
+
+            //AttemptClusterSpawn();
         }
 
         private void InitialisePlacementGrid()
         {
             _placementGrid = new ChestPlacementGrid(Terrain.activeTerrain, Grid_Cell_Size, LowPointMargin);
 
-            Vector3[] obstructionPositions = GetObstructionPositions();
+            Transform[] obstructionPositions = GetObstructionPositions();
             _placementGrid.MakeCellBlocksUnavailable(obstructionPositions, ObstructionMargin);
 
-            Vector3[] playerStartPoints = GetPlayerStartPoints();
-            _placementGrid.MakeCellBlocksUnavailable(playerStartPoints, StartPointMargin);
+            _placementGrid.MakeCellBlocksUnavailable(_playerTransforms.ToArray(), StartPointMargin);
 
             _placementGrid.BlockClusterEdgeCells();
         }
 
-        private Vector3[] GetObstructionPositions()
+        private Transform[] GetObstructionPositions()
         {
             GameObject obstructionContainer = GameObject.Find("Obstructions");
             int obstructionCount = obstructionContainer != null ? obstructionContainer.transform.childCount : 0;
-            Vector3[] obstructions = new Vector3[obstructionCount];
+            Transform[] obstructions = new Transform[obstructionCount];
 
             for (int i = 0; i < obstructionCount; i++)
             {
-                obstructions[i] = obstructionContainer.transform.GetChild(i).position;
+                obstructions[i] = obstructionContainer.transform.GetChild(i);
             }
 
             return obstructions;
         }
 
-        private Vector3[] GetPlayerStartPoints()
+
+        // FUNCTIONS FOR TESTING PLACEMENT CENTERS
+
+        private GameObject[][] _boxes;
+        private void CreateTestingDisplay()
         {
-            Vector3[] playerStartPoints = new Vector3[Constants.Player_Count];
-            PlayerFactory playerFactory = GameObject.Find("Player Factory").GetComponent<PlayerFactory>();
+            _boxes = new GameObject[_placementGrid.Width][];
 
-            for (int i = 0; i < Constants.Player_Count; i++)
+            for (int x = 0; x < _placementGrid.Width; x++)
             {
-                playerStartPoints[i] = playerFactory.PlayerStartPoints.Length > i
-                    ? new Vector3(playerFactory.PlayerStartPoints[i].x, 0.0f, playerFactory.PlayerStartPoints[i].z)
-                    : playerStartPoints[i] = Vector3.zero;
-            }
+                _boxes[x] = new GameObject[_placementGrid.Depth];
 
-            return playerStartPoints;
-        }
-
-        private void InitialiseChestPool()
-        {
-            _chestPool = new GameObject[Chest_Pool_Capacity];
-            for (int i = 0; i < Chest_Pool_Capacity; i++)
-            {
-                _chestPool[i] = (GameObject)Instantiate(ChestPrefab);
-                _chestPool[i].transform.parent = transform;
-            }
-        }
-
-
-        private void AttemptClusterSpawn()
-        {
-            if (SufficientChestsAvailableInPool())
-            {
-                Vector3 clusterCenterCell = _placementGrid.GetClusterCenter();
-                Vector3 offset = GetClusterDirection();
-            }
-        }
-
-        private bool SufficientChestsAvailableInPool()
-        {
-            int availableChests = 0;
-            for (int i = 0; (i < Chest_Pool_Capacity) && (availableChests < Chests_In_Cluster); i++)
-            {
-                if (!_chestPool[i].activeInHierarchy)
+                for (int z = 0; z < _placementGrid.Depth; z++)
                 {
-                    availableChests++;
+                    if (_placementGrid.CellCanBeCenter(x, z))
+                    {
+                        GameObject box = (GameObject)Instantiate(ChestPrefab);
+                        box.transform.position = new Vector3(x + 0.5f, 4.0f, z + 0.5f);
+                        box.SetActive(false);
+
+                        _boxes[x][z] = box;
+                    }
                 }
             }
-
-            return availableChests >= Chests_In_Cluster;
         }
+
+        private float _timeToNextUpdate = 5;
+        private Rect _displayArea = new Rect(300, 0, 300, 100);
+        private void Update()
+        {
+            _timeToNextUpdate -= Time.deltaTime;
+            if (_timeToNextUpdate < 0)
+            {
+                _timeToNextUpdate = 10.0f;
+                Debug.Log("Update");
+                UpdateTestingDisplay();
+            }
+        }
+
+        private void UpdateTestingDisplay()
+        {
+            for (int x = 0; x < _placementGrid.Width; x++)
+            {
+                for (int z = 0; z < _placementGrid.Depth; z++)
+                {
+                    if (_placementGrid.CellCanBeCenter(x, z))
+                    {
+                        _boxes[x][z].SetActive(_placementGrid.CellIsAvailable(x, z));
+                    }
+                }
+            }
+        }
+
+        private void OnGUI()
+        {
+            GUI.Label(_displayArea, "Update in " + _timeToNextUpdate);
+        }
+
+
+        // ACTUAL CHEST PLACEMENT ON HOLD WHILE TESTING TEMPORARY CELL BLOCKING
+
+        //private void InitialiseChestPool()
+        //{
+        //    _chestPool = new GameObject[Chest_Pool_Capacity];
+        //    for (int i = 0; i < Chest_Pool_Capacity; i++)
+        //    {
+        //        _chestPool[i] = (GameObject)Instantiate(ChestPrefab);
+        //        _chestPool[i].transform.parent = transform;
+        //    }
+        //}
+
+        //private void AttemptClusterSpawn()
+        //{
+        //    if (SufficientChestsAvailableInPool())
+        //    {
+        //        Vector3 clusterCenterCell = _placementGrid.GetClusterCenter();
+        //        Vector3 offset = GetClusterDirection();
+        //    }
+        //}
+
+        //private bool SufficientChestsAvailableInPool()
+        //{
+        //    int availableChests = 0;
+        //    for (int i = 0; (i < Chest_Pool_Capacity) && (availableChests < Chests_In_Cluster); i++)
+        //    {
+        //        if (!_chestPool[i].activeInHierarchy)
+        //        {
+        //            availableChests++;
+        //        }
+        //    }
+
+        //    return availableChests >= Chests_In_Cluster;
+        //}
 
         private Vector3 GetClusterDirection()
         {

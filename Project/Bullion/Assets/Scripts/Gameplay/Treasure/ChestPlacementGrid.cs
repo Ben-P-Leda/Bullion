@@ -64,12 +64,12 @@ namespace Assets.Scripts.Gameplay.Treasure
             }
         }
 
-        public void MakeCellBlocksUnavailable(Vector3[] blockCenters, int neighbourCount)
+        public void MakeCellBlocksUnavailable(Transform[] blockCenters, int neighbourCount)
         {
             for (int i = 0; i < blockCenters.Length; i++)
             {
-                int gridX = (int)(blockCenters[i].x / _cellSize);
-                int gridZ = (int)(blockCenters[i].z / _cellSize);
+                int gridX = (int)(blockCenters[i].position.x / _cellSize);
+                int gridZ = (int)(blockCenters[i].position.z / _cellSize);
 
                 MakeCellBlockUnavailable(gridX, gridZ, neighbourCount);
             }
