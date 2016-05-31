@@ -45,13 +45,13 @@ namespace Assets.Scripts.Gameplay.Treasure
 
                     if (Terrain.activeTerrain.SampleHeight(terrainPosition) < Assignable_Cell_Minimum_Height)
                     {
-                        MakeCellBlockUnavailable(x, z, neightboursToExclude);
+                        MakeCellBlockUnavailable(x, z, neightboursToExclude, false);
                     }
                 }
             }
         }
 
-        private void MakeCellBlockUnavailable(int centerGridX, int centerGridZ, int neighbourCount)
+        private void MakeCellBlockUnavailable(int centerGridX, int centerGridZ, int neighbourCount, bool temporaryBlock)
         {
             for (int neighbourX = -neighbourCount; neighbourX <= neighbourCount; neighbourX++)
             {
@@ -59,7 +59,14 @@ namespace Assets.Scripts.Gameplay.Treasure
                 {
                     int gridX = (int)Mathf.Clamp(centerGridX + neighbourX, 0, _placementGrid.Length - 1);
                     int gridZ = (int)Mathf.Clamp(centerGridZ + neighbourZ, 0, _placementGrid[gridX].Length - 1);
-                    _placementGrid[gridX][gridZ].PermanentlyUnavailable = true;
+                    if (!temporaryBlock)
+                    {
+                        _placementGrid[gridX][gridZ].PermanentlyUnavailable = true;
+                    }
+                    else
+                    {
+                        _placementGrid[gridX][gridZ].TemporarilyUnavailable = true;
+                    }
                 }
             }
         }
@@ -71,7 +78,7 @@ namespace Assets.Scripts.Gameplay.Treasure
                 int gridX = (int)(blockCenters[i].position.x / _cellSize);
                 int gridZ = (int)(blockCenters[i].position.z / _cellSize);
 
-                MakeCellBlockUnavailable(gridX, gridZ, neighbourCount);
+                MakeCellBlockUnavailable(gridX, gridZ, neighbourCount, false);
             }
         }
 
@@ -106,19 +113,44 @@ namespace Assets.Scripts.Gameplay.Treasure
             return availableNeighbours;
         }
 
-        public bool CellIsAvailable(int x, int z)
-        {
-            return _placementGrid[x][z].Available;
-        }
-
         public bool CellCanBeCenter(int x, int z)
         {
             return (_placementGrid[x][z].Available) && (!_placementGrid[x][z].CannotBeClusterCenter);
         }
 
+        public void ClearTemporaryBlocks()
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int z = 0; z < Depth; z++)
+                {
+                    _placementGrid[x][z].TemporarilyUnavailable = false;
+                }
+            }
+        }
+
+        public void UpdateTemporaryBlocking(Transform blockingObject, int neighbourCount)
+        {
+            int gridX = (int)(blockingObject.position.x / _cellSize);
+            int gridZ = (int)(blockingObject.position.z / _cellSize);
+
+            MakeCellBlockUnavailable(gridX, gridZ, neighbourCount, true);
+        }
+
         public Vector3 GetClusterCenter()
         {
-            return new Vector3(22, 0, 20);
+            int gridX = -1;
+            int gridZ = -1;
+            int offset = Random.Range(0, (Width * Depth) - 1);
+            bool centerFound = false;
+            for (int i = 0; ((!centerFound) && (i < Width * Depth)); i++)
+            {
+                gridX = (offset + i) % Width;
+                gridZ = (offset + i) / Width;
+                centerFound = CellCanBeCenter(gridX, gridZ);
+            }
+
+            return centerFound ? new Vector3(gridX, 0, gridZ) : -Vector3.one;
         }
 
         private const float Assignable_Cell_Minimum_Height = 1.2f;

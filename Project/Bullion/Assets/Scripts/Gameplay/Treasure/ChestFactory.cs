@@ -14,14 +14,13 @@ namespace Assets.Scripts.Gameplay.Treasure
         public int LowPointMargin;
         public int ObstructionMargin;
         public int StartPointMargin;
+        public int CharacterMargin;
 
         public List<Transform> Players { get { return _playerTransforms; } }
 
         private void Start()
         {
             InitialisePlacementGrid();
-
-            Debug.Log(_playerTransforms.Count);
 
             CreateTestingDisplay();
 
@@ -85,14 +84,45 @@ namespace Assets.Scripts.Gameplay.Treasure
 
         private float _timeToNextUpdate = 5;
         private Rect _displayArea = new Rect(300, 0, 300, 100);
+        private int _selectedX = 22;
+        private int _selectedZ = 20;
+        private float _angle = 0.0f;
         private void Update()
         {
             _timeToNextUpdate -= Time.deltaTime;
             if (_timeToNextUpdate < 0)
             {
                 _timeToNextUpdate = 10.0f;
-                Debug.Log("Update");
+
+                _placementGrid.ClearTemporaryBlocks();
+                for (int i = 0; i < _playerTransforms.Count; i++)
+                {
+                    _placementGrid.UpdateTemporaryBlocking(_playerTransforms[i], CharacterMargin);
+                }
+
+                _angle = 0.0f;
+                UpdateSelectedBox();
+
+                Vector3 newBox = _placementGrid.GetClusterCenter();
+                _selectedX = (int)newBox.x;
+                _selectedZ = (int)newBox.z;
+
                 UpdateTestingDisplay();
+            }
+
+            _angle += 1.0f;
+            UpdateSelectedBox();
+        }
+
+        private void UpdateSelectedBox()
+        {
+            if (_boxes[_selectedX][_selectedZ] != null)
+            {
+                _boxes[_selectedX][_selectedZ].transform.Rotate(0, _angle, 0);
+                _boxes[_selectedX][_selectedZ].transform.position = new Vector3(
+                    _boxes[_selectedX][_selectedZ].transform.position.x,
+                    4.0f + Mathf.Sin(_angle/ 10.0f),
+                    _boxes[_selectedX][_selectedZ].transform.position.z);
             }
         }
 
@@ -102,9 +132,9 @@ namespace Assets.Scripts.Gameplay.Treasure
             {
                 for (int z = 0; z < _placementGrid.Depth; z++)
                 {
-                    if (_placementGrid.CellCanBeCenter(x, z))
+                    if (_boxes[x][z] != null)
                     {
-                        _boxes[x][z].SetActive(_placementGrid.CellIsAvailable(x, z));
+                        _boxes[x][z].SetActive(_placementGrid.CellCanBeCenter(x, z));
                     }
                 }
             }
@@ -112,7 +142,7 @@ namespace Assets.Scripts.Gameplay.Treasure
 
         private void OnGUI()
         {
-            GUI.Label(_displayArea, "Update in " + _timeToNextUpdate);
+            GUI.Label(_displayArea, "Update in " + _timeToNextUpdate + "\nRotation: " + _angle);
         }
 
 
