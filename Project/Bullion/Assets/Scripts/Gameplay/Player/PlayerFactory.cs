@@ -34,7 +34,7 @@ namespace Assets.Scripts.Gameplay.Player
                     InitializeRespawnPoint(_playerGameObjects[i], characterConfiguration, startPosition);
                     InitializeStatusDisplay(_playerGameObjects[i], characterConfiguration, i);
 
-                    chestFactory.Players.Add(_playerGameObjects[i].transform);
+                    chestFactory.AddPlayerReference(i, _playerGameObjects[i]);
                 }
             }
         }
