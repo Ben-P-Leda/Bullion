@@ -12,16 +12,17 @@ namespace Assets.Scripts.Gameplay.Treasure.Helpers
 
         public PlacementGrid(Terrain terrain, float cellSize, int neighboursToExclude)
         {
+            Width = (int)(terrain.terrainData.size.x / cellSize);
+            Depth = (int)(terrain.terrainData.size.z / cellSize);
+
+            _cellSize = cellSize;
+
             CreateGridContainer(terrain, cellSize);
             MarkCellsUnavailableByGroundHeight(neighboursToExclude);
         }
 
         private void CreateGridContainer(Terrain terrain, float cellSize)
         {
-            Width = (int)(terrain.terrainData.size.x / cellSize);
-            Depth = (int)(terrain.terrainData.size.z / cellSize);
-
-            _cellSize = cellSize;
             _placementGrid = new PlacementGridCell[Width][];
 
             for (int x = 0; x < Width; x++)
@@ -80,6 +81,12 @@ namespace Assets.Scripts.Gameplay.Treasure.Helpers
         public void BlockCellsTemporarily(Transform[] centerPoints, int neighbourCount)
         {
             MakeCellBlocksUnavailable(centerPoints, neighbourCount, true);
+        }
+
+        public void BlockCellsAroundChest(GameObject chest)
+        {
+            PlacementGridReference gridPosition = PlacementGridReference.FromWorld(chest.transform.position, _cellSize);
+            MakeCellBlockUnavailable(gridPosition.x, gridPosition.z, 1, true);
         }
 
         private void MakeCellBlocksUnavailable(Transform[] blockCenters, int neighbourCount, bool temporaryBlock)
@@ -148,15 +155,13 @@ namespace Assets.Scripts.Gameplay.Treasure.Helpers
             for (int i = 0; ((clusterCenter == null) && (i < Width * Depth)); i++)
             {
                 int gridX = (offset + i) % Width;
-                int gridZ = (offset + i) / Width;
+                int gridZ = ((offset + i) / Width) % Depth;
 
                 if (CellCanBeCenter(gridX, gridZ))
                 {
                     clusterCenter = new PlacementGridReference(gridX, gridZ);
                 }
             }
-
-            Debug.Log("Get Cluster: " + (clusterCenter == null ? "NULL" : clusterCenter.x + ":" + clusterCenter.z));
 
             return clusterCenter;
         }

@@ -17,6 +17,8 @@ namespace Assets.Scripts.Gameplay.Treasure
         public int ObstructionMargin;
         public int StartPointMargin;
         public int CharacterMargin;
+        public float MinimumTimeBetweenSpawns;
+        public float MaximumTimeBetweenSpawns;
 
         public void AddPlayerReference(int playerIndex, GameObject player)
         {
@@ -33,7 +35,7 @@ namespace Assets.Scripts.Gameplay.Treasure
             InitialisePlacementGrid();
             InitialiseChestPool();
 
-            _clusterContainer = new ClusterContainer();
+            _clusterContainer = new ClusterContainer() { ChestHitPoints = this.ChestHitPoints };
             _timeToNextSpawn = 2.5f;
         }
 
@@ -76,21 +78,29 @@ namespace Assets.Scripts.Gameplay.Treasure
             _timeToNextSpawn -= Time.deltaTime;
             if (_timeToNextSpawn <= 0.0f)
             {
-                UpdatePlacementGridFromCharacterPositions();
+                UpdatePlacementGridBlockedCells();
 
                 if (ChestsAllocatedToClusterContainer())
                 {
                     PlaceCluster();
                 }
 
-                _timeToNextSpawn = 10.0f;                   // TESTING FUNCTION
+                _timeToNextSpawn = Random.Range(MinimumTimeBetweenSpawns, MaximumTimeBetweenSpawns);
             }
         }
 
-        private void UpdatePlacementGridFromCharacterPositions()
+        private void UpdatePlacementGridBlockedCells()
         {
             _placementGrid.ClearTemporaryCellBlockages();
             _placementGrid.BlockCellsTemporarily(_playerTransforms, CharacterMargin);
+
+            for (int i = 0; i < Chest_Pool_Capacity; i++)
+            {
+                if (_chestPool[i].activeInHierarchy)
+                {
+                    _placementGrid.BlockCellsAroundChest(_chestPool[i]);
+                }
+            }
         }
 
         private bool ChestsAllocatedToClusterContainer()
@@ -105,13 +115,12 @@ namespace Assets.Scripts.Gameplay.Treasure
       
             while (!_clusterContainer.PlacementComplete)
             {
-                Debug.Log("Place at " + _clusterContainer.NextChestCellPosition.x + ":" + _clusterContainer.NextChestCellPosition.z);
-
                 Vector3 chestWorldPosition = _placementGrid.GetChestStartPosition(_clusterContainer.NextChestCellPosition);
                 _clusterContainer.PlaceNextChest(chestWorldPosition);
             }
         }
 
+        // TESTING STUFF
         private Rect _displayArea = new Rect(300, 0, 300, 100);
         private void OnGUI()
         {
@@ -119,6 +128,6 @@ namespace Assets.Scripts.Gameplay.Treasure
         }
 
         private const float Grid_Cell_Size = 1.0f;
-        private const int Chest_Pool_Capacity = 21;
+        private const int Chest_Pool_Capacity = 10;
     }
 }

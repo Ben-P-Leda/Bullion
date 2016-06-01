@@ -9,6 +9,8 @@ namespace Assets.Scripts.Gameplay.Treasure.Helpers
         private int _numberPlaced;
         private GameObject[] _chests;
 
+        public float ChestHitPoints { private get; set; }
+
         public bool SufficientChestsAllocated { get; private set; }
         public PlacementGridReference NextChestCellPosition { get; private set; }
         public bool PlacementComplete { get { return _numberPlaced >= Cluster_Size; } }
@@ -61,6 +63,7 @@ namespace Assets.Scripts.Gameplay.Treasure.Helpers
             entryControlScript.StartPosition = new Vector3(worldPosition.x, worldPosition.y + Hidden_Chest_Vertical_Offset, worldPosition.z);
             entryControlScript.SecondsToLaunch = _revealDelay;
 
+            _chests[_numberPlaced].GetComponent<ChestCollisions>().HitPoints = ChestHitPoints;
             _chests[_numberPlaced].SetActive(true);
 
             NextChestCellPosition.x += _direction.x;

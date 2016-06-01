@@ -8,20 +8,41 @@ namespace Assets.Scripts.Gameplay.Treasure
         private Transform _transform;
         private Rigidbody _rigidBody;
         private BoxCollider _topCollider;
+        private ChestCollisions _collisionController;
         private GameObject _groundCollider;
 
         private bool _inPlay;
 
         public float SecondsToLaunch { private get; set; }
         public Vector3 StartPosition { private get; set; }
+        public float HitPoints { set { _collisionController.HitPoints = value; } }
 
         private void Start()
         {
             _transform = transform;
-            _transform.position = StartPosition;
-            _rigidBody = _transform.GetComponent<Rigidbody>();
-            _topCollider = _transform.GetComponent<BoxCollider>();
+            _rigidBody = GetComponent<Rigidbody>();
+            _topCollider = GetComponent<BoxCollider>();
+            _collisionController = GetComponent<ChestCollisions>();
             _groundCollider = _transform.FindChild("Ground Collider").gameObject;
+
+            Reset();
+        }
+
+        private void OnEnable()
+        {
+            if (_transform != null)
+            {
+                Reset();
+            }
+        }
+
+        private void Reset()
+        {
+            _transform.position = StartPosition;
+            _rigidBody.constraints =
+                RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationY;
+            _topCollider.enabled = false;
+            _groundCollider.SetActive(false);
 
             _inPlay = false;
         }
