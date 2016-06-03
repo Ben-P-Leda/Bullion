@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Generic;
 using Assets.Scripts.Gameplay.Treasure.Helpers;
 
 namespace Assets.Scripts.Gameplay.Treasure
@@ -6,10 +7,10 @@ namespace Assets.Scripts.Gameplay.Treasure
     public class ChestFactory : MonoBehaviour
     {
         private PlacementGrid _placementGrid;
-        private GameObject[] _chestPool;
+        private ChestClusterCoordinator _clusterContainer;
+        private ObjectPool _chestPool;
         private Transform[] _playerTransforms;
         private float _timeToNextSpawn;
-        private ClusterContainer _clusterContainer;
 
         public GameObject ChestPrefab;
         public float ChestHitPoints;
@@ -32,11 +33,22 @@ namespace Assets.Scripts.Gameplay.Treasure
 
         private void Start()
         {
-            InitialisePlacementGrid();
-            InitialiseChestPool();
-
-            _clusterContainer = new ClusterContainer() { ChestHitPoints = this.ChestHitPoints };
+            _clusterContainer = new ChestClusterCoordinator();
+            _chestPool = new ObjectPool(transform, Chest_Pool_Capacity, CreateChestForPool, ActivateChest);
             _timeToNextSpawn = 2.5f;
+
+            InitialisePlacementGrid();
+        }
+
+        private GameObject CreateChestForPool()
+        {
+            return (GameObject)Instantiate(ChestPrefab);
+        }
+
+        private void ActivateChest(GameObject chestToActivate)
+        {
+            Vector3 chestWorldPosition = _placementGrid.GetChestStartPosition(_clusterContainer.NextChestGridPosition);
+            _clusterContainer.PlaceChest(chestToActivate, chestWorldPosition, ChestHitPoints);
         }
 
         private void InitialisePlacementGrid()
@@ -63,16 +75,6 @@ namespace Assets.Scripts.Gameplay.Treasure
             return obstructions;
         }
 
-        private void InitialiseChestPool()
-        {
-            _chestPool = new GameObject[Chest_Pool_Capacity];
-            for (int i = 0; i < Chest_Pool_Capacity; i++)
-            {
-                _chestPool[i] = (GameObject)Instantiate(ChestPrefab);
-                _chestPool[i].transform.parent = transform;
-            }
-        }
-
         private void Update()
         {
             _timeToNextSpawn -= Time.deltaTime;
@@ -80,7 +82,7 @@ namespace Assets.Scripts.Gameplay.Treasure
             {
                 UpdatePlacementGridBlockedCells();
 
-                if (ChestsAllocatedToClusterContainer())
+                if (_chestPool.GetAvailableObjectCount() >= ChestClusterCoordinator.Cluster_Size)
                 {
                     PlaceCluster();
                 }
@@ -94,29 +96,16 @@ namespace Assets.Scripts.Gameplay.Treasure
             _placementGrid.ClearTemporaryCellBlockages();
             _placementGrid.BlockCellsTemporarily(_playerTransforms, CharacterMargin);
 
-            for (int i = 0; i < Chest_Pool_Capacity; i++)
-            {
-                if (_chestPool[i].activeInHierarchy)
-                {
-                    _placementGrid.BlockCellsAroundChest(_chestPool[i]);
-                }
-            }
-        }
-
-        private bool ChestsAllocatedToClusterContainer()
-        {
-            _clusterContainer.AllocateChestsFromPool(_chestPool);
-            return _clusterContainer.SufficientChestsAllocated;
+            _chestPool.ApplyActionToActivePoolObjects(_placementGrid.BlockCellsAroundChest);
         }
 
         private void PlaceCluster()
         {
-            _clusterContainer.SetForPlacement(_placementGrid.GetClusterCenter());
-      
-            while (!_clusterContainer.PlacementComplete)
+            PlacementGridReference clusterCenter = _placementGrid.GetClusterCenter();
+            if (clusterCenter != null)
             {
-                Vector3 chestWorldPosition = _placementGrid.GetChestStartPosition(_clusterContainer.NextChestCellPosition);
-                _clusterContainer.PlaceNextChest(chestWorldPosition);
+                _clusterContainer.SetForPlacement(clusterCenter);
+                _chestPool.AttemptMultipleActivation(ChestClusterCoordinator.Cluster_Size);
             }
         }
 

@@ -5,12 +5,12 @@ namespace Assets.Scripts.Generic
     public class ObjectPool
     {
         public delegate GameObject PoolObjectCreator();
-        public delegate void PoolObjectActivator(GameObject objectToActivate);
+        public delegate void PoolObjectAction(GameObject objectToActivate);
 
         private GameObject[] _objects;
-        private PoolObjectActivator _activateObjectCallback;
+        private PoolObjectAction _activateObjectCallback;
 
-        public ObjectPool(Transform parent, int poolSize, PoolObjectCreator createObjectCallback, PoolObjectActivator activateObjectCallback)
+        public ObjectPool(Transform parent, int poolSize, PoolObjectCreator createObjectCallback, PoolObjectAction activateObjectCallback)
         {
             _objects = new GameObject[poolSize];
 
@@ -21,20 +21,6 @@ namespace Assets.Scripts.Generic
             }
 
             _activateObjectCallback = activateObjectCallback;
-        }
-
-        public GameObject GetNextAvailableObject()
-        {
-            GameObject nextAvailable = null;
-            for (int i = 0; ((i < _objects.Length) && (nextAvailable == null)); i++)
-            {
-                if (!_objects[i].activeInHierarchy)
-                {
-                    nextAvailable = _objects[i];
-                }
-            }
-
-            return nextAvailable;
         }
 
         public int GetAvailableObjectCount()
@@ -68,6 +54,17 @@ namespace Assets.Scripts.Generic
             }
 
             return numberActivated;
+        }
+
+        public void ApplyActionToActivePoolObjects(PoolObjectAction actionCallback)
+        {
+            for (int i = 0; i < _objects.Length; i++)
+            {
+                if (_objects[i].activeInHierarchy)
+                {
+                    actionCallback(_objects[i]);
+                }
+            }
         }
     }
 }
