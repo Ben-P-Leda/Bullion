@@ -67,6 +67,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerMovement.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRespawnBlast.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRushStunDetection.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerTreasureCount.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\RespawnPoint.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\ChestCollisions.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\ChestEntry.cs" />
@@ -75,8 +76,11 @@
      <Compile Include="Assets\Scripts\Gameplay\Treasure\Helpers\PlacementGrid.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\Helpers\PlacementGridCell.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\Helpers\PlacementGridReference.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Treasure\TreasureLifeCycle.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Treasure\TreasurePool.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />
      <Compile Include="Assets\Scripts\Generic\Definitions.cs" />
+     <Compile Include="Assets\Scripts\Generic\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\Generic\Utilities.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity532/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

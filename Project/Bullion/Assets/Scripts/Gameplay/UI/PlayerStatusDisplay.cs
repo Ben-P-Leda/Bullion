@@ -11,10 +11,12 @@ namespace Assets.Scripts.Gameplay.UI
         private Rect _nameDisplayContainer;
         private Rect _healthDisplayContainer;
         private Rect _rushDisplayContainer;
+        private Rect _treasureDisplayContainer;
 
         private float _targetRemainingHealth;
         private float _displayedRemainingHealth;
         private float _displayedRushCharge;
+        private float _displayedTreasureValue;
 
         public void Initialize(Transform linkedPlayerTransform, CharacterConfiguration characterConfiguration, int playerIndex)
         {
@@ -33,6 +35,7 @@ namespace Assets.Scripts.Gameplay.UI
             _nameDisplayContainer = new Rect(topLeft.x, topLeft.y, UI_Dimensions.x, UI_Margin);
             _healthDisplayContainer = new Rect(_nameDisplayContainer.x, _nameDisplayContainer.y + UI_Margin, UI_Dimensions.x, UI_Margin);
             _rushDisplayContainer = new Rect(_healthDisplayContainer.x, _healthDisplayContainer.y + UI_Margin, UI_Dimensions.x, UI_Margin);
+            _treasureDisplayContainer = new Rect(_rushDisplayContainer.x, _rushDisplayContainer.y + UI_Margin, UI_Dimensions.x, UI_Margin);
 
             _targetRemainingHealth = _configuration.MaximumHealth;
         }
@@ -55,6 +58,7 @@ namespace Assets.Scripts.Gameplay.UI
                 {
                     case EventMessage.Update_Health: _targetRemainingHealth = Mathf.Max(0.0f, value); break;
                     case EventMessage.Update_Rush_Charge: _displayedRushCharge = value; break;
+                    case EventMessage.Update_Treasure: _displayedTreasureValue = value; break;
                 }
             }
         }
@@ -85,6 +89,7 @@ namespace Assets.Scripts.Gameplay.UI
             GUI.Label(_healthDisplayContainer, "Health:" + Mathf.Max(0.0f, healthPercentage) + "%");
 
             GUI.Label(_rushDisplayContainer, "Rush Charge:" + Mathf.Round(_displayedRushCharge) + "%");
+            GUI.Label(_treasureDisplayContainer, "Treasure Value:" + _displayedTreasureValue);
         }
 
         private const float UI_Margin = 20.0f;

@@ -39,8 +39,7 @@ namespace Assets.Scripts.Gameplay.Treasure
             HitPoints -= damageTaken;
             if (HitPoints <= 0.0f)
             {
-                // TODO: Fire the event...
-                Debug.Log("POP! Treasure everywhere...");
+                EventDispatcher.FireEvent(_transform, _transform, EventMessage.Chest_Destroyed);
                 _gameObject.SetActive(false);
             }
         }

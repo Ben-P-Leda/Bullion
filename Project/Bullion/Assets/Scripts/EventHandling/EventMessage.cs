@@ -20,5 +20,8 @@
         public const string Rush_Stun_Impact = "RushStunImpact";
         public const string Rush_Knockback = "RushKnockback";
         public const string Rush_Head_On_Collision = "RushHeadOnCollision";
+        public const string Chest_Destroyed = "ChestDestroyed";
+        public const string Collect_Treasure = "CollectTreasure";
+        public const string Update_Treasure = "UpdateTreasure";
     }
 }
