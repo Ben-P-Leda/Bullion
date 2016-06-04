@@ -86,7 +86,7 @@ namespace Assets.Scripts.Gameplay.Treasure.Helpers
         public void BlockCellsAroundChest(GameObject chest)
         {
             PlacementGridReference gridPosition = PlacementGridReference.FromWorld(chest.transform.position, _cellSize);
-            MakeCellBlockUnavailable(gridPosition.x, gridPosition.z, 1, true);
+            MakeCellBlockUnavailable(gridPosition.x, gridPosition.z, Neighbours_To_Exclude, true);
         }
 
         private void MakeCellBlocksUnavailable(Transform[] blockCenters, int neighbourCount, bool temporaryBlock)

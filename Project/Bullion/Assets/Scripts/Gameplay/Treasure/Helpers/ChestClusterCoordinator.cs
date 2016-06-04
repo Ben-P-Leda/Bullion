@@ -6,7 +6,6 @@ namespace Assets.Scripts.Gameplay.Treasure.Helpers
     {
         private PlacementGridReference _direction;
         private float _revealDelay;
-        private GameObject[] _chests;
 
         public PlacementGridReference NextChestGridPosition { get; private set; }
 
@@ -14,8 +13,6 @@ namespace Assets.Scripts.Gameplay.Treasure.Helpers
         {
             _direction = new PlacementGridReference();
             NextChestGridPosition = new PlacementGridReference();
-
-            _chests = new GameObject[Cluster_Size];
         }
         
         public void SetForPlacement(PlacementGridReference clusterCenter)
@@ -50,7 +47,7 @@ namespace Assets.Scripts.Gameplay.Treasure.Helpers
             _revealDelay += Reveal_Delay_Step;
         }
 
-        private const float Hidden_Chest_Vertical_Offset = -2.0f;
+        private const float Hidden_Chest_Vertical_Offset = -1.5f;
         private const float Reveal_Delay_Step = 0.35f;
 
         public const int Cluster_Size = 3;

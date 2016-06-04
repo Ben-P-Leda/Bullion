@@ -7,7 +7,7 @@ namespace Assets.Scripts.Gameplay.Treasure
     public class ChestFactory : MonoBehaviour
     {
         private PlacementGrid _placementGrid;
-        private ChestClusterCoordinator _clusterContainer;
+        private ChestClusterCoordinator _clusterCoordinator;
         private ObjectPool _chestPool;
         private Transform[] _playerTransforms;
         private float _timeToNextSpawn;
@@ -33,7 +33,7 @@ namespace Assets.Scripts.Gameplay.Treasure
 
         private void Start()
         {
-            _clusterContainer = new ChestClusterCoordinator();
+            _clusterCoordinator = new ChestClusterCoordinator();
             _chestPool = new ObjectPool(transform, Chest_Pool_Capacity, CreateChestForPool, ActivateChest);
             _timeToNextSpawn = 2.5f;
 
@@ -42,13 +42,17 @@ namespace Assets.Scripts.Gameplay.Treasure
 
         private GameObject CreateChestForPool()
         {
-            return (GameObject)Instantiate(ChestPrefab);
+            GameObject chest = (GameObject)Instantiate(ChestPrefab);
+            chest.GetComponent<ChestEntry>().InitializeComponents();
+
+            return chest;
         }
 
         private void ActivateChest(GameObject chestToActivate)
         {
-            Vector3 chestWorldPosition = _placementGrid.GetChestStartPosition(_clusterContainer.NextChestGridPosition);
-            _clusterContainer.PlaceChest(chestToActivate, chestWorldPosition, ChestHitPoints);
+            PlacementGridReference nextChestGridPosition = _clusterCoordinator.NextChestGridPosition;
+            Vector3 chestWorldPosition = _placementGrid.GetChestStartPosition(nextChestGridPosition);
+            _clusterCoordinator.PlaceChest(chestToActivate, chestWorldPosition, ChestHitPoints);
         }
 
         private void InitialisePlacementGrid()
@@ -104,7 +108,7 @@ namespace Assets.Scripts.Gameplay.Treasure
             PlacementGridReference clusterCenter = _placementGrid.GetClusterCenter();
             if (clusterCenter != null)
             {
-                _clusterContainer.SetForPlacement(clusterCenter);
+                _clusterCoordinator.SetForPlacement(clusterCenter);
                 _chestPool.AttemptMultipleActivation(ChestClusterCoordinator.Cluster_Size);
             }
         }
@@ -117,6 +121,6 @@ namespace Assets.Scripts.Gameplay.Treasure
         }
 
         private const float Grid_Cell_Size = 1.0f;
-        private const int Chest_Pool_Capacity = 10;
+        private const int Chest_Pool_Capacity = 12;
     }
 }
