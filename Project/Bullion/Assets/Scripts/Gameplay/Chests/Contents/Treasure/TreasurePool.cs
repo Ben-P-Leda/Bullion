@@ -42,7 +42,7 @@ namespace Assets.Scripts.Gameplay.Chests.Contents.Treasure
 
         private void MessageEventHandler(Transform originator, Transform target, string message)
         {
-            if (message == EventMessage.Chest_Destroyed)
+            if (message == EventMessage.Spawn_Treasure)
             {
                 _nextSpawnPoint = originator.position;
                 _treasurePool.AttemptMultipleActivation(Random.Range(MinimumPerChest, MaximumPerChest));

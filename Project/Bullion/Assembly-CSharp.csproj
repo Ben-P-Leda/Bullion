@@ -55,6 +55,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarRushingAnimationStateChange.cs" />
      <Compile Include="Assets\Scripts\Gameplay\CameraMovement.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\ChestCollisions.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Chests\ChestDestruction.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\ChestEntry.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\ChestFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\Contents\ChestItemLifeCycle.cs" />
