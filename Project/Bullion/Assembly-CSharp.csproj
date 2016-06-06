@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Chests\ChestFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\Contents\ChestItemLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\Contents\PowerUps\PowerUpEffect.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Chests\Contents\PowerUps\PowerUpFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\Contents\PowerUps\PowerUpLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\Contents\Treasure\TreasureLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\Contents\Treasure\TreasurePool.cs" />
