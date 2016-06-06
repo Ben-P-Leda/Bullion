@@ -23,5 +23,6 @@
         public const string Chest_Destroyed = "ChestDestroyed";
         public const string Collect_Treasure = "CollectTreasure";
         public const string Update_Treasure = "UpdateTreasure";
+        public const string Collect_Power_Up = "CollectPowerUp";
     }
 }

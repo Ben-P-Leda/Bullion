@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Generic;
-using Assets.Scripts.Gameplay.Treasure.Helpers;
+using Assets.Scripts.Gameplay.Chests.Helpers;
 
-namespace Assets.Scripts.Gameplay.Treasure
+namespace Assets.Scripts.Gameplay.Chests
 {
     public class ChestFactory : MonoBehaviour
     {

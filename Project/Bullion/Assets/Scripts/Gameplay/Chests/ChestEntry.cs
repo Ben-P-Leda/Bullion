@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Assets.Scripts.EventHandling;
 
-namespace Assets.Scripts.Gameplay.Treasure
+namespace Assets.Scripts.Gameplay.Chests
 {
     public class ChestEntry : MonoBehaviour
     {

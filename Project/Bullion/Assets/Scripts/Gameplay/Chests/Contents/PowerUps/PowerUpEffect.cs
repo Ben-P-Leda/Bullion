@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Gameplay.Treasure
+﻿namespace Assets.Scripts.Gameplay.Chests.Contents.PowerUps
 {
     public enum PowerUpEffect
     {

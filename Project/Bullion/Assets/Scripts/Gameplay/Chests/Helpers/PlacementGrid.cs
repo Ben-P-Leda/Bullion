@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.Gameplay.Treasure.Helpers
+namespace Assets.Scripts.Gameplay.Chests.Helpers
 {
     public class PlacementGrid
     {

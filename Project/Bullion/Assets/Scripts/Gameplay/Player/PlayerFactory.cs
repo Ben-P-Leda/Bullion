@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
-using Assets.Scripts.Gameplay.Treasure;
+using Assets.Scripts.Gameplay.Chests;
 using Assets.Scripts.Gameplay.UI;
 
 namespace Assets.Scripts.Gameplay.Player

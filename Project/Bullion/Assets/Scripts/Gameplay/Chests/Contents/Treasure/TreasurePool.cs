@@ -2,7 +2,7 @@
 using Assets.Scripts.EventHandling;
 using Assets.Scripts.Generic;
 
-namespace Assets.Scripts.Gameplay.Treasure
+namespace Assets.Scripts.Gameplay.Chests.Contents.Treasure
 {
     public class TreasurePool : MonoBehaviour
     {
