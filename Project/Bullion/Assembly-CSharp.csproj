@@ -73,9 +73,12 @@
      <Compile Include="Assets\Scripts\Gameplay\Treasure\ChestEntry.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\ChestFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\Helpers\ChestClusterCoordinator.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Treasure\Helpers\ChestItemLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\Helpers\PlacementGrid.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\Helpers\PlacementGridCell.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\Helpers\PlacementGridReference.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Treasure\PowerUpEffect.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Treasure\PowerUpLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\TreasureLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Treasure\TreasurePool.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />

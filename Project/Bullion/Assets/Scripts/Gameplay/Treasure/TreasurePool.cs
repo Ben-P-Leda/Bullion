@@ -8,19 +8,26 @@ namespace Assets.Scripts.Gameplay.Treasure
     {
         private ObjectPool _treasurePool;
         private Vector3 _nextSpawnPoint;
+        private int _nextPrefabIndex;
 
-        public GameObject TreasurePrefab;
+        public GameObject[] TreasurePrefabs;
         public int MinimumPerChest;
         public int MaximumPerChest;
 
         private void Start()
         {
+            _nextPrefabIndex = 0;
             _treasurePool = new ObjectPool(transform, Treasure_Pool_Capacity, CreateTreasureForPool, LaunchTreasure);
         }
 
         private GameObject CreateTreasureForPool()
         {
-            return (GameObject)Instantiate(TreasurePrefab);
+            GameObject treasureObject = (GameObject)Instantiate(TreasurePrefabs[_nextPrefabIndex]);
+            treasureObject.GetComponent<TreasureLifeCycle>().InitializeComponents();
+
+            _nextPrefabIndex = (_nextPrefabIndex + 1) % TreasurePrefabs.Length;
+
+            return treasureObject;
         }
 
         private void OnEnable()

@@ -2,16 +2,16 @@
 
 namespace Assets.Scripts.Gameplay.Treasure
 {
-    public class TreasureLifeCycle : ChestItemLifeCycle
+    public class PowerUpLifeCycle : ChestItemLifeCycle
     {
-        public float Value;
+        public PowerUpEffect Effect;
 
         public override void InitializeComponents()
         {
             base.InitializeComponents();
 
             LaunchTriggerEvent = EventMessage.Collect_Treasure;
-            EventValue = Value;
+            EventValue = (float)Effect;
         }
     }
 }
