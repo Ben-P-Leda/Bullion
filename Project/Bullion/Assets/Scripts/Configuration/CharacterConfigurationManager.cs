@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts.Configuration
 {
-    public class ConfigurationManager
+    public class CharacterConfigurationManager
     {
-        private static ConfigurationManager _instance = null;
+        private static CharacterConfigurationManager _instance = null;
 
         public static CharacterConfiguration GetCharacterConfiguration(string characterName)
         {
-            _instance = _instance == null ? new ConfigurationManager() : _instance;
+            _instance = _instance == null ? new CharacterConfigurationManager() : _instance;
             return _instance._characters[characterName];
         }
 
         private Dictionary<string, CharacterConfiguration> _characters = null;
 
-        public ConfigurationManager()
+        public CharacterConfigurationManager()
         {
             CreateCharacterConfigurations();
         }

@@ -2,6 +2,7 @@
 using Assets.Scripts.Configuration;
 using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Avatar;
+using Assets.Scripts.Gameplay.Player.Interfaces;
 
 namespace Assets.Scripts.Gameplay.Player
 {

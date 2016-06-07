@@ -2,6 +2,7 @@
 using Assets.Scripts.Configuration;
 using Assets.Scripts.Gameplay.Chests;
 using Assets.Scripts.Gameplay.UI;
+using Assets.Scripts.Gameplay.Player.Interfaces;
 
 namespace Assets.Scripts.Gameplay.Player
 {
@@ -27,7 +28,7 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 if (_playerGameObjects[i] == null)
                 {
-                    CharacterConfiguration characterConfiguration = ConfigurationManager.GetCharacterConfiguration(playerAvatars[i]);
+                    CharacterConfiguration characterConfiguration = CharacterConfigurationManager.GetCharacterConfiguration(playerAvatars[i]);
                     Vector3 startPosition = GetStartPosition(terrain, i);
 
                     _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i], characterConfiguration, startPosition);

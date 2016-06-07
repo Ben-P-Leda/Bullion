@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.EventHandling;
+﻿using Assets.Scripts.Configuration;
+using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Chests.Contents.PowerUps
 {

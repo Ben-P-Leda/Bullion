@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.Gameplay.Player
+namespace Assets.Scripts.Gameplay.Player.Interfaces
 {
     public interface IAnimated
     {

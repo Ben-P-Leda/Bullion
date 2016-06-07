@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Configuration;
 using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Chests.Contents.PowerUps
@@ -9,6 +10,7 @@ namespace Assets.Scripts.Gameplay.Chests.Contents.PowerUps
 
         private void Start()
         {
+            PowerUpConfigurationManager.Initialize();
             InitializePowerUps();
         }
 
