@@ -56,7 +56,7 @@ namespace Assets.Scripts.Gameplay.UI
             {
                 switch (message)
                 {
-                    case EventMessage.Update_Health: _targetRemainingHealth = Mathf.Max(0.0f, value); break;
+                    case EventMessage.Update_Health: _targetRemainingHealth = Mathf.Clamp(value, 0.0f, 100.0f); break;
                     case EventMessage.Update_Rush_Charge: _displayedRushCharge = value; break;
                     case EventMessage.Update_Treasure: _displayedTreasureValue = value; break;
                 }

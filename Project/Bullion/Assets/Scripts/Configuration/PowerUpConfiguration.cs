@@ -4,6 +4,5 @@
     {
         public float Value { get; set; }
         public float Duration { get; set; }
-        public bool PercentageEffect { get; set; }
     }
 }

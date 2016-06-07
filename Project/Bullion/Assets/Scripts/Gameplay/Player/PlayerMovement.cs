@@ -213,12 +213,14 @@ namespace Assets.Scripts.Gameplay.Player
 
         private float GetMovementSpeed()
         {
-            float speed = _isInDeadMode ? Configuration.DeadMovementSpeed : Configuration.AliveMovementSpeed;
+            float speed = _isInDeadMode
+                ? Configuration.DeadMovementSpeed
+                : Configuration.AliveMovementSpeed * Configuration.GetPowerUpModifier(PowerUpEffect.SpeedBoost);
 
             if ((!_isInDeadMode) && (_transform.position.y < _seaEntryHeight))
             {
                 float depthOffset = Mathf.Clamp((_seaEntryHeight - _transform.position.y) / _wadeHeightRange, 0.0f, 1.0f);
-                speed *=  (1.0f - (Swim_Speed_Modifier * depthOffset));
+                speed *= (1.0f - (Swim_Speed_Modifier * depthOffset));
             }
 
             return speed;

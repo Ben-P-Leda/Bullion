@@ -31,8 +31,15 @@ namespace Assets.Scripts.Gameplay.Player.ChestItemCollection
 
         private void HandlePowerUpCollection(float powerUpEffectAsFloat)
         {
-            PowerUpEffect powerUp = (PowerUpEffect)powerUpEffectAsFloat;
-            Debug.Log(powerUp.ToString());
+            PowerUpEffect powerUpEffect = (PowerUpEffect)powerUpEffectAsFloat;
+            
+            if (powerUpEffect != PowerUpEffect.HealthRestore)
+            {
+                PowerUpConfiguration config = PowerUpConfigurationManager.GetPowerUpConfiguration(powerUpEffect);
+                Configuration.SetPowerUpModifier(powerUpEffect, config.Value);
+
+                // TODO: Start the clock, any effects we want
+            }
         }
     }
 }

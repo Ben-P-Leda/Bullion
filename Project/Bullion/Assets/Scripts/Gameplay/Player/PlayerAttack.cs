@@ -68,7 +68,8 @@ namespace Assets.Scripts.Gameplay.Player
         {
             if ((_damageCollider != null) && (target == _damageCollider.transform) && (message == EventMessage.Hit_Trigger_Collider))
             {
-                EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, Configuration.ComboStepDamage[_lastStrikingComboIndex]);
+                EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, 
+                    Configuration.ComboStepDamage[_lastStrikingComboIndex] * Configuration.GetPowerUpModifier(PowerUpEffect.ComboDamageBoost));
             }
 
             if (target == _transform)

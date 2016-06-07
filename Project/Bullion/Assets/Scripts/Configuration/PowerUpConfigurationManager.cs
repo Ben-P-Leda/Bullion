@@ -21,6 +21,11 @@ namespace Assets.Scripts.Configuration
             return _instance._powerUps.ContainsKey(powerUpEffect) ? _instance._powerUps[powerUpEffect] : null;
         }
 
+        public static PowerUpEffect GetEffectFromEventValue(float eventValue)
+        {
+            return (PowerUpEffect)eventValue;
+        }
+
         private Dictionary<PowerUpEffect, PowerUpConfiguration> _powerUps = null;
 
         public PowerUpConfigurationManager()
@@ -32,9 +37,9 @@ namespace Assets.Scripts.Configuration
         {
             _powerUps = new Dictionary<PowerUpEffect, PowerUpConfiguration>();
 
-            _powerUps.Add(PowerUpEffect.HealthRestore, new PowerUpConfiguration { Value = 20.0f, Duration = 0.0f, PercentageEffect = true });
-            _powerUps.Add(PowerUpEffect.ComboDamageBoost, new PowerUpConfiguration { Value = 15.0f, Duration = 3.0f, PercentageEffect = true });
-            _powerUps.Add(PowerUpEffect.SpeedBoost, new PowerUpConfiguration { Value = 10.0f, Duration = 6.0f, PercentageEffect = true });
+            _powerUps.Add(PowerUpEffect.HealthRestore, new PowerUpConfiguration { Value = 0.2f, Duration = 0.0f });
+            _powerUps.Add(PowerUpEffect.ComboDamageBoost, new PowerUpConfiguration { Value = 0.15f, Duration = 3.0f });
+            _powerUps.Add(PowerUpEffect.SpeedBoost, new PowerUpConfiguration { Value = 0.1f, Duration = 6.0f });
         }
     }
 

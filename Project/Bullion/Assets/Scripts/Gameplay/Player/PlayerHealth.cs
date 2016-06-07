@@ -43,22 +43,35 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void FloatEventHandler(Transform originator, Transform target, string message, float value)
         {
-            if ((target == _transform) && (message == EventMessage.Inflict_Damage))
+            if (target == _transform)
             {
-                HandleDamageTaken(value);
+                switch (message)
+                {
+                    case EventMessage.Inflict_Damage: AdjustRemainingHealth(-value); break;
+                    case EventMessage.Collect_Power_Up: HandlePowerUpCollection(value); break;
+                }
             }
         }
 
-        private void HandleDamageTaken(float damageInflicted)
+        private void AdjustRemainingHealth(float delta)
         {
             if (_remainingHealth > 0.0f)
             {
-                _remainingHealth -= damageInflicted;
+                _remainingHealth += delta;
                 if (_remainingHealth <= 0.0f)
                 {
                     EventDispatcher.FireEvent(_transform, _transform, EventMessage.Has_Died);
                 }
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Update_Health, _remainingHealth);
+            }
+        }
+
+        private void HandlePowerUpCollection(float eventValue)
+        {
+            if (PowerUpConfigurationManager.GetEffectFromEventValue(eventValue) == PowerUpEffect.HealthRestore)
+            {
+                float delta = Configuration.MaximumHealth * PowerUpConfigurationManager.GetPowerUpConfiguration(PowerUpEffect.HealthRestore).Value; ;
+                AdjustRemainingHealth(delta);
             }
         }
     }
