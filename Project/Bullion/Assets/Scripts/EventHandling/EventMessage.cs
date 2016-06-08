@@ -25,7 +25,11 @@
         public const string Collect_Treasure = "CollectTreasure";
         public const string Update_Treasure = "UpdateTreasure";
         public const string Spawn_Power_Up = "SpawnPowerUp";
-        public const string Collect_Power_Up = "CollectPowerUp";
-        public const string Restore_Health = "RestoreHealth";
+
+        public const string Apply_Power_Up_Prefix = "ApplyPowerUp-";
+        public const string Start_Power_Up_Timer_Prefix = "StartPowerUpTimer-";
+
+        //public const string Collect_Power_Up = "CollectPowerUp";
+        //public const string Restore_Health = "RestoreHealth";
     }
 }

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Assets.Scripts.Gameplay;
+using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Configuration
 {
@@ -18,43 +20,48 @@ namespace Assets.Scripts.Configuration
         public float RushRechargeSpeed { get; set; }
         public Color RespawnPointColour { get; set; }
 
-        private Dictionary<PowerUpEffect, float> _powerUpStatModifiers;
-        private List<PowerUpEffect> _powerUpStatModifierKeys;
+        public float TreasureValue { get; set; }
+
+        private Dictionary<string, float> _powerUpStatModifiers;
+        private List<string> _powerUpStatModifierKeys;
 
         public CharacterConfiguration()
         {
-            _powerUpStatModifiers = new Dictionary<PowerUpEffect, float>();
-            _powerUpStatModifierKeys = new List<PowerUpEffect>();
+            TreasureValue = 0.0f;
+
+            _powerUpStatModifiers = new Dictionary<string, float>();
+            _powerUpStatModifierKeys = new List<string>();
         }
 
         public float GetPowerUpModifier(PowerUpEffect powerUp)
         {
-            AddKeyIfNotPresent(powerUp);
-            return 1.0f + _powerUpStatModifiers[powerUp];
+            string eventMessageKey = EventMessage.Apply_Power_Up_Prefix + powerUp.ToString();
+            AddKeyIfNotPresent(eventMessageKey);
+            return 1.0f + _powerUpStatModifiers[eventMessageKey];
         }
 
-        private void AddKeyIfNotPresent(PowerUpEffect powerUp)
+        private void AddKeyIfNotPresent(string powerUpEventMessage)
         {
-            if (!_powerUpStatModifiers.ContainsKey(powerUp))
+            if (!_powerUpStatModifiers.ContainsKey(powerUpEventMessage))
             {
-                _powerUpStatModifiers.Add(powerUp, 0.0f);
+                _powerUpStatModifiers.Add(powerUpEventMessage, 0.0f);
             }
 
-            if (!_powerUpStatModifierKeys.Contains(powerUp))
+            if (!_powerUpStatModifierKeys.Contains(powerUpEventMessage))
             {
-                _powerUpStatModifierKeys.Add(powerUp);
+                _powerUpStatModifierKeys.Add(powerUpEventMessage);
             }
         }
 
-        public void SetPowerUpModifier(PowerUpEffect powerUp, float effectValue)
+        public void SetPowerUpModifier(string powerUpEventMessage, float effectValue)
         {
             for (int i = 0; i < _powerUpStatModifierKeys.Count; i++)
             {
                 _powerUpStatModifiers[_powerUpStatModifierKeys[i]] = 0.0f;
             }
 
-            AddKeyIfNotPresent(powerUp);
-            _powerUpStatModifiers[powerUp] = effectValue;
+            AddKeyIfNotPresent(powerUpEventMessage);
+            _powerUpStatModifiers[powerUpEventMessage] = effectValue;
         }
     }
 }

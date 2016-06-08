@@ -45,10 +45,13 @@ namespace Assets.Scripts.Gameplay.Player
         {
             if (target == _transform)
             {
-                switch (message)
+                if (message == EventMessage.Inflict_Damage)
                 {
-                    case EventMessage.Inflict_Damage: AdjustRemainingHealth(-value); break;
-                    case EventMessage.Collect_Power_Up: HandlePowerUpCollection(value); break;
+                    AdjustRemainingHealth(-value);
+                }
+                else if (message == EventMessage.Apply_Power_Up_Prefix + PowerUpEffect.HealthRestore)
+                {
+                    AdjustRemainingHealth(Configuration.MaximumHealth * value);
                 }
             }
         }
@@ -63,15 +66,6 @@ namespace Assets.Scripts.Gameplay.Player
                     EventDispatcher.FireEvent(_transform, _transform, EventMessage.Has_Died);
                 }
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Update_Health, _remainingHealth);
-            }
-        }
-
-        private void HandlePowerUpCollection(float eventValue)
-        {
-            if (PowerUpConfigurationManager.GetEffectFromEventValue(eventValue) == PowerUpEffect.HealthRestore)
-            {
-                float delta = Configuration.MaximumHealth * PowerUpConfigurationManager.GetPowerUpConfiguration(PowerUpEffect.HealthRestore).Value; ;
-                AdjustRemainingHealth(delta);
             }
         }
     }

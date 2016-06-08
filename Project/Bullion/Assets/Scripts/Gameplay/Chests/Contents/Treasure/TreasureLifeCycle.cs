@@ -1,17 +1,24 @@
-﻿using Assets.Scripts.EventHandling;
+﻿using UnityEngine;
+using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Chests.Contents.Treasure
 {
     public class TreasureLifeCycle : ChestItemLifeCycle
     {
+        private Transform _transform;
+
         public float Value;
 
-        public override void InitializeComponents()
+        public void InitializeComponents()
         {
-            base.InitializeComponents();
+            _transform = transform;
 
-            LaunchTriggerEvent = EventMessage.Collect_Treasure;
-            EventValue = Value;
+            base.InitializeComponents(HandleCollection);
+        }
+
+        private void HandleCollection(Transform collectedBy)
+        {
+            EventDispatcher.FireEvent(_transform, collectedBy, EventMessage.Collect_Treasure, Value);
         }
     }
 }

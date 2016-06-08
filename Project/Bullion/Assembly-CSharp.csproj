@@ -47,8 +47,6 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Configuration\CharacterConfiguration.cs" />
      <Compile Include="Assets\Scripts\Configuration\CharacterConfigurationManager.cs" />
-     <Compile Include="Assets\Scripts\Configuration\PowerUpConfiguration.cs" />
-     <Compile Include="Assets\Scripts\Configuration\PowerUpConfigurationManager.cs" />
      <Compile Include="Assets\Scripts\EventHandling\EventDispatcher.cs" />
      <Compile Include="Assets\Scripts\EventHandling\EventMessage.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarAnimationEventHandler.cs" />
@@ -70,13 +68,12 @@
      <Compile Include="Assets\Scripts\Gameplay\Chests\Helpers\PlacementGridCell.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\Helpers\PlacementGridReference.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Constants.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Player\ChestItemCollection\PlayerChestItemCollectionDetector.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Player\ChestItemCollection\PlayerPowerUp.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Player\ChestItemCollection\PlayerTreasureCount.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Enumerations.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IAnimated.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IConfigurable.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerAttack.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerBullRush.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerCollectChestItem.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerHealth.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerHitTriggerCollider.cs" />

@@ -5,17 +5,19 @@ namespace Assets.Scripts.Gameplay.Chests.Contents
 {
     public class ChestItemLifeCycle : MonoBehaviour
     {
-        private Transform _transform;
+        public delegate void CollectionCallback(Transform collectedBy);
+
         private Rigidbody _rigidBody;
+
         private bool _canBeCollected;
 
-        public string LaunchTriggerEvent { private get; set; }
-        public float EventValue { private get; set; }
+        private CollectionCallback _collectionCallback;
 
-        public virtual void InitializeComponents()
+        public void InitializeComponents(CollectionCallback collectionCallback)
         {
-            _transform = transform;
             _rigidBody = GetComponent<Rigidbody>();
+
+            _collectionCallback = collectionCallback;
         }
 
         private void OnEnable()
@@ -38,7 +40,11 @@ namespace Assets.Scripts.Gameplay.Chests.Contents
         {
             if ((_canBeCollected) && (CollidingObjectCanCollectTreasure(collision.gameObject)))
             {
-                EventDispatcher.FireEvent(_transform, collision.transform, LaunchTriggerEvent, EventValue);
+                if (_collectionCallback != null)
+                {
+                    _collectionCallback(collision.transform);
+                }
+
                 gameObject.SetActive(false);
             }
         }
