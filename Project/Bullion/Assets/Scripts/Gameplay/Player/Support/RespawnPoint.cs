@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Assets.Scripts.EventHandling;
 
-namespace Assets.Scripts.Gameplay.Player
+namespace Assets.Scripts.Gameplay.Player.Support
 {
     public class RespawnPoint : MonoBehaviour
     {

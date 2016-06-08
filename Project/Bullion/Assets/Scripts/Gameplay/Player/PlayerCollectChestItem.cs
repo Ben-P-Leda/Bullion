@@ -2,15 +2,17 @@
 using Assets.Scripts.Configuration;
 using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Player.Interfaces;
+using Assets.Scripts.Gameplay.Player.Support;
 
 namespace Assets.Scripts.Gameplay.Player.ChestItemCollection
 {
-    public class PlayerCollectChestItem : MonoBehaviour, IConfigurable
+    public class PlayerCollectChestItem : MonoBehaviour, IConfigurable, IModifiable
     {
         private Transform _transform;
         private Transform _rushColliderTransform;
 
         public CharacterConfiguration Configuration { private get; set; }
+        public CharacterConfigurationModifier ConfigurationModifier { private get; set; }
 
         private void Start()
         {
@@ -54,7 +56,7 @@ namespace Assets.Scripts.Gameplay.Player.ChestItemCollection
 
         private void ApplyPowerUp(string eventMessage, float powerUpValue)
         {
-            Configuration.SetPowerUpModifier(eventMessage, powerUpValue);
+            ConfigurationModifier.SetPowerUpModifier(eventMessage, powerUpValue);
         }
     }
 }

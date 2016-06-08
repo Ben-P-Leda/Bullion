@@ -68,9 +68,9 @@
      <Compile Include="Assets\Scripts\Gameplay\Chests\Helpers\PlacementGridCell.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Chests\Helpers\PlacementGridReference.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Constants.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Enumerations.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IAnimated.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IConfigurable.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IModifiable.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerAttack.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerBullRush.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerCollectChestItem.cs" />
@@ -80,9 +80,12 @@
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerInput.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerLifeCycle.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerPowerUpTimer.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRespawnBlast.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\PlayerRushStunDetection.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Player\RespawnPoint.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\Support\CharacterConfigurationModifier.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\Support\PowerUpEffects.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Player\Support\RespawnPoint.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />
      <Compile Include="Assets\Scripts\Generic\Definitions.cs" />
      <Compile Include="Assets\Scripts\Generic\ObjectPool.cs" />

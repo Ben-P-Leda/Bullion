@@ -3,10 +3,11 @@ using Assets.Scripts.Configuration;
 using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Avatar;
 using Assets.Scripts.Gameplay.Player.Interfaces;
+using Assets.Scripts.Gameplay.Player.Support;
 
 namespace Assets.Scripts.Gameplay.Player
 {
-    public class PlayerAttack : MonoBehaviour, IConfigurable, IAnimated
+    public class PlayerAttack : MonoBehaviour, IConfigurable, IModifiable, IAnimated
     {
         private Transform _transform;
         private Animator _animator;
@@ -22,6 +23,7 @@ namespace Assets.Scripts.Gameplay.Player
         private bool _rushInProgress;
 
         public CharacterConfiguration Configuration { private get; set; }
+        public CharacterConfigurationModifier ConfigurationModifier { private get; set; }
 
         private void Start()
         {
@@ -68,8 +70,10 @@ namespace Assets.Scripts.Gameplay.Player
         {
             if ((_damageCollider != null) && (target == _damageCollider.transform) && (message == EventMessage.Hit_Trigger_Collider))
             {
-                EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, 
-                    Configuration.ComboStepDamage[_lastStrikingComboIndex] * Configuration.GetPowerUpModifier(PowerUpEffect.ComboDamageBoost));
+                float damage = Configuration.ComboStepDamage[_lastStrikingComboIndex] 
+                    * ConfigurationModifier.GetPowerUpModifier(PowerUpEffect.ComboDamageBoost);
+
+                EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, damage);
             }
 
             if (target == _transform)

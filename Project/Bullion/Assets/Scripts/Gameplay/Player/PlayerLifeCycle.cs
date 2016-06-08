@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Configuration;
 using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Player.Interfaces;
 

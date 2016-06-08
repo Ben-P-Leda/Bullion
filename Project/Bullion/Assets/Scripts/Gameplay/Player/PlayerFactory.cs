@@ -3,6 +3,7 @@ using Assets.Scripts.Configuration;
 using Assets.Scripts.Gameplay.Chests;
 using Assets.Scripts.Gameplay.UI;
 using Assets.Scripts.Gameplay.Player.Interfaces;
+using Assets.Scripts.Gameplay.Player.Support;
 
 namespace Assets.Scripts.Gameplay.Player
 {
@@ -120,7 +121,6 @@ namespace Assets.Scripts.Gameplay.Player
         private void WireUpAnimationControllers(GameObject player, Animator aliveModelAnimator, Animator deadModelAnimator)
         {
             IAnimated[] animationControllers = player.GetComponents<IAnimated>();
-
             for (int i = 0; i < animationControllers.Length; i++)
             {
                 animationControllers[i].WireUpAnimators(aliveModelAnimator, deadModelAnimator);
@@ -135,10 +135,17 @@ namespace Assets.Scripts.Gameplay.Player
         private void SetPlayerConfiguration(GameObject player, CharacterConfiguration characterConfiguration)
         {
             IConfigurable[] configurables = player.GetComponents<IConfigurable>();
-
             for (int i=0; i < configurables.Length; i++)
             {
                 configurables[i].Configuration = characterConfiguration;
+            }
+
+            CharacterConfigurationModifier configurationModifier = new CharacterConfigurationModifier();
+
+            IModifiable[] modifiables = player.GetComponents<IModifiable>();
+            for (int i = 0; i < modifiables.Length; i++)
+            {
+                modifiables[i].ConfigurationModifier = configurationModifier;
             }
         }
 

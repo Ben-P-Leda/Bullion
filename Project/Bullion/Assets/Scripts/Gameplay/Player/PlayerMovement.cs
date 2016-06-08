@@ -3,10 +3,11 @@ using Assets.Scripts.Configuration;
 using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Avatar;
 using Assets.Scripts.Gameplay.Player.Interfaces;
+using Assets.Scripts.Gameplay.Player.Support;
 
 namespace Assets.Scripts.Gameplay.Player
 {
-    public class PlayerMovement : MonoBehaviour, IConfigurable, IAnimated
+    public class PlayerMovement : MonoBehaviour, IConfigurable, IModifiable, IAnimated
     {
         private Transform _transform;
         private Rigidbody _rigidBody;
@@ -31,6 +32,7 @@ namespace Assets.Scripts.Gameplay.Player
         private Vector3 _rushVelocity;
 
         public CharacterConfiguration Configuration { private get; set; }
+        public CharacterConfigurationModifier ConfigurationModifier { private get; set; }
 
         private void Start()
         {
@@ -215,7 +217,7 @@ namespace Assets.Scripts.Gameplay.Player
         {
             float speed = _isInDeadMode
                 ? Configuration.DeadMovementSpeed
-                : Configuration.AliveMovementSpeed * Configuration.GetPowerUpModifier(PowerUpEffect.SpeedBoost);
+                : Configuration.AliveMovementSpeed * ConfigurationModifier.GetPowerUpModifier(PowerUpEffect.SpeedBoost);
 
             if ((!_isInDeadMode) && (_transform.position.y < _seaEntryHeight))
             {
