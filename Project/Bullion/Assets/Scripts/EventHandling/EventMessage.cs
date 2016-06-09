@@ -31,5 +31,6 @@
 
         public const string Apply_Power_Up_Prefix = "ApplyPowerUp-";
         public const string Start_Power_Up_Timer_Prefix = "StartPowerUpTimer-";
+        public const string Total_Treasure_Prefix = "TotalTreasure-";
     }
 }

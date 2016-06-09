@@ -87,6 +87,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Player\Support\PowerUpEffects.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\Support\RespawnPoint.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Sequencing\RoundTiming.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\UI\EndRoundDisplay.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\Helpers.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerPowerUpTimerDisplay.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />

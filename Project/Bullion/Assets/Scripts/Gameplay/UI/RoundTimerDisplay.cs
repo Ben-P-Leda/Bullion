@@ -44,7 +44,7 @@ namespace Assets.Scripts.Gameplay.UI
 
         private void OnGUI()
         {
-            GUI.Label(_displayContainer, (_timerRunning ? "Time: " + _timeRemaining : "Ready..."));
+            GUI.Label(_displayContainer, (_timerRunning ? "Time: " + Mathf.RoundToInt(_timeRemaining) : "Ready..."));
         }
     }
 }

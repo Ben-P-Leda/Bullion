@@ -21,6 +21,7 @@ namespace Assets.Scripts.Gameplay.Player
         {
             Terrain terrain = Terrain.activeTerrain;
             ChestFactory chestFactory = FindObjectOfType<ChestFactory>();
+            EndRoundDisplay endRoundDisplay = FindObjectOfType<EndRoundDisplay>();
             string[] playerAvatars = GetPlayerAvatars();
 
             _playerGameObjects = new GameObject[playerAvatars.Length];
@@ -37,6 +38,7 @@ namespace Assets.Scripts.Gameplay.Player
                     InitializePlayerUI(_playerGameObjects[i], characterConfiguration, i);
 
                     chestFactory.AddPlayerReference(i, _playerGameObjects[i]);
+                    endRoundDisplay.AddPlayerConfiguration(i, characterConfiguration);
                 }
             }
         }
