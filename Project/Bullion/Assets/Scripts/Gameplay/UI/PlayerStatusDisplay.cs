@@ -23,19 +23,10 @@ namespace Assets.Scripts.Gameplay.UI
             _linkedPlayerTransform = linkedPlayerTransform;
             _configuration = characterConfiguration;
 
-            int unitX = playerIndex % 2;
-            int unitY = playerIndex / 2;
-
-            Vector2 offset = new Vector2(
-                Screen.width - ((UI_Margin * 2.0f) + UI_Dimensions.x),
-                Screen.height - ((UI_Margin * 2.0f) + UI_Dimensions.y));
-
-            Vector2 topLeft = new Vector2(UI_Margin + (offset.x * unitX), UI_Margin + (offset.y * unitY));
-
-            _nameDisplayContainer = new Rect(topLeft.x, topLeft.y, UI_Dimensions.x, UI_Margin);
-            _healthDisplayContainer = new Rect(_nameDisplayContainer.x, _nameDisplayContainer.y + UI_Margin, UI_Dimensions.x, UI_Margin);
-            _rushDisplayContainer = new Rect(_healthDisplayContainer.x, _healthDisplayContainer.y + UI_Margin, UI_Dimensions.x, UI_Margin);
-            _treasureDisplayContainer = new Rect(_rushDisplayContainer.x, _rushDisplayContainer.y + UI_Margin, UI_Dimensions.x, UI_Margin);
+            _nameDisplayContainer = Helpers.CreateDisplayContainer(playerIndex, new Vector2(Helpers.UI_Margin, Helpers.UI_Margin), Helpers.UI_Dimensions);
+            _healthDisplayContainer = Helpers.CreateDisplayContainer(playerIndex, new Vector2(Helpers.UI_Margin, Helpers.UI_Margin * 2.0f), Helpers.UI_Dimensions);
+            _rushDisplayContainer = Helpers.CreateDisplayContainer(playerIndex, new Vector2(Helpers.UI_Margin, Helpers.UI_Margin * 3.0f), Helpers.UI_Dimensions);
+            _treasureDisplayContainer = Helpers.CreateDisplayContainer(playerIndex, new Vector2(Helpers.UI_Margin, Helpers.UI_Margin * 4.0f), Helpers.UI_Dimensions);
 
             _targetRemainingHealth = _configuration.MaximumHealth;
         }
@@ -92,9 +83,6 @@ namespace Assets.Scripts.Gameplay.UI
             GUI.Label(_treasureDisplayContainer, "Treasure Value:" + _displayedTreasureValue);
         }
 
-        private const float UI_Margin = 20.0f;
         private const float Health_Step = 2.5f;
-
-        public static readonly Vector2 UI_Dimensions = new Vector2(150.0f, 50.0f);
     }
 }

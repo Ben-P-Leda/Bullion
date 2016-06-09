@@ -11,7 +11,7 @@ namespace Assets.Scripts.Gameplay.Player
     {
         public GameObject PlayerPrefab;
         public GameObject RespawnPointPrefab;
-        public GameObject StatusDisplayPrefab;
+        public GameObject UIDisplayPrefab;
         public GameObject[] AvatarPrefabs;
         public Vector3[] PlayerStartPoints;
 
@@ -34,7 +34,7 @@ namespace Assets.Scripts.Gameplay.Player
 
                     _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i], characterConfiguration, startPosition);
                     InitializeRespawnPoint(_playerGameObjects[i], characterConfiguration, startPosition);
-                    InitializeStatusDisplay(_playerGameObjects[i], characterConfiguration, i);
+                    InitializePlayerUI(_playerGameObjects[i], characterConfiguration, i);
 
                     chestFactory.AddPlayerReference(i, _playerGameObjects[i]);
                 }
@@ -159,11 +159,12 @@ namespace Assets.Scripts.Gameplay.Player
             newRespawnPoint.GetComponent<RespawnPoint>().Player = player.transform;
         }
 
-        private void InitializeStatusDisplay(GameObject player, CharacterConfiguration characterConfiguration, int playerIndex)
+        private void InitializePlayerUI(GameObject player, CharacterConfiguration characterConfiguration, int playerIndex)
         {
-            GameObject newRespawnPoint = (GameObject)Instantiate(StatusDisplayPrefab);
-            newRespawnPoint.transform.parent = transform.parent;
-            newRespawnPoint.GetComponent<PlayerStatusDisplay>().Initialize(player.transform, characterConfiguration, playerIndex);
+            GameObject newPlayerUI = (GameObject)Instantiate(UIDisplayPrefab);
+            newPlayerUI.transform.parent = transform.parent;
+            newPlayerUI.GetComponent<PlayerStatusDisplay>().Initialize(player.transform, characterConfiguration, playerIndex);
+            newPlayerUI.GetComponent<PlayerPowerUpTimerDisplay>().Initialize(player.transform, playerIndex);
         }
 
         private const string Avatar_Names = "Red,Green,Purple,Blue";
