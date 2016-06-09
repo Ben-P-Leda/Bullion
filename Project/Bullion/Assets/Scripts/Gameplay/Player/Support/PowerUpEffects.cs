@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Assets.Scripts.Gameplay
+﻿namespace Assets.Scripts.Gameplay.Player.Support
 {
     public enum PowerUpEffect
     {

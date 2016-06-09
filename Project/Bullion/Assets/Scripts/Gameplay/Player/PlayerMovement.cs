@@ -22,6 +22,7 @@ namespace Assets.Scripts.Gameplay.Player
         private float _seaEntryHeight;
         private float _wadeHeightRange;
 
+        private bool _roundInProgress;
         private bool _lifecycleEventInProgress;
         private bool _attackInProgress;
         private bool _isInDeadMode;
@@ -40,6 +41,8 @@ namespace Assets.Scripts.Gameplay.Player
             _rigidBody = GetComponent<Rigidbody>();
             _input = GetComponent<PlayerInput>();
             _terrain = Terrain.activeTerrain;
+
+            _roundInProgress = false;
 
             _wasSwimming = false;
             _swimHeight = GetComponent<CapsuleCollider>().height * Swim_Height_Modifier;
@@ -106,6 +109,9 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 _headOnImpact = true;
             }
+
+            if (message == EventMessage.Start_Round) { _roundInProgress = true; }
+            if (message == EventMessage.End_Round) { _roundInProgress = false; _activeAnimator.SetBool("IsMoving", false); }
         }
 
         private void SetLifeEventRunning(bool isRunning)
@@ -207,7 +213,8 @@ namespace Assets.Scripts.Gameplay.Player
 
         private bool CanMove()
         {
-            return (!_attackInProgress)
+            return (_roundInProgress)
+                && (!_attackInProgress)
                 && (!_lifecycleEventInProgress)
                 && (!_hasBeenLaunched)
                 && (!_rushInProgress);

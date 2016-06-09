@@ -86,9 +86,11 @@
      <Compile Include="Assets\Scripts\Gameplay\Player\Support\CharacterConfigurationModifier.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\Support\PowerUpEffects.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\Support\RespawnPoint.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Sequencing\RoundTiming.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\Helpers.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerPowerUpTimerDisplay.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatusDisplay.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\UI\RoundTimerDisplay.cs" />
      <Compile Include="Assets\Scripts\Generic\Definitions.cs" />
      <Compile Include="Assets\Scripts\Generic\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\Generic\Utilities.cs" />

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.EventHandling;
+using Assets.Scripts.Gameplay.Player.Support;
 
 namespace Assets.Scripts.Gameplay.Chests.Contents.PowerUps
 {

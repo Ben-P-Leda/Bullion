@@ -17,6 +17,7 @@ namespace Assets.Scripts.Gameplay.Player
         private int _comboStepCount;
         private int _lastStrikingComboIndex;
 
+        private bool _roundInProgress;
         private bool _lifeEventInProgress;
         private bool _isSwimming;
         private bool _hasBeenLaunched;
@@ -34,6 +35,7 @@ namespace Assets.Scripts.Gameplay.Player
             _comboStepCount = 0;
             _lastStrikingComboIndex = 0;
 
+            _roundInProgress = false;
             _lifeEventInProgress = false;
             _isSwimming = false;
             _hasBeenLaunched = false;
@@ -86,6 +88,9 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Begin_Rush_Sequence: _rushInProgress = true; break;
                 }
             }
+
+            if (message == EventMessage.Start_Round) { _roundInProgress = true; }
+            if (message == EventMessage.End_Round) { _roundInProgress = false; }
         }
 
         private void BoolEventHandler(Transform originator, Transform target, string message, bool value)
@@ -123,7 +128,8 @@ namespace Assets.Scripts.Gameplay.Player
 
         private bool CanAttack()
         {
-            return (!_lifeEventInProgress)
+            return (_roundInProgress)
+                && (!_lifeEventInProgress)
                 && (!_isSwimming)
                 && (!_hasBeenLaunched)
                 && (!_rushInProgress);

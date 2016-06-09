@@ -113,13 +113,6 @@ namespace Assets.Scripts.Gameplay.Chests
             }
         }
 
-        // TESTING STUFF
-        private Rect _displayArea = new Rect(300, 0, 300, 100);
-        private void OnGUI()
-        {
-            GUI.Label(_displayArea, "Update in " + _timeToNextSpawn);
-        }
-
         private const float Grid_Cell_Size = 1.0f;
         private const int Chest_Pool_Capacity = 12;
     }

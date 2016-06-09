@@ -13,6 +13,7 @@ namespace Assets.Scripts.Gameplay.Player
         private GameObject _rushCollider;
         private PlayerInput _input;
 
+        private bool _roundInProgress;
         private float _rushChargeLevel;
         private float _rushDurationRemaining;
         private bool _isSwimming;
@@ -28,6 +29,7 @@ namespace Assets.Scripts.Gameplay.Player
             _rushCollider = _transform.FindChild("Rush Collider").gameObject;
             _input = GetComponent<PlayerInput>();
 
+            _roundInProgress = false;
             _rushChargeLevel = 0.0f;
             _rushDurationRemaining = 0.0f;
             _isSwimming = false;
@@ -88,6 +90,9 @@ namespace Assets.Scripts.Gameplay.Player
                     case EventMessage.Rush_Head_On_Collision: SetForStun(); break;
                 }
             }
+
+            if (message == EventMessage.Start_Round) { _roundInProgress = true; }
+            if (message == EventMessage.End_Round) { _roundInProgress = false; }
         }
 
         private void BoolEventHandler(Transform originator, Transform target, string message, bool value)
@@ -159,7 +164,8 @@ namespace Assets.Scripts.Gameplay.Player
 
         private bool CanRush()
         {
-            return (_rushChargeLevel >= Maximum_Rush_Charge)
+            return (_roundInProgress)
+                && (_rushChargeLevel >= Maximum_Rush_Charge)
                 && (!_isSwimming)
                 && (!_isDead)
                 && (!_hasBeenLaunched)
