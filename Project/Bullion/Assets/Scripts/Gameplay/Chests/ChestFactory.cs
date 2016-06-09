@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Generic;
+using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Chests.Helpers;
 
 namespace Assets.Scripts.Gameplay.Chests
@@ -10,6 +11,7 @@ namespace Assets.Scripts.Gameplay.Chests
         private ChestClusterCoordinator _clusterCoordinator;
         private ObjectPool _chestPool;
         private Transform[] _playerTransforms;
+        private bool _roundInProgress;
         private float _timeToNextSpawn;
 
         public GameObject ChestPrefab;
@@ -35,9 +37,28 @@ namespace Assets.Scripts.Gameplay.Chests
         {
             _clusterCoordinator = new ChestClusterCoordinator();
             _chestPool = new ObjectPool(transform, Chest_Pool_Capacity, CreateChestForPool, ActivateChest);
+
+            _roundInProgress = false;
+
             _timeToNextSpawn = 2.5f;
 
             InitialisePlacementGrid();
+        }
+
+        private void OnEnable()
+        {
+            EventDispatcher.MessageEventHandler += MessageEventHandler;
+        }
+
+        private void OnDisable()
+        {
+            EventDispatcher.MessageEventHandler -= MessageEventHandler;
+        }
+
+        private void MessageEventHandler(Transform originator, Transform target, string message)
+        {
+            if (message == EventMessage.Start_Round) { _roundInProgress = true; }
+            if (message == EventMessage.End_Round) { _roundInProgress = false; }
         }
 
         private GameObject CreateChestForPool()
@@ -81,17 +102,20 @@ namespace Assets.Scripts.Gameplay.Chests
 
         private void Update()
         {
-            _timeToNextSpawn -= Time.deltaTime;
-            if (_timeToNextSpawn <= 0.0f)
+            if (_roundInProgress)
             {
-                UpdatePlacementGridBlockedCells();
-
-                if (_chestPool.GetAvailableObjectCount() >= ChestClusterCoordinator.Cluster_Size)
+                _timeToNextSpawn -= Time.deltaTime;
+                if (_timeToNextSpawn <= 0.0f)
                 {
-                    PlaceCluster();
-                }
+                    UpdatePlacementGridBlockedCells();
 
-                _timeToNextSpawn = Random.Range(MinimumTimeBetweenSpawns, MaximumTimeBetweenSpawns);
+                    if (_chestPool.GetAvailableObjectCount() >= ChestClusterCoordinator.Cluster_Size)
+                    {
+                        PlaceCluster();
+                    }
+
+                    _timeToNextSpawn = Random.Range(MinimumTimeBetweenSpawns, MaximumTimeBetweenSpawns);
+                }
             }
         }
 
