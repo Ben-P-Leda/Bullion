@@ -66,5 +66,20 @@ namespace Assets.Scripts.Generic
                 }
             }
         }
+
+
+        public GameObject GetFirstAvailableObject()
+        {
+            GameObject firstAvailable = null;
+            for (int i = 0; ((i < _objects.Length) && (firstAvailable == null)); i++)
+            {
+                if (!_objects[i].activeInHierarchy)
+                {
+                    firstAvailable = _objects[i];
+                }
+            }
+
+            return firstAvailable;
+        }
     }
 }

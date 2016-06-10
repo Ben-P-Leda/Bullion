@@ -20,11 +20,16 @@
         public const string Rush_Stun_Impact = "RushStunImpact";
         public const string Rush_Knockback = "RushKnockback";
         public const string Rush_Head_On_Collision = "RushHeadOnCollision";
+
+        public const string Entered_Deep_Water = "EnteredDeepWater";
+        public const string Left_Deep_Water = "LeftDeepWater";
+
         public const string Chest_Destroyed = "ChestDestroyed";
         public const string Spawn_Treasure = "SpawnTreasure";
         public const string Collect_Treasure = "CollectTreasure";
         public const string Update_Treasure = "UpdateTreasure";
         public const string Spawn_Power_Up = "SpawnPowerUp";
+
         public const string Set_Round_Timer = "SetRoundTimer";
         public const string Start_Round = "StartRound";
         public const string End_Round = "EndRound";

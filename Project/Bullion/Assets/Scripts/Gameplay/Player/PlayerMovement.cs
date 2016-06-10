@@ -261,6 +261,8 @@ namespace Assets.Scripts.Gameplay.Player
                 {
                     EventDispatcher.FireEvent(_transform, _transform, EventMessage.End_Rush_Movement);
                 }
+
+                EventDispatcher.FireEvent(_transform, _transform, isSwimming ? EventMessage.Entered_Deep_Water : EventMessage.Left_Deep_Water);
             }
         }
 
