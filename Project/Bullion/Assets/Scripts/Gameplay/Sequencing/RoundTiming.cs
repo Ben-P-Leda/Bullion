@@ -42,6 +42,6 @@ namespace Assets.Scripts.Gameplay.Sequencing
             }
         }
 
-        private const float Round_Start_Delay = 3.0f;
+        private const float Round_Start_Delay = 1.5f;
     }
 }

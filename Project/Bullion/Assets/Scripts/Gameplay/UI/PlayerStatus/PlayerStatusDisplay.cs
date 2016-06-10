@@ -2,7 +2,7 @@
 using Assets.Scripts.Configuration;
 using Assets.Scripts.EventHandling;
 
-namespace Assets.Scripts.Gameplay.UI
+namespace Assets.Scripts.Gameplay.UI.PlayerStatus
 {
     public class PlayerStatusDisplay : MonoBehaviour
     {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Assets.Scripts.EventHandling;
 
-namespace Assets.Scripts.Gameplay.UI
+namespace Assets.Scripts.Gameplay.UI.PlayerStatus
 {
     public class PlayerPowerUpTimerDisplay : MonoBehaviour
     {

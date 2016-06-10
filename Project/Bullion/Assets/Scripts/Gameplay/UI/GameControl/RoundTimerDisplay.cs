@@ -1,19 +1,24 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Generic;
 using Assets.Scripts.EventHandling;
 
-namespace Assets.Scripts.Gameplay.UI
+namespace Assets.Scripts.Gameplay.UI.GameControl
 {
     public class RoundTimerDisplay : MonoBehaviour
     {
         private Rect _displayContainer;
-
+        private GUIStyle _style;
         private bool _timerRunning;
         private float _timeRemaining;
 
         private void Start()
         {
-            _displayContainer = new Rect(300, 0, 300, 100);
+            _displayContainer = new Rect(0, 20.0f, Screen.width, Screen.height);
 
+            _style = new GUIStyle();
+            _style.fontSize = (int)(Base_Font_Size * Utilities.Scale);
+            _style.normal.textColor = Color.yellow;
+            _style.alignment = TextAnchor.UpperCenter;
             _timerRunning = false;
             _timeRemaining = 0.0f;
         }
@@ -44,7 +49,9 @@ namespace Assets.Scripts.Gameplay.UI
 
         private void OnGUI()
         {
-            GUI.Label(_displayContainer, (_timerRunning ? "Time: " + Mathf.RoundToInt(_timeRemaining) : "Ready..."));
+            GUI.Label(_displayContainer, "Time: " + Mathf.RoundToInt(_timeRemaining), _style);
         }
+
+        private const float Base_Font_Size = 24.0f;
     }
 }

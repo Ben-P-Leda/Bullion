@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
 using Assets.Scripts.Gameplay.Chests;
-using Assets.Scripts.Gameplay.UI;
+using Assets.Scripts.Gameplay.UI.GameControl;
+using Assets.Scripts.Gameplay.UI.PlayerStatus;
 using Assets.Scripts.Gameplay.Player.Interfaces;
 using Assets.Scripts.Gameplay.Player.Support;
 

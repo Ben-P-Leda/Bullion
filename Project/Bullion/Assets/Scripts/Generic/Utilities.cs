@@ -17,5 +17,10 @@ namespace Assets.Scripts.Generic
                 return _scale;
             }
         }
+
+        public static int ScaledFontSize(float fontSize)
+        {
+            return (int)(fontSize * Scale);
+        }
     }
 }
