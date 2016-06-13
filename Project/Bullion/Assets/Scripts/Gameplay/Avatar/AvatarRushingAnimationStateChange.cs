@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Assets.Scripts.EventHandling;
 
 namespace Assets.Scripts.Gameplay.Avatar
 {

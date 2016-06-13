@@ -49,7 +49,10 @@ namespace Assets.Scripts.Gameplay.UI.GameControl
 
         private void OnGUI()
         {
-            GUI.Label(_displayContainer, "Time: " + Mathf.RoundToInt(_timeRemaining), _style);
+            if (_timerRunning)
+            {
+                GUI.Label(_displayContainer, "Time: " + Mathf.RoundToInt(_timeRemaining), _style);
+            }
         }
 
         private const float Base_Font_Size = 24.0f;

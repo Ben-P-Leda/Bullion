@@ -8,22 +8,38 @@ namespace Assets.Scripts.Gameplay.Sharks
     public class SharkFactory : MonoBehaviour
     {
         private ObjectPool _sharkPool;
-        private Dictionary<Transform, GameObject> _attackingSharkLookup;
+        private Terrain _terrain;
+        private Vector3[] _startOffsets;
 
         public GameObject SharkPrefab;
 
         private void Start()
         {
-            _sharkPool = new ObjectPool(transform, Constants.Player_Count, CreateSharkForPool, null);
-            _attackingSharkLookup = new Dictionary<Transform, GameObject>();
+            _sharkPool = new ObjectPool(transform, Shark_Pool_Size, CreateSharkForPool, null);
+            _terrain = Terrain.activeTerrain;
+
+            CreateStartOffsets();
         }
 
         private GameObject CreateSharkForPool()
         {
             GameObject shark = (GameObject)Instantiate(SharkPrefab);
-            // Call any initialization here...
+            shark.GetComponent<SharkMovement>().InitializeComponents();
 
             return shark;
+        }
+
+        private void CreateStartOffsets()
+        {
+            List<Vector3> startOffsets = new List<Vector3>();
+            float step = 360.0f / Start_Offset_Count;
+            float angle = 0.0f;
+            while (angle < 360.0f)
+            {
+                startOffsets.Add(Quaternion.Euler(0.0f, angle, 0.0f) * Vector3.right * Constants.Shark_Maximum_Trigger_Distance);
+                angle += step;
+            }
+            _startOffsets = startOffsets.ToArray();
         }
 
         private void OnEnable()
@@ -51,22 +67,35 @@ namespace Assets.Scripts.Gameplay.Sharks
 
         private void StartSharkAttackRun(Transform target)
         {
-            GameObject attackingShark = GetAttackingShark(target);
+            GameObject attackingShark = _sharkPool.GetFirstAvailableObject();
+            Vector3 startPosition = GetSharkStartPosition(target.position);
+
+            if (startPosition != Vector3.zero)
+            {
+                attackingShark.SetActive(true);
+                attackingShark.GetComponent<SharkMovement>().SetForAttack(target, startPosition);
+            }
         }
 
-        private GameObject GetAttackingShark(Transform target)
+        private Vector3 GetSharkStartPosition(Vector3 targetPosition)
         {
-            if (!_attackingSharkLookup.ContainsKey(target))
+            Vector3 startPosition = Vector3.zero;
+
+            int offset = Random.Range(0, _startOffsets.Length - 1);
+            for (int i = 0; ((i < _startOffsets.Length) && (startPosition == Vector3.zero)); i++)
             {
-                _attackingSharkLookup.Add(target, _sharkPool.GetFirstAvailableObject());
+                Vector3 position = targetPosition + _startOffsets[(offset + i) % _startOffsets.Length];
+                if (_terrain.SampleHeight(position) <= Minimum_Shark_Activation_Depth)
+                {
+                    startPosition = new Vector3(position.x, Constants.Shark_Swim_Depth, position.z);
+                }
             }
 
-            if (!_attackingSharkLookup[transform].activeInHierarchy)
-            {
-                // set position and enable
-            }
-
-            return _attackingSharkLookup[transform];
+            return startPosition;
         }
+
+        private const float Start_Offset_Count = 18.0f;
+        private const float Minimum_Shark_Activation_Depth = 0.0f;
+        private const int Shark_Pool_Size = 20;
     }
 }
