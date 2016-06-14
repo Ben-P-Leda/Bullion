@@ -87,7 +87,7 @@
      <Compile Include="Assets\Scripts\Gameplay\Player\Support\PowerUpEffects.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Player\Support\RespawnPoint.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Sequencing\RoundTiming.cs" />
-     <Compile Include="Assets\Scripts\Gameplay\Sharks\SharkExitAnimationStateChange.cs" />
+     <Compile Include="Assets\Scripts\Gameplay\Sharks\SharkAnimationEventHandler.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Sharks\SharkFactory.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Sharks\SharkMovement.cs" />
      <Compile Include="Assets\Scripts\Gameplay\UI\GameControl\EndRoundDisplay.cs" />
@@ -99,6 +99,9 @@
      <Compile Include="Assets\Scripts\Generic\Definitions.cs" />
      <Compile Include="Assets\Scripts\Generic\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\Generic\Utilities.cs" />
+     <Compile Include="Assets\Scripts\TitleScene\PlaceholderTitleManager.cs" />
+     <Compile Include="Assets\Test.cs" />
+     <Compile Include="Assets\Test2.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity532/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

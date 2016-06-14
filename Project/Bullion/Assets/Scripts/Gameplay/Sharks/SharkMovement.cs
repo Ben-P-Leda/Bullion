@@ -8,7 +8,6 @@ namespace Assets.Scripts.Gameplay.Sharks
         private Transform _transform;
         private Rigidbody _rigidBody;
         private Animator _animator;
-        private Vector3 _terrainCenter;
         private Transform _target;
 
         public void InitializeComponents()
@@ -16,11 +15,6 @@ namespace Assets.Scripts.Gameplay.Sharks
             _transform = transform;
             _rigidBody = GetComponent<Rigidbody>();
             _animator = _transform.FindChild("Shark Model").GetComponent<Animator>();
-
-            _terrainCenter = new Vector3(
-                Terrain.activeTerrain.terrainData.size.x / 2.0f,
-                Constants.Shark_Swim_Depth,
-                Terrain.activeTerrain.terrainData.size.z / 2.0f);
         }
 
         private void HandleExitComplete()
@@ -35,7 +29,8 @@ namespace Assets.Scripts.Gameplay.Sharks
 
             _animator.SetBool("IsAttacking", false);
             _animator.SetBool("IsExiting", false);
-            _animator.Play("Enter");
+
+            Debug.Log("START SHARK >>> Attacking: " + _animator.GetBool("IsAttacking"));
         }
 
         private void OnEnable()
@@ -50,19 +45,27 @@ namespace Assets.Scripts.Gameplay.Sharks
 
         private void MessageEventHandler(Transform originator, Transform target, string message)
         {
-            if ((message == EventMessage.Left_Deep_Water) && (originator == _target))
+            if ((originator == _target) && (EventShouldDismiss(message)))
             {
+                Debug.Log("SHARK EXIT >>> Message: " + message);
                 SetForExit();
             }
+        }
+
+        private bool EventShouldDismiss(string message)
+        {
+            if (message == EventMessage.Left_Deep_Water) { return true; }
+            if (message == EventMessage.Has_Died) { return true; }
+
+            return false;
         }
 
         private void SetForExit()
         {
             _target = null;
             _rigidBody.velocity = Vector3.zero;
-            _animator.SetBool("IsExiting", true);
             _animator.SetBool("IsAttacking", false);
-            _animator.GetBehaviour<SharkExitAnimationStateChange>().StateExitHandler = HandleExitComplete;
+            _animator.SetBool("IsExiting", true);
         }
 
         private void Update()
@@ -84,8 +87,8 @@ namespace Assets.Scripts.Gameplay.Sharks
         }
 
         private const float Attack_Distance = 5.0f;
-        private const float Basic_Move_Speed = 6.0f;
-        private const float Attack_Move_Speed = 8.0f;
+        private const float Basic_Move_Speed = 1.0f; //6.0f;
+        private const float Attack_Move_Speed = 1.0f;//8.0f;
         private const float Exit_Distance = 10.0f;
     }
 }

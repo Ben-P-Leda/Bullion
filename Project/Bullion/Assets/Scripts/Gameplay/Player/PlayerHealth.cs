@@ -40,6 +40,10 @@ namespace Assets.Scripts.Gameplay.Player
                 _remainingHealth = Configuration.MaximumHealth;
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.Update_Health, _remainingHealth);
             }
+            else if ((originator == _transform) && (message == EventMessage.Hit_Trigger_Collider) && (target.tag == Constants.Shark_Head_Collider_Tag))
+            {
+                AdjustRemainingHealth(-_remainingHealth);
+            }
         }
 
         private void FloatEventHandler(Transform originator, Transform target, string message, float value)

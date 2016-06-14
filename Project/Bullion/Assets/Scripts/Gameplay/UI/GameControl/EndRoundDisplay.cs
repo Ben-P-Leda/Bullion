@@ -8,7 +8,6 @@ namespace Assets.Scripts.Gameplay.UI.GameControl
     public class EndRoundDisplay : MonoBehaviour
     {
         private Rect _displayContainer;
-        private GUIStyle _style;
         private string _windowText;
 
         private CharacterConfiguration[] _characterConfigurations;
@@ -27,11 +26,6 @@ namespace Assets.Scripts.Gameplay.UI.GameControl
         {
             float margin = Margin * Utilities.Scale;
             _displayContainer = new Rect(margin, margin, Screen.width - (margin * 2.0f), Screen.height - (margin * 2.0f));
-
-            _style = new GUIStyle();
-            _style.fontSize = (int)(Base_Font_Size * Utilities.Scale);
-            _style.richText = true;
-            _style.alignment = TextAnchor.MiddleCenter;
 
             _windowText = "";
         }
@@ -94,6 +88,5 @@ namespace Assets.Scripts.Gameplay.UI.GameControl
         }
 
         private float Margin = 300.0f;
-        private const float Base_Font_Size = 24.0f;
     }
 }
