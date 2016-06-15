@@ -100,8 +100,6 @@
      <Compile Include="Assets\Scripts\Generic\ObjectPool.cs" />
      <Compile Include="Assets\Scripts\Generic\Utilities.cs" />
      <Compile Include="Assets\Scripts\TitleScene\PlaceholderTitleManager.cs" />
-     <Compile Include="Assets\Test.cs" />
-     <Compile Include="Assets\Test2.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity532/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

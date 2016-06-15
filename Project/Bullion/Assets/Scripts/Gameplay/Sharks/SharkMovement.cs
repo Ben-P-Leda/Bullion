@@ -28,7 +28,7 @@ namespace Assets.Scripts.Gameplay.Sharks
             _target = target;
 
             _animator.SetBool("IsAttacking", false);
-            _animator.SetBool("IsExiting", false);
+            _animator.ResetTrigger("IsExiting");
 
             Debug.Log("START SHARK >>> Attacking: " + _animator.GetBool("IsAttacking"));
         }
@@ -65,7 +65,7 @@ namespace Assets.Scripts.Gameplay.Sharks
             _target = null;
             _rigidBody.velocity = Vector3.zero;
             _animator.SetBool("IsAttacking", false);
-            _animator.SetBool("IsExiting", true);
+            _animator.SetTrigger("IsExiting");
         }
 
         private void Update()
@@ -87,8 +87,8 @@ namespace Assets.Scripts.Gameplay.Sharks
         }
 
         private const float Attack_Distance = 5.0f;
-        private const float Basic_Move_Speed = 1.0f; //6.0f;
-        private const float Attack_Move_Speed = 1.0f;//8.0f;
+        private const float Basic_Move_Speed = 6.0f;
+        private const float Attack_Move_Speed = 8.0f;
         private const float Exit_Distance = 10.0f;
     }
 }
