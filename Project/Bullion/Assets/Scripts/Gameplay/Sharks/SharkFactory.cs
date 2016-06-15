@@ -56,7 +56,6 @@ namespace Assets.Scripts.Gameplay.Sharks
         {
             if (message == EventMessage.Entered_Deep_Water)
             {
-                Debug.Log(originator.name + " is in deep water - GO SHARK!");
                 StartSharkAttackRun(originator);
             }
         }

@@ -29,8 +29,6 @@ namespace Assets.Scripts.Gameplay.Sharks
 
             _animator.SetBool("IsAttacking", false);
             _animator.ResetTrigger("IsExiting");
-
-            Debug.Log("START SHARK >>> Attacking: " + _animator.GetBool("IsAttacking"));
         }
 
         private void OnEnable()
@@ -47,7 +45,6 @@ namespace Assets.Scripts.Gameplay.Sharks
         {
             if ((originator == _target) && (EventShouldDismiss(message)))
             {
-                Debug.Log("SHARK EXIT >>> Message: " + message);
                 SetForExit();
             }
         }

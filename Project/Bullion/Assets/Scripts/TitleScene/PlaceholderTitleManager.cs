@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Generic;
+using Assets.Scripts.Generic.ParameterManagement;
 
 namespace Assets.Scripts.TitleScene
 {
@@ -33,6 +34,10 @@ namespace Assets.Scripts.TitleScene
             {
                 CheckForGameStart();
             }
+            else if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
         }
 
         private void CheckForGameStart()
@@ -45,9 +50,14 @@ namespace Assets.Scripts.TitleScene
                     if (Input.GetButtonDown(button))
                     {
                         _gameStarted = true;
-                        Debug.Log("GAME START! By " + button);
+                        ParameterRepository.SetItem(Parameter.Game_Started_By_Player_Index, j);
                     }
                 }
+            }
+
+            if (_gameStarted)
+            {
+                // TODO: Load selection scene
             }
         }
 

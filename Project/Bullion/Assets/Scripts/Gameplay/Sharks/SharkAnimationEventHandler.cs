@@ -13,7 +13,6 @@ namespace Assets.Scripts.Gameplay.Sharks
 
         public void CompleteExit()
         {
-            Debug.Log("Complete Exit animation (handler) " + _parentGameObject.name);
             _parentGameObject.SetActive(false);
         }
     }

@@ -98,6 +98,8 @@
      <Compile Include="Assets\Scripts\Gameplay\UI\PlayerStatus\PlayerStatusDisplay.cs" />
      <Compile Include="Assets\Scripts\Generic\Definitions.cs" />
      <Compile Include="Assets\Scripts\Generic\ObjectPool.cs" />
+     <Compile Include="Assets\Scripts\Generic\ParameterManagement\Parameter.cs" />
+     <Compile Include="Assets\Scripts\Generic\ParameterManagement\ParameterRepository.cs" />
      <Compile Include="Assets\Scripts\Generic\Utilities.cs" />
      <Compile Include="Assets\Scripts\TitleScene\PlaceholderTitleManager.cs" />
  <Reference Include="UnityEngine.UI">
