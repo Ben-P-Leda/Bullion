@@ -30,34 +30,39 @@ namespace Assets.Scripts.TitleScene
 
         private void Update()
         {
-            if (!_gameStarted)
-            {
-                CheckForGameStart();
-            }
-            else if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Application.Quit();
-            }
+            CheckForGameStart();
+            CheckForQuit();
         }
 
         private void CheckForGameStart()
         {
-            for (int i = 0; ((i < InputFormats.Length) && (!_gameStarted)); i++)
+            if (!_gameStarted)
             {
-                for (int j = 0; ((j < 4) && (!_gameStarted)); j++)
+                for (int i = 0; ((i < InputFormats.Length) && (!_gameStarted)); i++)
                 {
-                    string button = string.Format(InputFormats[i], j + 1);
-                    if (Input.GetButtonDown(button))
+                    for (int j = 0; ((j < 4) && (!_gameStarted)); j++)
                     {
-                        _gameStarted = true;
-                        ParameterRepository.SetItem(Parameter.Game_Started_By_Player_Index, j);
+                        string button = string.Format(InputFormats[i], j + 1);
+                        if (Input.GetButtonDown(button))
+                        {
+                            _gameStarted = true;
+                            ParameterRepository.SetItem(Parameter.Game_Started_By_Player_Index, j);
+                        }
                     }
                 }
             }
 
             if (_gameStarted)
             {
-                // TODO: Load selection scene
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Game Setup");
+            }
+        }
+
+        private void CheckForQuit()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Application.Quit();
             }
         }
 

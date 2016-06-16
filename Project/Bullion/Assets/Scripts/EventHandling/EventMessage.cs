@@ -37,5 +37,9 @@
         public const string Apply_Power_Up_Prefix = "ApplyPowerUp-";
         public const string Start_Power_Up_Timer_Prefix = "StartPowerUpTimer-";
         public const string Total_Treasure_Prefix = "TotalTreasure-";
+
+        public const string Avatar_Selector_Confirm = "AvatarSelectorConfirm";
+        public const string Avatar_Selection_Step = "AvatarSelectionStep";
+        public const string Avatar_Selected = "AvatarSelected";
     }
 }

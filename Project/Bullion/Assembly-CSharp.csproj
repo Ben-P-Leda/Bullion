@@ -49,6 +49,8 @@
      <Compile Include="Assets\Scripts\Configuration\CharacterConfigurationManager.cs" />
      <Compile Include="Assets\Scripts\EventHandling\EventDispatcher.cs" />
      <Compile Include="Assets\Scripts\EventHandling\EventMessage.cs" />
+     <Compile Include="Assets\Scripts\GameSetup\AvatarSelection\SelectorDisplay.cs" />
+     <Compile Include="Assets\Scripts\GameSetup\AvatarSelection\SelectorInput.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarAnimationEventHandler.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarDamagedAnimationStateChange.cs" />
      <Compile Include="Assets\Scripts\Gameplay\Avatar\AvatarRestingAnimationStateChange.cs" />
