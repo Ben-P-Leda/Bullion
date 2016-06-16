@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
+using Assets.Scripts.Generic.ParameterManagement;
 using Assets.Scripts.Gameplay.Chests;
 using Assets.Scripts.Gameplay.UI.GameControl;
 using Assets.Scripts.Gameplay.UI.PlayerStatus;
@@ -23,30 +24,28 @@ namespace Assets.Scripts.Gameplay.Player
             Terrain terrain = Terrain.activeTerrain;
             ChestFactory chestFactory = FindObjectOfType<ChestFactory>();
             EndRoundDisplay endRoundDisplay = FindObjectOfType<EndRoundDisplay>();
-            string[] playerAvatars = GetPlayerAvatars();
 
-            _playerGameObjects = new GameObject[playerAvatars.Length];
-
+            int activePlayerCount = 0;
             for (int i = 0; i < Constants.Player_Count; i++)
             {
-                if (_playerGameObjects[i] == null)
+                string playerKey = string.Format("P{0}", i + 1);
+                string avatarKey = ParameterRepository.GetItem<string>(Parameter.Selected_Avatar_Prefix + playerKey);
+
+                if (!string.IsNullOrEmpty(avatarKey))
                 {
-                    CharacterConfiguration characterConfiguration = CharacterConfigurationManager.GetCharacterConfiguration(playerAvatars[i]);
+                    CharacterConfiguration characterConfiguration = CharacterConfigurationManager.GetCharacterConfiguration(avatarKey);
                     Vector3 startPosition = GetStartPosition(terrain, i);
 
-                    _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i], characterConfiguration, startPosition);
-                    InitializeRespawnPoint(_playerGameObjects[i], characterConfiguration, startPosition);
-                    InitializePlayerUI(_playerGameObjects[i], characterConfiguration, i);
+                    GameObject playerGameObject = InitializePlayer(playerKey, avatarKey, characterConfiguration, startPosition);
+                    InitializeRespawnPoint(playerGameObject, characterConfiguration, startPosition);
+                    InitializePlayerUI(playerGameObject, characterConfiguration, activePlayerCount);
 
-                    chestFactory.AddPlayerReference(i, _playerGameObjects[i]);
-                    endRoundDisplay.AddPlayerConfiguration(i, characterConfiguration);
+                    chestFactory.AddPlayerReference(activePlayerCount, playerGameObject);
+                    endRoundDisplay.AddPlayerConfiguration(characterConfiguration);
+
+                    activePlayerCount++;
                 }
             }
-        }
-
-        private string[] GetPlayerAvatars()
-        {
-            return Avatar_Names.Split(',');
         }
 
         private Vector3 GetStartPosition(Terrain terrain, int playerIndex)
@@ -64,9 +63,9 @@ namespace Assets.Scripts.Gameplay.Player
             }
         }
 
-        private GameObject InitializePlayer(int playerIndex, string modelHandle, CharacterConfiguration characterConfiguration, Vector3 startPosition)
+        private GameObject InitializePlayer(string playerHandle, string modelHandle, CharacterConfiguration characterConfiguration, Vector3 startPosition)
         {
-            GameObject newPlayer = CreateNewPlayer(playerIndex);
+            GameObject newPlayer = CreateNewPlayer(playerHandle);
             newPlayer.name = modelHandle;
             ConnectPlayerToModels(newPlayer, modelHandle);
             ConnectPlayerToCamera(newPlayer);
@@ -77,12 +76,12 @@ namespace Assets.Scripts.Gameplay.Player
             return newPlayer;
         }
 
-        private GameObject CreateNewPlayer(int playerIndex)
+        private GameObject CreateNewPlayer(string playerHandle)
         {
             GameObject newPlayer = (GameObject)Instantiate(PlayerPrefab);
             newPlayer.transform.parent = transform.parent;
 
-            ((PlayerInput)newPlayer.GetComponent<PlayerInput>()).AxisPrefix = "P" + (playerIndex + 1);
+            ((PlayerInput)newPlayer.GetComponent<PlayerInput>()).AxisPrefix = playerHandle;
 
             return newPlayer;
         }
@@ -162,14 +161,12 @@ namespace Assets.Scripts.Gameplay.Player
             newRespawnPoint.GetComponent<RespawnPoint>().Player = player.transform;
         }
 
-        private void InitializePlayerUI(GameObject player, CharacterConfiguration characterConfiguration, int playerIndex)
+        private void InitializePlayerUI(GameObject player, CharacterConfiguration characterConfiguration, int uiIndex)
         {
             GameObject newPlayerUI = (GameObject)Instantiate(UIDisplayPrefab);
             newPlayerUI.transform.parent = transform.parent;
-            newPlayerUI.GetComponent<PlayerStatusDisplay>().Initialize(player.transform, characterConfiguration, playerIndex);
-            newPlayerUI.GetComponent<PlayerPowerUpTimerDisplay>().Initialize(player.transform, playerIndex);
+            newPlayerUI.GetComponent<PlayerStatusDisplay>().Initialize(player.transform, characterConfiguration, uiIndex);
+            newPlayerUI.GetComponent<PlayerPowerUpTimerDisplay>().Initialize(player.transform, uiIndex);
         }
-
-        private const string Avatar_Names = "Red,Green,Purple,Blue";
     }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using Assets.Scripts.Generic;
 using Assets.Scripts.EventHandling;
 using Assets.Scripts.Configuration;
@@ -10,16 +11,11 @@ namespace Assets.Scripts.Gameplay.UI.GameControl
         private Rect _displayContainer;
         private string _windowText;
 
-        private CharacterConfiguration[] _characterConfigurations;
+        private List<CharacterConfiguration> _characterConfigurations = new List<CharacterConfiguration>();
 
-        public void AddPlayerConfiguration(int playerIndex, CharacterConfiguration characterConfiguration)
+        public void AddPlayerConfiguration(CharacterConfiguration characterConfiguration)
         {
-            if (_characterConfigurations == null)
-            {
-                _characterConfigurations = new CharacterConfiguration[Constants.Player_Count];
-            }
-
-            _characterConfigurations[playerIndex] = characterConfiguration;
+            _characterConfigurations.Add(characterConfiguration);
         }
 
         private void Start()

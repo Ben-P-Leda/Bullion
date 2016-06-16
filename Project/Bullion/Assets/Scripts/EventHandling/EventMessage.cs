@@ -40,6 +40,9 @@
 
         public const string Avatar_Selector_Confirm = "AvatarSelectorConfirm";
         public const string Avatar_Selection_Step = "AvatarSelectionStep";
-        public const string Avatar_Selected = "AvatarSelected";
+        public const string Ready_To_Play = "ReadyToPlay";
+        public const string Attempt_Game_Start = "AttemptGameStart";
+
+        public const string Player_Avatar_Selection_Prefix = "AvatarSelection-";
     }
 }

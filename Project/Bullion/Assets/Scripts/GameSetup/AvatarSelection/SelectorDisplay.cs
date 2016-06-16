@@ -27,8 +27,8 @@ namespace Assets.Scripts.GameSetup.AvatarSelection
             _statusText = transform.FindChild("Status Text").GetComponent<TextMesh>();
 
             InitializeDisplayAvatars();
-
-            _selectionConfirmed = false;
+            ToggleSelection("");
+            
             if (WasActivatedFromTitleScreen())
             {
                 EnableSelection();
@@ -85,9 +85,13 @@ namespace Assets.Scripts.GameSetup.AvatarSelection
                 {
                     EnableSelection();
                 }
-                else
+                else if (!_selectionConfirmed)
                 {
                     ConfirmSelection();
+                }
+                else
+                {
+                    EventDispatcher.FireEvent(_transform, _transform, EventMessage.Attempt_Game_Start);
                 }
             }
         }
@@ -116,16 +120,31 @@ namespace Assets.Scripts.GameSetup.AvatarSelection
             _activeAvatarIndex = (_activeAvatarIndex + stepDirection + _avatars.Length) % _avatars.Length;
             _avatars[_activeAvatarIndex].SetActive(true);
 
-            _selectionConfirmed = false;
-            _statusText.text = "";
+            ToggleSelection("");
+        }
+
+        private void ToggleSelection(string avatarModelName)
+        {
+            string parameterKey = Parameter.Selected_Avatar_Prefix + _transform.name.Split(' ')[0];
+            ParameterRepository.SetItem(parameterKey, avatarModelName);
+            Debug.Log(parameterKey + ": " + ParameterRepository.GetItem<string>(parameterKey));
+
+            _statusText.text = string.IsNullOrEmpty(avatarModelName)
+                ? ""
+                : _avatarNames[_activeAvatarIndex];
+
+            _selectionConfirmed = !string.IsNullOrEmpty(avatarModelName);
         }
 
         private void ConfirmSelection()
         {
-            _selectionConfirmed = true;
-            EventDispatcher.FireEvent(_transform, _transform, EventMessage.Avatar_Selected, _activeAvatarIndex);
+            string avatarModelName = _avatars[_activeAvatarIndex].name.Split('-')[0];
+            ToggleSelection(avatarModelName);
+
             _avatars[_activeAvatarIndex].GetComponent<Animator>().Play("salute");
-            _statusText.text = _avatarNames[_activeAvatarIndex];
+
+            string eventMessage = EventMessage.Player_Avatar_Selection_Prefix + avatarModelName;
+            EventDispatcher.FireEvent(_transform, _transform.parent, eventMessage);
         }
     }
 }
