@@ -127,7 +127,6 @@ namespace Assets.Scripts.GameSetup.AvatarSelection
         {
             string parameterKey = Parameter.Selected_Avatar_Prefix + _transform.name.Split(' ')[0];
             ParameterRepository.SetItem(parameterKey, avatarModelName);
-            Debug.Log(parameterKey + ": " + ParameterRepository.GetItem<string>(parameterKey));
 
             _statusText.text = string.IsNullOrEmpty(avatarModelName)
                 ? ""

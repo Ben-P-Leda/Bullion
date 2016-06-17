@@ -25,6 +25,22 @@ namespace Assets.Scripts.Gameplay.Player
             ChestFactory chestFactory = FindObjectOfType<ChestFactory>();
             EndRoundDisplay endRoundDisplay = FindObjectOfType<EndRoundDisplay>();
 
+            int activePlayers = ActivatePlayers(terrain, chestFactory, endRoundDisplay);
+            if (activePlayers < 1)
+            {
+                SetForDebugMode();
+                ActivatePlayers(terrain, chestFactory, endRoundDisplay);
+            }
+        }
+
+        private void SetForDebugMode()
+        {
+            ParameterRepository.SetItem(Parameter.Selected_Avatar_Prefix + "P1", "Red");
+            ParameterRepository.SetItem(Parameter.Selected_Avatar_Prefix + "P2", "Green");
+        }
+
+        private int ActivatePlayers(Terrain terrain, ChestFactory chestFactory, EndRoundDisplay endRoundDisplay)
+        {
             int activePlayerCount = 0;
             for (int i = 0; i < Constants.Player_Count; i++)
             {
@@ -46,6 +62,8 @@ namespace Assets.Scripts.Gameplay.Player
                     activePlayerCount++;
                 }
             }
+
+            return activePlayerCount;
         }
 
         private Vector3 GetStartPosition(Terrain terrain, int playerIndex)
@@ -131,7 +149,7 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void ConnectPlayerToCamera(GameObject player)
         {
-            ((CameraMovement)Camera.main.GetComponent<CameraMovement>()).Avatars.Add(player);
+            ((CameraMovement)Camera.main.GetComponent<CameraMovement>()).AddAvatar(player);
         }
 
         private void SetPlayerConfiguration(GameObject player, CharacterConfiguration characterConfiguration)

@@ -5,13 +5,22 @@ namespace Assets.Scripts.Gameplay
 {
     public class CameraMovement : MonoBehaviour
     {
-        public List<GameObject> Avatars;
-
         private Camera _camera;
+        private List<Transform> _avatars;
         private Transform _transform;
         private Vector3 _unitVector;
         private Vector3 _currentcenter;
         private float _currentDistance;
+
+        public void AddAvatar(GameObject avatar)
+        {
+            if (_avatars == null)
+            {
+                _avatars = new List<Transform>();
+            }
+
+            _avatars.Add(avatar.transform);
+        }
 
         private void Start()
         {
@@ -35,20 +44,20 @@ namespace Assets.Scripts.Gameplay
         private Vector3 GetCenter()
         {
             Vector3 center = Vector3.zero;
-            for (int i=0; i<Avatars.Count; i++)
+            for (int i = 0; i < _avatars.Count; i++)
             {
-                center += Avatars[i].transform.position;
+                center += _avatars[i].position;
             }
 
-            return center / Avatars.Count;
+            return center / _avatars.Count;
         }
 
         private float GetContainmentRadius(Vector3 center)
         {
             float containmentRadius = 0;
-            for (int i = 0; i < Avatars.Count; i++)
+            for (int i = 0; i < _avatars.Count; i++)
             {
-                containmentRadius = Mathf.Max(Vector3.Distance(center, Avatars[i].transform.position), containmentRadius);
+                containmentRadius = Mathf.Max(Vector3.Distance(center, _avatars[i].position), containmentRadius);
             }
 
             return containmentRadius;

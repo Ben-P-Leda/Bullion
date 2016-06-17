@@ -33,6 +33,7 @@
         public const string Set_Round_Timer = "SetRoundTimer";
         public const string Start_Round = "StartRound";
         public const string End_Round = "EndRound";
+        public const string Exit_Gameplay = "ExitGameplay";
 
         public const string Apply_Power_Up_Prefix = "ApplyPowerUp-";
         public const string Start_Power_Up_Timer_Prefix = "StartPowerUpTimer-";
