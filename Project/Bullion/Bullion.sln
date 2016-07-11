@@ -1,7 +1,7 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{A68F0284-4014-EE30-D567-D77B3099BDD8}") = "Bullion", "Assembly-CSharp.csproj", "{B2ABEBC2-F2C0-2752-CD08-74E69F8247BF}"
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bullion.CSharp", "Bullion.CSharp.csproj", "{97C6BA94-0865-E159-25CC-CD2DC88B0D15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,15 +9,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B2ABEBC2-F2C0-2752-CD08-74E69F8247BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2ABEBC2-F2C0-2752-CD08-74E69F8247BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2ABEBC2-F2C0-2752-CD08-74E69F8247BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2ABEBC2-F2C0-2752-CD08-74E69F8247BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97C6BA94-0865-E159-25CC-CD2DC88B0D15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97C6BA94-0865-E159-25CC-CD2DC88B0D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97C6BA94-0865-E159-25CC-CD2DC88B0D15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97C6BA94-0865-E159-25CC-CD2DC88B0D15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal

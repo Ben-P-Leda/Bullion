@@ -21,8 +21,6 @@ namespace Assets.Scripts.GameSetup.AvatarSelection
 
         private void Start()
         {
-            ParameterRepository.SetItem(Parameter.Game_Started_By_Player_Index, 1);
-
             _transform = transform;
             _statusText = transform.FindChild("Status Text").GetComponent<TextMesh>();
 
