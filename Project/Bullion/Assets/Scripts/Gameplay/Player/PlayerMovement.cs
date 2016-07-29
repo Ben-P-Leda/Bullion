@@ -22,12 +22,12 @@ namespace Assets.Scripts.Gameplay.Player
         private float _seaEntryHeight;
         private float _wadeHeightRange;
 
-        private bool _roundInProgress;
-        private bool _lifecycleEventInProgress;
-        private bool _attackInProgress;
+        public bool _roundInProgress;
+        public bool _lifecycleEventInProgress;
+        public bool _attackInProgress;
         private bool _isInDeadMode;
-        private bool _hasBeenLaunched;
-        private bool _rushInProgress;
+        public bool _hasBeenLaunched;
+        public bool _rushInProgress;
         private bool _headOnImpact;
 
         private Vector3 _rushVelocity;
@@ -166,27 +166,28 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void Update()
         {
-            float floor = GetFloorAtPosition(_transform.position);
-            _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
+            // TODO: Wire this back up once we can get height from model
+            //float floor = GetFloorAtPosition(_transform.position);
+            //_transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
 
             if (CanMove())
             {
                 UpdateControlledMotion();
             }
-            else if (_rushInProgress)
-            {
-                UpdateRushMotion(floor);
-            }
+            //else if (_rushInProgress)
+            //{
+            //    UpdateRushMotion(floor);
+            //}
 
             if (!_isInDeadMode)
             {
                 UpdateSwimmingState();
             }
            
-            if (_hasBeenLaunched)
-            {
-                CheckForLaunchReset(floor);
-            }
+            //if (_hasBeenLaunched)
+            //{
+            //    CheckForLaunchReset(floor);
+            //}
         }
 
         public float GetFloorAtPosition(Vector3 position)

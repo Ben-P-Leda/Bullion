@@ -56,7 +56,8 @@ namespace Assets.Scripts.Gameplay.Player
                     InitializeRespawnPoint(playerGameObject, characterConfiguration, startPosition);
                     InitializePlayerUI(playerGameObject, characterConfiguration, activePlayerCount);
 
-                    chestFactory.AddPlayerReference(activePlayerCount, playerGameObject);
+                    // TODO: wire this back up once we get the chests in
+                    //chestFactory.AddPlayerReference(activePlayerCount, playerGameObject);
                     endRoundDisplay.AddPlayerConfiguration(characterConfiguration);
 
                     activePlayerCount++;
@@ -74,9 +75,11 @@ namespace Assets.Scripts.Gameplay.Player
             }
             else
             {
+                // TODO: Get the height off the arena model - terrain is for prototype only
                 return new Vector3(
                     PlayerStartPoints[playerIndex].x,
-                    terrain.SampleHeight(PlayerStartPoints[playerIndex]),
+                    PlayerStartPoints[playerIndex].y,
+                    //terrain.SampleHeight(PlayerStartPoints[playerIndex]),
                     PlayerStartPoints[playerIndex].z);
             }
         }
