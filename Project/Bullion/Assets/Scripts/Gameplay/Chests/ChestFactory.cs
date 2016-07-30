@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Generic;
 using Assets.Scripts.EventHandling;
+using Assets.Scripts.Gameplay.Environment;
 using Assets.Scripts.Gameplay.Chests.Helpers;
 
 namespace Assets.Scripts.Gameplay.Chests
@@ -78,9 +79,10 @@ namespace Assets.Scripts.Gameplay.Chests
 
         private void InitialisePlacementGrid()
         {
+            ILandDataProvider landData = GameObject.Find("Land").GetComponent<ILandDataProvider>();
             Transform[] obstructionPositions = GetObstructionPositions();
 
-            _placementGrid = new PlacementGrid(Terrain.activeTerrain, Grid_Cell_Size, LowPointMargin);
+            _placementGrid = new PlacementGrid(landData, Grid_Cell_Size, LowPointMargin);
             _placementGrid.BlockCellsPermanently(obstructionPositions, ObstructionMargin);
             _placementGrid.BlockCellsPermanently(_playerTransforms, StartPointMargin);
             _placementGrid.BlockClusterEdgeCells();

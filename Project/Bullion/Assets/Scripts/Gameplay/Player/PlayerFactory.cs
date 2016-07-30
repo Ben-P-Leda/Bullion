@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
 using Assets.Scripts.Generic.ParameterManagement;
+using Assets.Scripts.Gameplay.Environment;
 using Assets.Scripts.Gameplay.Chests;
 using Assets.Scripts.Gameplay.UI.GameControl;
 using Assets.Scripts.Gameplay.UI.PlayerStatus;
@@ -21,15 +22,16 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void Start()
         {
-            Terrain terrain = Terrain.activeTerrain;
+            ILandDataProvider landData = GameObject.Find("Land").GetComponent<ILandDataProvider>();
+
             ChestFactory chestFactory = FindObjectOfType<ChestFactory>();
             EndRoundDisplay endRoundDisplay = FindObjectOfType<EndRoundDisplay>();
 
-            int activePlayers = ActivatePlayers(terrain, chestFactory, endRoundDisplay);
+            int activePlayers = ActivatePlayers(landData, chestFactory, endRoundDisplay);
             if (activePlayers < 1)
             {
                 SetForDebugMode();
-                ActivatePlayers(terrain, chestFactory, endRoundDisplay);
+                ActivatePlayers(landData, chestFactory, endRoundDisplay);
             }
         }
 
@@ -39,7 +41,7 @@ namespace Assets.Scripts.Gameplay.Player
             ParameterRepository.SetItem(Parameter.Selected_Avatar_Prefix + "P2", "Green");
         }
 
-        private int ActivatePlayers(Terrain terrain, ChestFactory chestFactory, EndRoundDisplay endRoundDisplay)
+        private int ActivatePlayers(ILandDataProvider landData, ChestFactory chestFactory, EndRoundDisplay endRoundDisplay)
         {
             int activePlayerCount = 0;
             for (int i = 0; i < Constants.Player_Count; i++)
@@ -50,14 +52,13 @@ namespace Assets.Scripts.Gameplay.Player
                 if (!string.IsNullOrEmpty(avatarKey))
                 {
                     CharacterConfiguration characterConfiguration = CharacterConfigurationManager.GetCharacterConfiguration(avatarKey);
-                    Vector3 startPosition = GetStartPosition(terrain, i);
+                    Vector3 startPosition = GetStartPosition(landData, i);
 
                     GameObject playerGameObject = InitializePlayer(playerKey, avatarKey, characterConfiguration, startPosition);
                     InitializeRespawnPoint(playerGameObject, characterConfiguration, startPosition);
                     InitializePlayerUI(playerGameObject, characterConfiguration, activePlayerCount);
 
-                    // TODO: wire this back up once we get the chests in
-                    //chestFactory.AddPlayerReference(activePlayerCount, playerGameObject);
+                    chestFactory.AddPlayerReference(activePlayerCount, playerGameObject);
                     endRoundDisplay.AddPlayerConfiguration(characterConfiguration);
 
                     activePlayerCount++;
@@ -67,7 +68,7 @@ namespace Assets.Scripts.Gameplay.Player
             return activePlayerCount;
         }
 
-        private Vector3 GetStartPosition(Terrain terrain, int playerIndex)
+        private Vector3 GetStartPosition(ILandDataProvider landData, int playerIndex)
         {
             if (playerIndex >= PlayerStartPoints.Length)
             {
@@ -75,11 +76,9 @@ namespace Assets.Scripts.Gameplay.Player
             }
             else
             {
-                // TODO: Get the height off the arena model - terrain is for prototype only
                 return new Vector3(
                     PlayerStartPoints[playerIndex].x,
-                    PlayerStartPoints[playerIndex].y,
-                    //terrain.SampleHeight(PlayerStartPoints[playerIndex]),
+                    landData.HeightAtPosition(PlayerStartPoints[playerIndex]),
                     PlayerStartPoints[playerIndex].z);
             }
         }

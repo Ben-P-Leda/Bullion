@@ -4,6 +4,7 @@ using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Avatar;
 using Assets.Scripts.Gameplay.Player.Interfaces;
 using Assets.Scripts.Gameplay.Player.Support;
+using Assets.Scripts.Gameplay.Environment;
 
 namespace Assets.Scripts.Gameplay.Player
 {
@@ -15,7 +16,7 @@ namespace Assets.Scripts.Gameplay.Player
         private Animator _deadModelAnimator;
         private Animator _activeAnimator;
         private PlayerInput _input;
-        private Terrain _terrain;
+        private ILandDataProvider _landData;
 
         private bool _wasSwimming;
         private float _swimHeight;
@@ -37,10 +38,11 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void Start()
         {
+            _landData = GameObject.Find("Land").GetComponent<ILandDataProvider>();
+
             _transform = transform;
             _rigidBody = GetComponent<Rigidbody>();
             _input = GetComponent<PlayerInput>();
-            _terrain = Terrain.activeTerrain;
 
             _roundInProgress = false;
 
@@ -166,9 +168,8 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void Update()
         {
-            // TODO: Wire this back up once we can get height from model
-            //float floor = GetFloorAtPosition(_transform.position);
-            //_transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
+            float floor = GetFloorAtPosition(_transform.position);
+            _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
 
             if (CanMove())
             {
@@ -192,7 +193,7 @@ namespace Assets.Scripts.Gameplay.Player
 
         public float GetFloorAtPosition(Vector3 position)
         {
-            float groundHeight = _terrain.SampleHeight(position);
+            float groundHeight = _landData.HeightAtPosition(position);
             float lowestVerticalPosition = _isInDeadMode ? _seaEntryHeight : _swimHeight;
             return Mathf.Max(groundHeight, lowestVerticalPosition);
         }

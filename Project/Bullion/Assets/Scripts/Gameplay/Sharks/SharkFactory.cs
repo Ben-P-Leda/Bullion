@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using Assets.Scripts.Generic;
 using Assets.Scripts.EventHandling;
+using Assets.Scripts.Gameplay.Environment;
 
 namespace Assets.Scripts.Gameplay.Sharks
 {
     public class SharkFactory : MonoBehaviour
     {
         private ObjectPool _sharkPool;
-        private Terrain _terrain;
+        private ILandDataProvider _landData;
         private Vector3[] _startOffsets;
 
         public GameObject SharkPrefab;
 
         private void Start()
         {
+            _landData = GameObject.Find("Land").GetComponent<ILandDataProvider>();
             _sharkPool = new ObjectPool(transform, Shark_Pool_Size, CreateSharkForPool, null);
-            _terrain = Terrain.activeTerrain;
 
             CreateStartOffsets();
         }
@@ -80,7 +81,7 @@ namespace Assets.Scripts.Gameplay.Sharks
             for (int i = 0; ((i < _startOffsets.Length) && (startPosition == Vector3.zero)); i++)
             {
                 Vector3 position = targetPosition + _startOffsets[(offset + i) % _startOffsets.Length];
-                if (_terrain.SampleHeight(position) <= Minimum_Shark_Activation_Depth)
+                if (_landData.HeightAtPosition(position) <= Minimum_Shark_Activation_Depth)
                 {
                     startPosition = new Vector3(position.x, Constants.Shark_Swim_Depth, position.z);
                 }

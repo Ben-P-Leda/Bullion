@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Gameplay.Environment;
 
 namespace Assets.Scripts.Gameplay.Chests.Helpers
 {
@@ -10,18 +11,18 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
         public int Width { get; private set; }
         public int Depth { get; private set; }
 
-        public PlacementGrid(Terrain terrain, float cellSize, int neighboursToExclude)
+        public PlacementGrid(ILandDataProvider landData, float cellSize, int neighboursToExclude)
         {
-            Width = (int)(terrain.terrainData.size.x / cellSize);
-            Depth = (int)(terrain.terrainData.size.z / cellSize);
+            Width = (int)(landData.Width / cellSize);
+            Depth = (int)(landData.Depth / cellSize);
 
             _cellSize = cellSize;
 
-            CreateGridContainer(terrain, cellSize);
+            CreateGridContainer(landData, cellSize);
             MarkCellsUnavailableByGroundHeight(neighboursToExclude);
         }
 
-        private void CreateGridContainer(Terrain terrain, float cellSize)
+        private void CreateGridContainer(ILandDataProvider landData, float cellSize)
         {
             _placementGrid = new PlacementGridCell[Width][];
 
@@ -33,7 +34,7 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
                     _placementGrid[x][z] = new PlacementGridCell();
 
                     Vector3 terrainPosition = PlacementGridReference.ToWorld(x, z, _cellSize);
-                    _placementGrid[x][z].Center = new Vector3(terrainPosition.x, terrain.SampleHeight(terrainPosition), terrainPosition.z);
+                    _placementGrid[x][z].Center = new Vector3(terrainPosition.x, landData.HeightAtPosition(terrainPosition), terrainPosition.z);
                 }
             }
         }
