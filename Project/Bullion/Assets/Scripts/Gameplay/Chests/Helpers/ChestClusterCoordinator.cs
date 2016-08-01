@@ -47,7 +47,7 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
             _revealDelay += Reveal_Delay_Step;
         }
 
-        private const float Hidden_Chest_Vertical_Offset = -1.5f;
+        private const float Hidden_Chest_Vertical_Offset = -0.5f;
         private const float Reveal_Delay_Step = 0.35f;
 
         public const int Cluster_Size = 3;

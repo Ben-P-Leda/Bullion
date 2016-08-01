@@ -91,6 +91,7 @@
     <Compile Include="Assets\Scripts\Gameplay\Chests\Helpers\PlacementGridReference.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Constants.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Environment\ILandDataProvider.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\Environment\LandModelDataProvider.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Environment\TerrainDataProvider.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IAnimated.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IConfigurable.cs" />

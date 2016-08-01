@@ -23,12 +23,12 @@ namespace Assets.Scripts.Gameplay.Player
         private float _seaEntryHeight;
         private float _wadeHeightRange;
 
-        public bool _roundInProgress;
-        public bool _lifecycleEventInProgress;
-        public bool _attackInProgress;
+        private bool _roundInProgress;
+        private bool _lifecycleEventInProgress;
+        private bool _attackInProgress;
         private bool _isInDeadMode;
-        public bool _hasBeenLaunched;
-        public bool _rushInProgress;
+        private bool _hasBeenLaunched;
+        private bool _rushInProgress;
         private bool _headOnImpact;
 
         private Vector3 _rushVelocity;
@@ -169,26 +169,27 @@ namespace Assets.Scripts.Gameplay.Player
         private void Update()
         {
             float floor = GetFloorAtPosition(_transform.position);
-            _transform.position = new Vector3(_transform.position.x, Mathf.Max(_transform.position.y, floor), _transform.position.z);
+            float yPosition = Mathf.Max(_transform.position.y, floor + Configuration.HeightOffset);
+            _transform.position = new Vector3(_transform.position.x, yPosition, _transform.position.z);
 
             if (CanMove())
             {
                 UpdateControlledMotion();
             }
-            //else if (_rushInProgress)
-            //{
-            //    UpdateRushMotion(floor);
-            //}
+            else if (_rushInProgress)
+            {
+                UpdateRushMotion(floor);
+            }
 
             if (!_isInDeadMode)
             {
                 UpdateSwimmingState();
             }
-           
-            //if (_hasBeenLaunched)
-            //{
-            //    CheckForLaunchReset(floor);
-            //}
+
+            if (_hasBeenLaunched)
+            {
+                CheckForLaunchReset(floor);
+            }
         }
 
         public float GetFloorAtPosition(Vector3 position)
@@ -270,7 +271,8 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void CheckForLaunchReset(float floor)
         {
-            if ((_rigidBody.velocity.y < Launch_Reset_Speed_Threshold) && (_transform.position.y - Launch_Reset_Floor_Tolerance <= floor))
+            float feetYPosition = _transform.position.y - Configuration.HeightOffset;
+            if ((_rigidBody.velocity.y < Launch_Reset_Speed_Threshold) && (feetYPosition - Launch_Reset_Floor_Tolerance <= floor))
             {
                 _hasBeenLaunched = false;
                 EventDispatcher.FireEvent(_transform, _transform, EventMessage.End_Launch_Effect);

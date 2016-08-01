@@ -6,6 +6,9 @@ namespace Assets.Scripts.Gameplay.Environment
     {
         private Terrain _terrain = null;
 
+        public float Left { get { return 0.0f; } }
+        public float Front { get { return 0.0f; } }
+
         public float Width
         {
             get
@@ -39,7 +42,7 @@ namespace Assets.Scripts.Gameplay.Environment
                 _terrain = Terrain.activeTerrain;
             }
 
-            return _terrain.SampleHeight(position);
+            return _terrain.SampleHeight(position) - 1.0f;
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Assets.Scripts.Configuration
     public class CharacterConfiguration
     {
         public string Name { get; set; }
+        public float HeightOffset { get; set; }
         public float HipShoulderDistance { get; set; }
         public float AliveMovementSpeed { get; set; }
         public float DeadMovementSpeed { get; set; }

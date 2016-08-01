@@ -58,6 +58,7 @@ namespace Assets.Scripts.Gameplay.Player
                     InitializeRespawnPoint(playerGameObject, characterConfiguration, startPosition);
                     InitializePlayerUI(playerGameObject, characterConfiguration, activePlayerCount);
 
+                    // Plug chest factory back in when model height detector works
                     chestFactory.AddPlayerReference(activePlayerCount, playerGameObject);
                     endRoundDisplay.AddPlayerConfiguration(characterConfiguration);
 
@@ -76,6 +77,7 @@ namespace Assets.Scripts.Gameplay.Player
             }
             else
             {
+                // TODO: Get this working correctly for both land data provider types
                 return new Vector3(
                     PlayerStartPoints[playerIndex].x,
                     landData.HeightAtPosition(PlayerStartPoints[playerIndex]),

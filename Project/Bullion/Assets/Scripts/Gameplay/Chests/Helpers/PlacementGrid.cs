@@ -164,6 +164,9 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
                 }
             }
 
+            string msg = clusterCenter == null ? "Placement failed" : clusterCenter.ToString();
+            Debug.Log(msg);
+
             return clusterCenter;
         }
 

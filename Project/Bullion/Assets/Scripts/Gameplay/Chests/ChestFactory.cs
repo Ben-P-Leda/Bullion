@@ -26,6 +26,8 @@ namespace Assets.Scripts.Gameplay.Chests
 
         public void AddPlayerReference(int playerIndex, GameObject player)
         {
+            Debug.Log("Add player " + player.name);
+
             if (_playerTransforms == null)
             {
                 _playerTransforms = new Transform[Constants.Player_Count];
@@ -42,8 +44,6 @@ namespace Assets.Scripts.Gameplay.Chests
             _roundInProgress = false;
 
             _timeToNextSpawn = 2.5f;
-
-            InitialisePlacementGrid();
         }
 
         private void OnEnable()
@@ -58,7 +58,7 @@ namespace Assets.Scripts.Gameplay.Chests
 
         private void MessageEventHandler(Transform originator, Transform target, string message)
         {
-            if (message == EventMessage.Start_Round) { _roundInProgress = true; }
+            if (message == EventMessage.Start_Round) { InitialisePlacementGrid(); _roundInProgress = true; }
             if (message == EventMessage.End_Round) { _roundInProgress = false; }
         }
 
@@ -81,6 +81,8 @@ namespace Assets.Scripts.Gameplay.Chests
         {
             ILandDataProvider landData = GameObject.Find("Land").GetComponent<ILandDataProvider>();
             Transform[] obstructionPositions = GetObstructionPositions();
+
+            Debug.Log("Grid Init");
 
             _placementGrid = new PlacementGrid(landData, Grid_Cell_Size, LowPointMargin);
             _placementGrid.BlockCellsPermanently(obstructionPositions, ObstructionMargin);
