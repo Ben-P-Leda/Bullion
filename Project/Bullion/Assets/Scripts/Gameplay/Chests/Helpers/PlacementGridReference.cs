@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Assets.Scripts.Gameplay.Chests.Helpers
+﻿namespace Assets.Scripts.Gameplay.Chests.Helpers
 {
     public class PlacementGridReference
     {
@@ -18,15 +16,5 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
             this.x = x;
             this.z = z;
         }
-
-        //public static PlacementGridReference FromWorld(Vector3 worldPosition, float cellSize)
-        //{
-        //    return new PlacementGridReference((int)(worldPosition.x / cellSize), (int)(worldPosition.z / cellSize));
-        //}
-
-        //public static Vector3 ToWorld(int gridX, int gridZ, float cellSize)
-        //{
-        //    return new Vector3(gridX + (cellSize * 0.5f), 0.0f, gridZ + (cellSize * 0.5f)) * cellSize;
-        //}
     }
 }

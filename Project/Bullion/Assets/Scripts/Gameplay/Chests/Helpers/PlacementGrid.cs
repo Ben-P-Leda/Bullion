@@ -5,7 +5,7 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
 {
     public class PlacementGrid
     {
-        public PlacementGridCell[][] _placementGrid;
+        private PlacementGridCell[][] _placementGrid;
         private float _gridWorldLeft;
         private float _gridWorldFront;
         private float _cellSize;
