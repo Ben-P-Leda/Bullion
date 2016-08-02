@@ -24,10 +24,12 @@ namespace Assets.Scripts.Gameplay.Chests
         public float MinimumTimeBetweenSpawns;
         public float MaximumTimeBetweenSpawns;
 
+        public GameObject MarkerPrefab;
+        private GameObject[][] _markerGrid;
+        private GameObject _lastCenterMarker;
+
         public void AddPlayerReference(int playerIndex, GameObject player)
         {
-            Debug.Log("Add player " + player.name);
-
             if (_playerTransforms == null)
             {
                 _playerTransforms = new Transform[Constants.Player_Count];
@@ -82,12 +84,25 @@ namespace Assets.Scripts.Gameplay.Chests
             ILandDataProvider landData = GameObject.Find("Land").GetComponent<ILandDataProvider>();
             Transform[] obstructionPositions = GetObstructionPositions();
 
-            Debug.Log("Grid Init");
-
             _placementGrid = new PlacementGrid(landData, Grid_Cell_Size, LowPointMargin);
-            _placementGrid.BlockCellsPermanently(obstructionPositions, ObstructionMargin);
-            _placementGrid.BlockCellsPermanently(_playerTransforms, StartPointMargin);
-            _placementGrid.BlockClusterEdgeCells();
+            //_placementGrid.BlockCellsPermanently(obstructionPositions, ObstructionMargin);
+            //_placementGrid.BlockCellsPermanently(_playerTransforms, StartPointMargin);
+            //_placementGrid.BlockClusterEdgeCells();
+
+            _markerGrid = new GameObject[_placementGrid.Width][];
+            for (int x = 0; x < _placementGrid.Width; x++)
+            {
+                _markerGrid[x] = new GameObject[_placementGrid.Depth];
+                for (int z = 0; z < _placementGrid.Depth; z++)
+                {
+                    //if (_placementGrid._placementGrid[x][z].Available)
+                    {
+                        _markerGrid[x][z] = GameObject.Instantiate(MarkerPrefab);
+                        _markerGrid[x][z].transform.position = _placementGrid._placementGrid[x][z].Center + new Vector3(0.0f, 2.0f, 0.0f);
+                        _markerGrid[x][z].transform.parent = transform;
+                    }
+                }
+            }
         }
 
         private Transform[] GetObstructionPositions()
@@ -104,6 +119,8 @@ namespace Assets.Scripts.Gameplay.Chests
             return obstructions;
         }
 
+        private float _bobber = 0;
+
         private void Update()
         {
             if (_roundInProgress)
@@ -111,15 +128,21 @@ namespace Assets.Scripts.Gameplay.Chests
                 _timeToNextSpawn -= Time.deltaTime;
                 if (_timeToNextSpawn <= 0.0f)
                 {
-                    UpdatePlacementGridBlockedCells();
+                    //UpdatePlacementGridBlockedCells();
 
-                    if (_chestPool.GetAvailableObjectCount() >= ChestClusterCoordinator.Cluster_Size)
-                    {
-                        PlaceCluster();
-                    }
+                    //if (_chestPool.GetAvailableObjectCount() >= ChestClusterCoordinator.Cluster_Size)
+                    //{
+                    //    PlaceCluster();
+                    //}
 
                     _timeToNextSpawn = Random.Range(MinimumTimeBetweenSpawns, MaximumTimeBetweenSpawns);
                 }
+            }
+
+            if (_lastCenterMarker != null)
+            {
+                _bobber = (_bobber + 5.0f) % 360.0f;
+                _lastCenterMarker.transform.position = new Vector3(_lastCenterMarker.transform.position.x, 4.0f + (Mathf.Sin(Mathf.Deg2Rad * _bobber) * 3.0f), _lastCenterMarker.transform.position.z);
             }
         }
 
@@ -138,6 +161,20 @@ namespace Assets.Scripts.Gameplay.Chests
             {
                 _clusterCoordinator.SetForPlacement(clusterCenter);
                 _chestPool.AttemptMultipleActivation(ChestClusterCoordinator.Cluster_Size);
+
+                if (_lastCenterMarker != null)
+                {
+                    _lastCenterMarker.transform.position = new Vector3(_lastCenterMarker.transform.position.x, 2.0f, _lastCenterMarker.transform.position.z);
+                }
+
+                if (_markerGrid[clusterCenter.x][clusterCenter.z] != null)
+                {
+                    _lastCenterMarker = _markerGrid[clusterCenter.x][clusterCenter.z];
+                }
+                else
+                {
+                    Debug.LogError("Marker not set at " + clusterCenter.x + ":" + clusterCenter.z);
+                }
             }
         }
 

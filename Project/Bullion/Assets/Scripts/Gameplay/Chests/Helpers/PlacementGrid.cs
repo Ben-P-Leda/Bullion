@@ -5,7 +5,7 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
 {
     public class PlacementGrid
     {
-        private PlacementGridCell[][] _placementGrid;
+        public PlacementGridCell[][] _placementGrid;
         private float _cellSize;
 
         public int Width { get; private set; }
@@ -13,8 +13,10 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
 
         public PlacementGrid(ILandDataProvider landData, float cellSize, int neighboursToExclude)
         {
-            Width = (int)(landData.Width / cellSize);
-            Depth = (int)(landData.Depth / cellSize);
+            Width = (int)((landData.Width - landData.Front) / cellSize);
+            Depth = (int)((landData.Depth - landData.Left) / cellSize);
+
+            Debug.Log(Width + ":" + Depth);
 
             _cellSize = cellSize;
 
@@ -26,6 +28,7 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
         {
             _placementGrid = new PlacementGridCell[Width][];
 
+            Vector3 positionOffset = new Vector3(landData.Left, 0.0f, landData.Front);
             for (int x = 0; x < Width; x++)
             {
                 _placementGrid[x] = new PlacementGridCell[Depth];
@@ -33,8 +36,12 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
                 {
                     _placementGrid[x][z] = new PlacementGridCell();
 
-                    Vector3 terrainPosition = PlacementGridReference.ToWorld(x, z, _cellSize);
-                    _placementGrid[x][z].Center = new Vector3(terrainPosition.x, landData.HeightAtPosition(terrainPosition), terrainPosition.z);
+                    Vector3 terrainPosition = new Vector3(x + 0.5f, 0.0f, z + 0.5f) * _cellSize;
+
+                    _placementGrid[x][z].Center = new Vector3(
+                        terrainPosition.x + positionOffset.x, 
+                        landData.HeightAtPosition(terrainPosition + positionOffset), 
+                        terrainPosition.z + positionOffset.z);
                 }
             }
         }
@@ -164,9 +171,6 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
                 }
             }
 
-            string msg = clusterCenter == null ? "Placement failed" : clusterCenter.ToString();
-            Debug.Log(msg);
-
             return clusterCenter;
         }
 
@@ -175,7 +179,7 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
             return _placementGrid[gridPosition.x][gridPosition.z].Center;
         }
 
-        private const float Assignable_Cell_Minimum_Height = 1.2f;
+        private const float Assignable_Cell_Minimum_Height = 0.1f;
         private const int Neighbours_To_Exclude = 2;
         private const int Cluster_Center_Neighbour_Count = 5;
     }

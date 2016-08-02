@@ -24,14 +24,9 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
             return new PlacementGridReference((int)(worldPosition.x / cellSize), (int)(worldPosition.z / cellSize));
         }
 
-        public static Vector3 ToWorld(PlacementGridReference gridReference, float cellSize)
-        {
-            return ToWorld(gridReference.x, gridReference.z, cellSize);
-        }
-
-        public static Vector3 ToWorld(int gridX, int gridZ, float cellSize)
-        {
-            return new Vector3(gridX + (cellSize * 0.5f), 0.0f, gridZ + (cellSize * 0.5f)) * cellSize;
-        }
+        //public static Vector3 ToWorld(int gridX, int gridZ, float cellSize)
+        //{
+        //    return new Vector3(gridX + (cellSize * 0.5f), 0.0f, gridZ + (cellSize * 0.5f)) * cellSize;
+        //}
     }
 }
