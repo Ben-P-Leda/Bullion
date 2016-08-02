@@ -19,10 +19,10 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
             this.z = z;
         }
 
-        public static PlacementGridReference FromWorld(Vector3 worldPosition, float cellSize)
-        {
-            return new PlacementGridReference((int)(worldPosition.x / cellSize), (int)(worldPosition.z / cellSize));
-        }
+        //public static PlacementGridReference FromWorld(Vector3 worldPosition, float cellSize)
+        //{
+        //    return new PlacementGridReference((int)(worldPosition.x / cellSize), (int)(worldPosition.z / cellSize));
+        //}
 
         //public static Vector3 ToWorld(int gridX, int gridZ, float cellSize)
         //{

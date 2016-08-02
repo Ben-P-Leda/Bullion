@@ -6,6 +6,8 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
     public class PlacementGrid
     {
         public PlacementGridCell[][] _placementGrid;
+        private float _gridWorldLeft;
+        private float _gridWorldFront;
         private float _cellSize;
 
         public int Width { get; private set; }
@@ -13,18 +15,22 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
 
         public PlacementGrid(ILandDataProvider landData, float cellSize, int neighboursToExclude)
         {
-            Width = (int)((landData.Width - landData.Front) / cellSize);
-            Depth = (int)((landData.Depth - landData.Left) / cellSize);
-
-            Debug.Log(Width + ":" + Depth);
-
+            _gridWorldLeft = landData.Left;
+            _gridWorldFront = landData.Front;
             _cellSize = cellSize;
 
-            CreateGridContainer(landData, cellSize);
+            SetGridDimensions(landData.Width, landData.Depth);
+            CreateGridContainer(landData);
             MarkCellsUnavailableByGroundHeight(neighboursToExclude);
         }
 
-        private void CreateGridContainer(ILandDataProvider landData, float cellSize)
+        private void SetGridDimensions(float landWidth, float landDepth)
+        {
+            Width = (int)((landWidth - _gridWorldLeft) / _cellSize);
+            Depth = (int)((landDepth - _gridWorldLeft) / _cellSize);
+        }
+
+        private void CreateGridContainer(ILandDataProvider landData)
         {
             _placementGrid = new PlacementGridCell[Width][];
 
@@ -93,18 +99,23 @@ namespace Assets.Scripts.Gameplay.Chests.Helpers
 
         public void BlockCellsAroundChest(GameObject chest)
         {
-            PlacementGridReference gridPosition = PlacementGridReference.FromWorld(chest.transform.position, _cellSize);
+            PlacementGridReference gridPosition = GridFromWorldPosition(chest.transform.position);
             MakeCellBlockUnavailable(gridPosition.x, gridPosition.z, Neighbours_To_Exclude, true);
+        }
+
+        private PlacementGridReference GridFromWorldPosition(Vector3 worldPosition)
+        {
+            return new PlacementGridReference(
+                (int)((worldPosition.x - _gridWorldLeft) / _cellSize),
+                (int)((worldPosition.z - _gridWorldFront) / _cellSize));
         }
 
         private void MakeCellBlocksUnavailable(Transform[] blockCenters, int neighbourCount, bool temporaryBlock)
         {
             for (int i = 0; i < blockCenters.Length; i++)
             {
-                int gridX = (int)(blockCenters[i].position.x / _cellSize);
-                int gridZ = (int)(blockCenters[i].position.z / _cellSize);
-
-                MakeCellBlockUnavailable(gridX, gridZ, neighbourCount, temporaryBlock);
+                PlacementGridReference gridPosition = GridFromWorldPosition(blockCenters[i].transform.position);
+                MakeCellBlockUnavailable(gridPosition.x, gridPosition.z, neighbourCount, temporaryBlock);
             }
         }
 

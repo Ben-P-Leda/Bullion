@@ -58,7 +58,6 @@ namespace Assets.Scripts.Gameplay.Player
                     InitializeRespawnPoint(playerGameObject, characterConfiguration, startPosition);
                     InitializePlayerUI(playerGameObject, characterConfiguration, activePlayerCount);
 
-                    // Plug chest factory back in when model height detector works
                     chestFactory.AddPlayerReference(activePlayerCount, playerGameObject);
                     endRoundDisplay.AddPlayerConfiguration(characterConfiguration);
 
