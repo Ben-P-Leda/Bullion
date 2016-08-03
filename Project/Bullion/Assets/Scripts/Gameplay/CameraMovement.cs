@@ -60,12 +60,12 @@ namespace Assets.Scripts.Gameplay
                 containmentRadius = Mathf.Max(Vector3.Distance(center, _avatars[i].position), containmentRadius);
             }
 
-            return containmentRadius;
+            return containmentRadius * 0.75f;
         }
 
         private const float Camera_Angle = 25.0f;
-        private const float Vertical_Focus_Offset = 0.5f;
-        private const float Minimum_Distance = 10.0f;
+        private const float Vertical_Focus_Offset = 0f; //.5f;
+        private const float Minimum_Distance = 15.0f;
         private const float Distance_Margin = 2.0f;
     }
 }

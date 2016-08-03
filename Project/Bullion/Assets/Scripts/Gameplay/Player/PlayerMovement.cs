@@ -19,9 +19,8 @@ namespace Assets.Scripts.Gameplay.Player
         private ILandDataProvider _landData;
 
         private bool _wasSwimming;
-        private float _swimHeight;
+        private float _seaLevel;
         private float _seaEntryHeight;
-        private float _wadeHeightRange;
 
         private bool _roundInProgress;
         private bool _lifecycleEventInProgress;
@@ -45,17 +44,13 @@ namespace Assets.Scripts.Gameplay.Player
             _input = GetComponent<PlayerInput>();
 
             _roundInProgress = false;
-
             _wasSwimming = false;
-            _swimHeight = GetComponent<CapsuleCollider>().height * Swim_Height_Modifier;
-            _seaEntryHeight = GetComponent<CapsuleCollider>().height * Sea_Entry_Height_Modifier;
-            _wadeHeightRange = _seaEntryHeight - _swimHeight;
-
             _isInDeadMode = false;
             _hasBeenLaunched = false;
 
             _rushVelocity = Vector3.zero;
 
+            SetSwimMetrics();
             EnterRestState();
         }
 
@@ -67,6 +62,12 @@ namespace Assets.Scripts.Gameplay.Player
             _deadModelAnimator = deadModelAnimator;
 
             _activeAnimator = _aliveModelAnimator;
+        }
+
+        private void SetSwimMetrics()
+        {
+            _seaLevel = GameObject.Find("Sea").transform.position.y;
+            _seaEntryHeight = _seaLevel + (Configuration.HeightOffset * Sea_Entry_Height_Modifier);
         }
 
         private void EnterRestState()
@@ -194,9 +195,13 @@ namespace Assets.Scripts.Gameplay.Player
 
         public float GetFloorAtPosition(Vector3 position)
         {
-            float groundHeight = _landData.HeightAtPosition(position);
-            float lowestVerticalPosition = _isInDeadMode ? _seaEntryHeight : _swimHeight;
-            return Mathf.Max(groundHeight, lowestVerticalPosition);
+            float floor = Mathf.Max(_landData.HeightAtPosition(position), _seaLevel - Configuration.HeightOffset);
+            if (_isInDeadMode)
+            {
+                floor = Mathf.Max(floor, _seaLevel);
+            }
+
+            return floor;
         }
 
         private void UpdateControlledMotion()
@@ -231,7 +236,8 @@ namespace Assets.Scripts.Gameplay.Player
 
             if ((!_isInDeadMode) && (_transform.position.y < _seaEntryHeight))
             {
-                float depthOffset = Mathf.Clamp((_seaEntryHeight - _transform.position.y) / _wadeHeightRange, 0.0f, 1.0f);
+                float wadeHeightRange = _seaEntryHeight - _seaLevel;
+                float depthOffset = Mathf.Clamp((_seaEntryHeight - _transform.position.y) / wadeHeightRange, 0.0f, 1.0f);
                 speed *= (1.0f - (Swim_Speed_Modifier * depthOffset));
             }
 
@@ -253,7 +259,7 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void UpdateSwimmingState()
         {
-            bool isSwimming = _transform.position.y <= _swimHeight;
+            bool isSwimming = _transform.position.y <= _seaLevel;
             _aliveModelAnimator.SetBool("IsSwimming", isSwimming);
             if (isSwimming != _wasSwimming)
             {
@@ -279,8 +285,7 @@ namespace Assets.Scripts.Gameplay.Player
             }
         }
 
-        private const float Sea_Entry_Height_Modifier = 0.5f;
-        private const float Swim_Height_Modifier = 0.05f;
+        private const float Sea_Entry_Height_Modifier = 0.75f;
         private const float Swim_Speed_Modifier = 0.4f;
 
         private const float Respawn_Blast_Launch_Vertical_Speed = 3.0f;
