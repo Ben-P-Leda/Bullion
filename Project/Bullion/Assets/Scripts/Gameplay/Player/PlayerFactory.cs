@@ -16,12 +16,19 @@ namespace Assets.Scripts.Gameplay.Player
         public GameObject RespawnPointPrefab;
         public GameObject UIDisplayPrefab;
         public GameObject[] AvatarPrefabs;
-        public Vector3[] PlayerStartPoints;
+        public float CenterX;
+        public float CenterZ;
+        public float BoundaryRadius;
 
-        private GameObject[] _playerGameObjects;
+        public Vector3[] PlayerStartPoints;
 
         private void Start()
         {
+            if (BoundaryRadius <= 0.0f)
+            {
+                throw new System.Exception("Boundary Radius must be set to a value greater than zero!");
+            }
+
             ILandDataProvider landData = GameObject.Find("Land").GetComponent<ILandDataProvider>();
 
             ChestFactory chestFactory = FindObjectOfType<ChestFactory>();
@@ -76,7 +83,6 @@ namespace Assets.Scripts.Gameplay.Player
             }
             else
             {
-                // TODO: Get this working correctly for both land data provider types
                 return new Vector3(
                     PlayerStartPoints[playerIndex].x,
                     landData.HeightAtPosition(PlayerStartPoints[playerIndex]),
@@ -91,6 +97,7 @@ namespace Assets.Scripts.Gameplay.Player
             ConnectPlayerToModels(newPlayer, modelHandle);
             ConnectPlayerToCamera(newPlayer);
             SetPlayerConfiguration(newPlayer, characterConfiguration);
+            SetArenaMetrics(newPlayer);
 
             newPlayer.transform.position = startPosition;
 
@@ -169,6 +176,17 @@ namespace Assets.Scripts.Gameplay.Player
             for (int i = 0; i < modifiables.Length; i++)
             {
                 modifiables[i].ConfigurationModifier = configurationModifier;
+            }
+        }
+
+        private void SetArenaMetrics(GameObject player)
+        {
+            PlayerArenaBoundaryEnforcement arenaBoundaries = player.GetComponent<PlayerArenaBoundaryEnforcement>();
+
+            if (arenaBoundaries != null)
+            {
+                arenaBoundaries.ArenaCenter = new Vector3(CenterX, 0.0f, CenterZ);
+                arenaBoundaries.ArenaBoundaryRadius = BoundaryRadius;
             }
         }
 

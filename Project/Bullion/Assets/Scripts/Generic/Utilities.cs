@@ -22,5 +22,13 @@ namespace Assets.Scripts.Generic
         {
             return (int)(fontSize * Scale);
         }
+
+        public static float DistanceOverGroundSquared(Vector3 center, Vector3 target)
+        {
+            float xDistance = target.x - center.x;
+            float zDistance = target.z - center.z;
+
+            return ((xDistance * xDistance) + (zDistance * zDistance));
+        }
     }
 }

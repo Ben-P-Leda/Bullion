@@ -96,6 +96,7 @@
     <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IAnimated.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IConfigurable.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Player\Interfaces\IModifiable.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\Player\PlayerArenaBoundaryEnforcement.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerAttack.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerBullRush.cs" />
     <Compile Include="Assets\Scripts\Gameplay\Player\PlayerCollectChestItem.cs" />
