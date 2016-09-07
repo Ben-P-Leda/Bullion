@@ -1,17 +1,13 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Generic;
-using Assets.Scripts.Configuration;
 using Assets.Scripts.EventHandling;
-using Assets.Scripts.Gameplay.Avatar;
-using Assets.Scripts.Gameplay.Player.Interfaces;
-using Assets.Scripts.Gameplay.Player.Support;
-using Assets.Scripts.Gameplay.Environment;
 
 namespace Assets.Scripts.Gameplay.Player
 {
     public class PlayerArenaBoundaryEnforcement : MonoBehaviour
     {
         private Transform _transform;
+
 
         private bool _isInDeadMode;
         private float _arenaRadius;
