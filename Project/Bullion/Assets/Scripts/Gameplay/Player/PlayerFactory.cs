@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Configuration;
-using Assets.Scripts.Gameplay.UI;
+using Assets.Scripts.Generic.ParameterManagement;
+using Assets.Scripts.Gameplay.Environment;
+using Assets.Scripts.Gameplay.Chests;
+using Assets.Scripts.Gameplay.UI.GameControl;
+using Assets.Scripts.Gameplay.UI.PlayerStatus;
+using Assets.Scripts.Gameplay.Player.Interfaces;
+using Assets.Scripts.Gameplay.Player.Support;
 
 namespace Assets.Scripts.Gameplay.Player
 {
@@ -8,41 +14,68 @@ namespace Assets.Scripts.Gameplay.Player
     {
         public GameObject PlayerPrefab;
         public GameObject RespawnPointPrefab;
-        public GameObject StatusDisplayPrefab;
+        public GameObject UIDisplayPrefab;
         public GameObject[] AvatarPrefabs;
-        public Vector3[] PlayerStartPoints;
+        public float CenterX;
+        public float CenterZ;
+        public float BoundaryRadius;
 
-        private GameObject[] _playerGameObjects;
-        private Terrain _terrain;
+        public Vector3[] PlayerStartPoints;
 
         private void Start()
         {
-            _terrain = Terrain.activeTerrain;
-
-            string[] playerAvatars = GetPlayerAvatars();
-
-            _playerGameObjects = new GameObject[playerAvatars.Length];
-
-            for (int i=0; i<Player_Count; i++)
+            if (BoundaryRadius <= 0.0f)
             {
-                if (_playerGameObjects[i] == null)
-                {
-                    CharacterConfiguration characterConfiguration = ConfigurationManager.GetCharacterConfiguration(playerAvatars[i]);
-                    Vector3 startPosition = GetStartPosition(i);
+                throw new System.Exception("Boundary Radius must be set to a value greater than zero!");
+            }
 
-                    _playerGameObjects[i] = InitializePlayer(i, playerAvatars[i], characterConfiguration, startPosition);
-                    InitializeRespawnPoint(_playerGameObjects[i], characterConfiguration, startPosition);
-                    InitializeStatusDisplay(_playerGameObjects[i], characterConfiguration, i);
-                }
+            ILandDataProvider landData = GameObject.Find("Land").GetComponent<ILandDataProvider>();
+
+            ChestFactory chestFactory = FindObjectOfType<ChestFactory>();
+            EndRoundDisplay endRoundDisplay = FindObjectOfType<EndRoundDisplay>();
+
+            int activePlayers = ActivatePlayers(landData, chestFactory, endRoundDisplay);
+            if (activePlayers < 1)
+            {
+                SetForDebugMode();
+                ActivatePlayers(landData, chestFactory, endRoundDisplay);
             }
         }
 
-        private string[] GetPlayerAvatars()
+        private void SetForDebugMode()
         {
-            return Avatar_Names.Split(',');
+            ParameterRepository.SetItem(Parameter.Selected_Avatar_Prefix + "P1", "Red");
+            ParameterRepository.SetItem(Parameter.Selected_Avatar_Prefix + "P2", "Green");
         }
 
-        private Vector3 GetStartPosition(int playerIndex)
+        private int ActivatePlayers(ILandDataProvider landData, ChestFactory chestFactory, EndRoundDisplay endRoundDisplay)
+        {
+            int activePlayerCount = 0;
+            for (int i = 0; i < Constants.Player_Count; i++)
+            {
+                string playerKey = string.Format("P{0}", i + 1);
+                string avatarKey = ParameterRepository.GetItem<string>(Parameter.Selected_Avatar_Prefix + playerKey);
+
+                if (!string.IsNullOrEmpty(avatarKey))
+                {
+                    CharacterConfiguration characterConfiguration = CharacterConfigurationManager.GetCharacterConfiguration(avatarKey);
+                    Vector3 startPosition = GetStartPosition(landData, i);
+
+                    GameObject playerGameObject = InitializePlayer(playerKey, avatarKey, characterConfiguration, startPosition);
+                    InitializeRespawnPoint(playerGameObject, characterConfiguration, startPosition);
+                    InitializePlayerUI(playerGameObject, characterConfiguration, activePlayerCount);
+
+                    chestFactory.AddPlayerReference(activePlayerCount, playerGameObject);
+                    endRoundDisplay.AddPlayerConfiguration(characterConfiguration);
+
+                    activePlayerCount++;
+                }
+            }
+
+            return activePlayerCount;
+        }
+
+        private Vector3 GetStartPosition(ILandDataProvider landData, int playerIndex)
         {
             if (playerIndex >= PlayerStartPoints.Length)
             {
@@ -52,29 +85,31 @@ namespace Assets.Scripts.Gameplay.Player
             {
                 return new Vector3(
                     PlayerStartPoints[playerIndex].x,
-                    _terrain.SampleHeight(PlayerStartPoints[playerIndex]),
+                    landData.HeightAtPosition(PlayerStartPoints[playerIndex]),
                     PlayerStartPoints[playerIndex].z);
             }
         }
 
-        private GameObject InitializePlayer(int playerIndex, string modelHandle, CharacterConfiguration characterConfiguration, Vector3 startPosition)
+        private GameObject InitializePlayer(string playerHandle, string modelHandle, CharacterConfiguration characterConfiguration, Vector3 startPosition)
         {
-            GameObject newPlayer = CreateNewPlayer(playerIndex);
+            GameObject newPlayer = CreateNewPlayer(playerHandle);
+            newPlayer.name = modelHandle;
             ConnectPlayerToModels(newPlayer, modelHandle);
             ConnectPlayerToCamera(newPlayer);
             SetPlayerConfiguration(newPlayer, characterConfiguration);
+            SetArenaMetrics(newPlayer);
 
             newPlayer.transform.position = startPosition;
 
             return newPlayer;
         }
 
-        private GameObject CreateNewPlayer(int playerIndex)
+        private GameObject CreateNewPlayer(string playerHandle)
         {
             GameObject newPlayer = (GameObject)Instantiate(PlayerPrefab);
             newPlayer.transform.parent = transform.parent;
 
-            ((PlayerInput)newPlayer.GetComponent<PlayerInput>()).AxisPrefix = "P" + (playerIndex + 1);
+            ((PlayerInput)newPlayer.GetComponent<PlayerInput>()).AxisPrefix = playerHandle;
 
             return newPlayer;
         }
@@ -116,7 +151,6 @@ namespace Assets.Scripts.Gameplay.Player
         private void WireUpAnimationControllers(GameObject player, Animator aliveModelAnimator, Animator deadModelAnimator)
         {
             IAnimated[] animationControllers = player.GetComponents<IAnimated>();
-
             for (int i = 0; i < animationControllers.Length; i++)
             {
                 animationControllers[i].WireUpAnimators(aliveModelAnimator, deadModelAnimator);
@@ -125,16 +159,34 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void ConnectPlayerToCamera(GameObject player)
         {
-            ((CameraMovement)Camera.main.GetComponent<CameraMovement>()).Avatars.Add(player);
+            ((CameraMovement)Camera.main.GetComponent<CameraMovement>()).AddAvatar(player);
         }
 
         private void SetPlayerConfiguration(GameObject player, CharacterConfiguration characterConfiguration)
         {
             IConfigurable[] configurables = player.GetComponents<IConfigurable>();
-
             for (int i=0; i < configurables.Length; i++)
             {
                 configurables[i].Configuration = characterConfiguration;
+            }
+
+            CharacterConfigurationModifier configurationModifier = new CharacterConfigurationModifier();
+
+            IModifiable[] modifiables = player.GetComponents<IModifiable>();
+            for (int i = 0; i < modifiables.Length; i++)
+            {
+                modifiables[i].ConfigurationModifier = configurationModifier;
+            }
+        }
+
+        private void SetArenaMetrics(GameObject player)
+        {
+            PlayerArenaBoundaryEnforcement arenaBoundaries = player.GetComponent<PlayerArenaBoundaryEnforcement>();
+
+            if (arenaBoundaries != null)
+            {
+                arenaBoundaries.ArenaCenter = new Vector3(CenterX, 0.0f, CenterZ);
+                arenaBoundaries.ArenaBoundaryRadius = BoundaryRadius;
             }
         }
 
@@ -148,14 +200,12 @@ namespace Assets.Scripts.Gameplay.Player
             newRespawnPoint.GetComponent<RespawnPoint>().Player = player.transform;
         }
 
-        private void InitializeStatusDisplay(GameObject player, CharacterConfiguration characterConfiguration, int playerIndex)
+        private void InitializePlayerUI(GameObject player, CharacterConfiguration characterConfiguration, int uiIndex)
         {
-            GameObject newRespawnPoint = (GameObject)Instantiate(StatusDisplayPrefab);
-            newRespawnPoint.transform.parent = transform.parent;
-            newRespawnPoint.GetComponent<PlayerStatusDisplay>().Initialize(player.transform, characterConfiguration, playerIndex);
+            GameObject newPlayerUI = (GameObject)Instantiate(UIDisplayPrefab);
+            newPlayerUI.transform.parent = transform.parent;
+            newPlayerUI.GetComponent<PlayerStatusDisplay>().Initialize(player.transform, characterConfiguration, uiIndex);
+            newPlayerUI.GetComponent<PlayerPowerUpTimerDisplay>().Initialize(player.transform, uiIndex);
         }
-
-        private const string Avatar_Names = "Red,Green,Purple,Blue";
-        private const float Player_Count = 2;
     }
 }

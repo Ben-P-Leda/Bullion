@@ -29,6 +29,7 @@ namespace Assets.Scripts.Gameplay.Player
                 float distance = Vector3.Distance(originator.position, _transform.position);
                 if (distance < Blast_Radius)
                 {
+                    EventDispatcher.FireEvent(originator, _transform, EventMessage.Respawn_Blast);
                     EventDispatcher.FireEvent(originator, _transform, EventMessage.Inflict_Damage, (Blast_Radius - distance) * Unit_Blast_Damage);
                 }
             }

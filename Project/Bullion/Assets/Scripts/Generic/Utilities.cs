@@ -17,5 +17,18 @@ namespace Assets.Scripts.Generic
                 return _scale;
             }
         }
+
+        public static int ScaledFontSize(float fontSize)
+        {
+            return (int)(fontSize * Scale);
+        }
+
+        public static float DistanceOverGroundSquared(Vector3 center, Vector3 target)
+        {
+            float xDistance = target.x - center.x;
+            float zDistance = target.z - center.z;
+
+            return ((xDistance * xDistance) + (zDistance * zDistance));
+        }
     }
 }

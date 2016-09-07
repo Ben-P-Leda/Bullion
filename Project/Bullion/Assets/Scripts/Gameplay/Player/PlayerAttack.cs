@@ -2,10 +2,12 @@
 using Assets.Scripts.Configuration;
 using Assets.Scripts.EventHandling;
 using Assets.Scripts.Gameplay.Avatar;
+using Assets.Scripts.Gameplay.Player.Interfaces;
+using Assets.Scripts.Gameplay.Player.Support;
 
 namespace Assets.Scripts.Gameplay.Player
 {
-    public class PlayerAttack : MonoBehaviour, IConfigurable, IAnimated
+    public class PlayerAttack : MonoBehaviour, IConfigurable, IModifiable, IAnimated
     {
         private Transform _transform;
         private Animator _animator;
@@ -15,10 +17,14 @@ namespace Assets.Scripts.Gameplay.Player
         private int _comboStepCount;
         private int _lastStrikingComboIndex;
 
+        private bool _roundInProgress;
         private bool _lifeEventInProgress;
         private bool _isSwimming;
+        private bool _hasBeenLaunched;
+        private bool _rushInProgress;
 
         public CharacterConfiguration Configuration { private get; set; }
+        public CharacterConfigurationModifier ConfigurationModifier { private get; set; }
 
         private void Start()
         {
@@ -29,8 +35,11 @@ namespace Assets.Scripts.Gameplay.Player
             _comboStepCount = 0;
             _lastStrikingComboIndex = 0;
 
+            _roundInProgress = false;
             _lifeEventInProgress = false;
             _isSwimming = false;
+            _hasBeenLaunched = false;
+            _rushInProgress = false;
         }
 
         public void WireUpAnimators(Animator aliveModelAnimator, Animator deadModelAnimator)
@@ -44,6 +53,7 @@ namespace Assets.Scripts.Gameplay.Player
             _animator.SetBool("IsAttacking", false);
             _comboStepCount = 0;
             _lifeEventInProgress = false;
+            _rushInProgress = false;
         }
 
         private void OnEnable()
@@ -60,9 +70,12 @@ namespace Assets.Scripts.Gameplay.Player
 
         private void MessageEventHandler(Transform originator, Transform target, string message)
         {
-            if ((target == _damageCollider.transform) && (message == EventMessage.Hit_Trigger_Collider))
+            if ((_damageCollider != null) && (target == _damageCollider.transform) && (message == EventMessage.Hit_Trigger_Collider))
             {
-                EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, Configuration.ComboStepDamage[_lastStrikingComboIndex]);
+                float damage = Configuration.ComboStepDamage[_lastStrikingComboIndex] 
+                    * ConfigurationModifier.GetPowerUpModifier(PowerUpEffect.ComboDamageBoost);
+
+                EventDispatcher.FireEvent(_transform, originator, EventMessage.Inflict_Damage, damage);
             }
 
             if (target == _transform)
@@ -70,8 +83,14 @@ namespace Assets.Scripts.Gameplay.Player
                 switch (message)
                 {
                     case EventMessage.Has_Died: _lifeEventInProgress = true; break;
+                    case EventMessage.Respawn_Blast: _hasBeenLaunched = true; break;
+                    case EventMessage.End_Launch_Effect: _hasBeenLaunched = false; break;
+                    case EventMessage.Begin_Rush_Sequence: _rushInProgress = true; break;
                 }
             }
+
+            if (message == EventMessage.Start_Round) { _roundInProgress = true; }
+            if (message == EventMessage.End_Round) { _roundInProgress = false; }
         }
 
         private void BoolEventHandler(Transform originator, Transform target, string message, bool value)
@@ -109,8 +128,11 @@ namespace Assets.Scripts.Gameplay.Player
 
         private bool CanAttack()
         {
-            return (!_lifeEventInProgress)
-                && (!_isSwimming);
+            return (_roundInProgress)
+                && (!_lifeEventInProgress)
+                && (!_isSwimming)
+                && (!_hasBeenLaunched)
+                && (!_rushInProgress);
         }
     }
 }
